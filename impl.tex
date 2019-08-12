@@ -1,5 +1,6 @@
 \chapter{Design and implementation}\label{sec:impl}
 
+\section{Determining unrollability}\label{sec:impl:unrollability}
 
 \section{Unrolling}\label{sec:impl:unroll}
 
@@ -15,6 +16,11 @@ Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} t
 With the previous usage this was not an issue though, as using a constant bit analysis~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
 Unfortunately though in the use cases of an unknown bound that of course does not work, as~\libFIRM~cannot recognize the additional semantics we are adding.
 Henceforth, the need to manually prune the graph to remove the excess headers arises.
+\Cref{alg:impl:unroll:prune-headers} shows the algorithm used to accomplish this.
+First all phis in the header will be rewired, such that all in-loop nodes descending from any given phi node will each get the in-loop predecessesors of the phi node as predecessors themselves, whilst the phi node is no longer a predecessor of any of the descendants.
+The same will then be done to the descendants of the block itself.
+
+\input{fig/prune-header.tex}
 
 \input{fig/alg-old-unrolling.tex}
 
@@ -22,12 +28,18 @@ Henceforth, the need to manually prune the graph to remove the excess headers ar
 
 \section{Fixup strategies}\label{sec:impl:fixup}
 
+In \cref{sec:impl:unroll} the unrolling process is discussed.
+That process is done without considering the so called \textit{fixup code} needed.
+The term \textit{fixup code} describes that code that has to be added to account for cases where the number of times the loop is executed modulo the unrolling factor is not equal to zero.
+In \cref{sec:impl:fixup:duff} a generalized version of duff's device will used to create the needed fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop.
+Later we will evaluate, which approach yields faster binary runtimes.
+
 \subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
-\subsection{Updating the header condition}\label{sec:impl:fixup:header-cond}
+\section{Updating the header condition}\label{sec:impl:fixup:header-cond}
 
 \section{Pre-check header}\label{sec:impl:preheader}
 
-\section{Determining unrollability}\label{sec:impl:unrollability}
+\section{The completed unroll process}\label{sec:impl:complete}

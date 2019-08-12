@@ -1,0 +1,21 @@
+\begin{algorithm}
+    \begin{algorithmic}
+        \Function{PruneExcessHeader}{$copiedHeader: \text{Block}$}
+            \ForAll{$phi \in copiedHeade$}
+                \State \Call{PrunePhi}{$phi, copiedHeader$}
+            \EndFor
+            \ForAll{$post \in h.descendants$}
+                \State $post.predecessors \gets (post.predecessors \backslash \{copiedHeader\}) \cup \newline \{b \vert  b \in copiedHeader.predecessors, b.loop = copiedHeader.loop\}$
+            \EndFor
+        \EndFunction
+        \Function{PrunePhi}{$phi: \text{Phi-Node}, copiedHeader: \text{Block}$}
+            \ForAll{$out \in phi.descendants$}
+                \If{$out.block \neq copiedHeader$}
+                    \State $out.predecessors \gets (out.predecessors \backslash \{phi\}) \cup \newline \{n \vert  n \in phi.predecessors, n.loop = out.loop\}$
+                \EndIf
+            \EndFor
+        \EndFunction
+    \end{algorithmic}
+    \caption{Pruning excess headers after unrolling}
+    \label{alg:impl:unroll:prune-headers}
+\end{algorithm}
