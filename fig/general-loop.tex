@@ -1,0 +1,14 @@
+\begin{figure}[H]
+    \centering
+    \begin{algorithmic}
+        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z}$}
+            \State $i \gets I$
+            \While{$i~\text{cmp}~N$}
+                \State \Call{DoSomething}{}
+                \State $i \gets i + c$
+            \EndWhile
+        \EndFunction
+    \end{algorithmic}
+    \caption{A general form of loop starting at $I$ and counting in increments of $c$ up to $N$}
+    \label{fig:impl:general-loop}
+\end{figure}

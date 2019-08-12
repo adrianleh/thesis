@@ -1,5 +1,19 @@
 \chapter{Design and implementation}\label{sec:impl}
 
+In order to unroll a loop with non-static bounds this thesis will be following the following approach:
+First, we will check whether a loop can be unrolled.
+\Cref{sec:impl:unrollability} describes the conditions necessary and how they are checked.
+After that, \textit{fixup code}
+\footnote{The term \textit{fixup code} describes that code that has to be added to account for cases where the number of times the loop is executed modulo the unrolling factor is not equal to zero.}
+,as describe in \cref{sec:impl:fixup}, will be created, and the loop will be unrolled a set number of times and its header will be updated.
+The unrolling process will be covered in \cref{sec:impl:unroll}.
+
+In the following a convention will be used, where we will assume loops are like the loop in~\ref{fig:impl:general-loop}.
+In \cref{fig:impl:general-loop} \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
+Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z}$ to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such loop.
+
+\input{fig/general-loop.tex}
+
 \section{Determining unrollability}\label{sec:impl:unrollability}
 
 \section{Unrolling}\label{sec:impl:unroll}
@@ -29,8 +43,7 @@ The same will then be done to the descendants of the block itself.
 \section{Fixup strategies}\label{sec:impl:fixup}
 
 In \cref{sec:impl:unroll} the unrolling process is discussed.
-That process is done without considering the so called \textit{fixup code} needed.
-The term \textit{fixup code} describes that code that has to be added to account for cases where the number of times the loop is executed modulo the unrolling factor is not equal to zero.
+That process is done without considering the fixup code needed.
 In \cref{sec:impl:fixup:duff} a generalized version of duff's device will used to create the needed fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop.
 Later we will evaluate, which approach yields faster binary runtimes.
 
@@ -38,8 +51,5 @@ Later we will evaluate, which approach yields faster binary runtimes.
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
-\section{Updating the header condition}\label{sec:impl:fixup:header-cond}
+\section{Updating the loop condition}\label{sec:impl:fixup:header-cond}
 
-\section{Pre-check header}\label{sec:impl:preheader}
-
-\section{The completed unroll process}\label{sec:impl:complete}
