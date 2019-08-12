@@ -1,0 +1,41 @@
+\begin{figure}[h]
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{Foo}{}
+            \State $x, y: \mathbb{N}$
+            \Repeat
+            \If{\Call{Condition}{}}
+            \State $x_1 \gets 5$
+            \Else
+            \State $x_2 \gets 8$
+            \EndIf
+            \State $x \gets \Phi(x_1, x_2)$
+            \Until{\Call{OtherCondition}{}}
+            \State $y \gets x + 3$
+            \EndFunction
+        \end{algorithmic}
+        Code in SSA form
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{Foo}{}
+            \State $x, y: \mathbb{N}$
+            \Repeat
+            \If{\Call{Condition}{}}
+            \State $x_1 \gets 5$
+            \Else
+            \State $x_2 \gets 8$
+            \EndIf
+            \State $x_3 \gets \Phi(x_1, x_2)$
+            \Until{\Call{OtherCondition}{}}
+            \State $x \gets \Phi(x_3)$
+            \State $y \gets x + 3$
+            \EndFunction
+        \end{algorithmic}
+        Code in LCSSA form
+    \end{minipage}
+    \caption{An example program transformed into LCSSA Form (adapted from~\cite{LLVM_LCSSA})}
+    \label{fig:basics:LCSSA}
+\end{figure}

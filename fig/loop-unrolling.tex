@@ -1,0 +1,31 @@
+\begin{figure}[H]
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{Foo}{}
+                \State $i \gets 0$
+                \While{$i < 16$}
+                    \State \Call{Print}{$i$}
+                    \State $i \gets i + 1$
+                \EndWhile
+            \EndFunction
+        \end{algorithmic}
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{FooUnrolled}{}
+                \State $i \gets 0$
+                \While{$i < 16$}
+                    \State \Call{Print}{$i$}
+                    \State \Call{Print}{$i + 1$}
+                    \State \Call{Print}{$i + 2$}
+                    \State \Call{Print}{$i + 3$}
+                    \State $i \gets i + 4$
+                \EndWhile
+            \EndFunction
+        \end{algorithmic}
+    \end{minipage}
+    \caption{A simple loop unrolled using firm}
+    \label{fig:basics:old-loop-unrolling}
+\end{figure}

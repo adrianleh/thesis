@@ -1,0 +1,16 @@
+\begin{figure}[h]
+    \begin{algorithmic}
+        \Function{UnrollExisting}{$factor: \mathbb{N}_{> 1}, loop: \text{Loop}$}
+            \State \Call{AssureLCSSA}{$loop$}
+            \ForAll{$block \in loop$}
+                \For{$i \in \{1..(factor - 1)\}$}
+                    \State \Call{DuplicateBlock}{$block$}
+                \EndFor
+            \EndFor
+            \State \Call{RewireDuplicatedBlocks}{} \Comment{Attach blocks to form unrolled structure}
+            \State \Comment{$loop$ is still in LCSSA form after unrolling}
+        \EndFunction
+    \end{algorithmic}
+    \caption{Pseudo code for the existing unrolling mechanism~\cite{aebi18bachelorarbeit}}
+    \label{fig:impl:unroll:existing-mechanism}
+\end{figure}

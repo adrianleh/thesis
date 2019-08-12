@@ -1,0 +1,196 @@
+\chapter{Grundlagen und Verwandte Arbeiten}\label{sec:basics}
+
+% In diesem Kapitel landet alles,
+% was nicht vom Autor selbst erfunden wurde.
+% Einerseits Grundlagen,
+% die für das Verständnis der Arbeit notwendig sind.
+% Andererseits verwandte Arbeiten,
+% wobei bei diesen klar gemacht werden soll,
+% inwiefern diese Arbeit darauf aufbaut bzw. etwas anders macht.
+
+% Beispiel wäre ein Standardwerk in Sachen SSA-Form~\cite{cytron91}
+% welches bei uns häufig zitiert wird.
+
+% Es soll klar werden,
+% dass dem Studenten der Stand der Technik bewusst war
+% und keine redundante Arbeit gemacht wurde.
+
+% Compiler
+\section{Compiler}\label{sec:basics:compiler}
+
+The basic function of a compiler is to automatically convert high-level code created by a developer into (optimized) machine code.
+As a compiler is an inherently large software project, the architecture needs to be chosen that allows for extensions and modifications easily.
+Modern compilers mostly follow a layered architecture style: They each entice a front-, middle-, and back-end.
+In this architecture, the front-end will convert the high-level code into an abstract intermediary representation that is then used by the middle-end for optimizations and transformations.
+Lastly, the backend is responsible for converting the optimized intermediary code into instructions for the target system (e.g. \texttt{RISC-V}, \texttt{x86}, \texttt{ARM}, etc.)
+
+% Basic blocks
+\section{Basic blocks and control-flow}\label{sec:basics:bb-cf}
+
+Most compilers will divide code up into so-called \textit{basic blocks}.
+Basic blocks are sets of consecutive operations that do not contain jumps within them, but rather only jumps connecting them.
+Henceforth, a basic block will either be executed completely or not executed at all.
+
+A usual way to represent this in a human-readable form is to output it as a control-flow-graph (CFG).
+In a CFG a basic block is depicted as a node and jumps between basic blocks are represented by edges.
+Further, it is a convention in these graphs to have exactly one start and one end node.
+
+It is to be noted that CFGs, in general, are cyclical graphs.
+They merely are non-cyclical graphs, iff the original code does not contain any jumps going backward in the control-flow.
+
+Another important concept of CFGs is dominance.
+In order to explain this concept, a starting node $S$ is defined and assume we have any two nodes from the CFG $N_1$, and $N_2$.
+$$N_1~\text{dominates}~N_2 \Longleftrightarrow \forall p \in \text{Paths}(S, N_2),~N_1 \in p$$
+In plain english this means that $N_1$ dominates $N_2$, iff in order to get to $N_2$ from $S$ you have to visit $N_1$ on the way.
+Please also note that a block always dominates itself.
+
+% Lifetime
+
+\section{Loops}\label{sec:basics:loops}
+
+A loop has been defined as a set of nodes that are all in a cyclical control-flow structure.
+Loops can furthermore have a header, which is the sole entry point into a loop~\cite{aebi18bachelorarbeit} and defined as follows
+
+$$N~\text{is header of}~L \Longleftrightarrow N \in L \wedge \forall n \in L: N~\text{dominates}~n$$
+
+N.B.: Not all loops have to have a header.
+
+% SSA
+\section{Single-Static-Assignment (SSA)}\label{sec:basics:ssa}
+
+The \textit{single-static-assignment} (\textit{SSA}) form is a property of intermediary representations, that requires each variable to only be assigned exactly once.
+Moreover, every variable has to be assigned before it is being used~\cite{cytron91}.
+This especially implies that the block in which a given variable $v$ is declared has to dominate all blocks in which $v$ is used.
+An example of a program in SSA form can be seen in~\cref{fig:basics:SSA-simple}.
+
+\begin{figure}[h]
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \State $x \gets 1$
+            \State \Call{Print}{$x$}
+            \State $x \gets 7$
+            \State \Call{Print}{$x$}
+        \end{algorithmic}
+        Base code
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \State $x_1 \gets 1$
+            \State \Call{Print}{$x_1$}
+            \State $x_2 \gets 7$
+            \State \Call{Print}{$x_2$}
+        \end{algorithmic}
+        Code in SSA form
+    \end{minipage}
+    \caption{An example program in SSA form}
+    \label{fig:basics:SSA-simple}
+\end{figure}
+
+In a loop or a conditional statement, a scenario might arise where multiple values could be assigned to a given variable.
+In cases like these a $\Phi$-function can be used.
+A $\Phi$-function is a theoretical construct that will return the correct value depending on the control-flow predecessor.
+
+An example the use of a $\Phi$-function this can be seen in~\cref{fig:basics:SSA-phi}, where a depending on the control-flow either $m_1$ or $m_2$ are selected.
+
+\begin{figure}[h]
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
+                \State $m: \mathbb{N}$
+                \If{a > b}
+                    \State $m \gets a$
+                \Else
+                    \State $m \gets b$
+                \EndIf
+                \State \Return $m$
+            \EndFunction
+        \end{algorithmic}
+        Code in SSA form
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
+                \State $m: \mathbb{N}$
+                \If{$a > b$}
+                    \State $m_1 \gets a$
+                \Else
+                    \State $m_2 \gets b$
+                \EndIf
+                \State $m \gets$ \Call{$\Phi$}{$m_1, m_2$}
+                \State \Return m
+            \EndFunction
+        \end{algorithmic}
+        Base code
+    \end{minipage}
+    \caption{An example program in SSA form}
+    \label{fig:basics:SSA-phi}
+\end{figure}
+
+% LCSAA
+
+\section{Loop-Closed-Single-Static-Assignment (LCSSA)}\label{sec:basics:LCSSA}
+
+An extension to the SSA form is the \textit{loop-closed-single-static-assignment} (\textit{LCSSA}) form.
+It in addition to the properties guaranteed by the regular SSA form a CFG in LCSSA has the property that each variable that lives across a loop boundary is required to have a phi node in the first block after a loop~\cite{LLVM_LCSSA}.
+To visualize this property,~\cref{fig:basics:LCSSA} depicts its effect.
+
+\input{fig/lcssa-example.tex}
+
+% FIRM
+\section{\libFIRM}\label{sec:basics:firm}
+
+\libFIRM~is a compiler middle- and back-end that takes a graph-based intermediate representation in SSA form, optimizes it and produces assembly code~\cite{libfirm}.
+Since 1996 \libFIRM~is developed at Karlsruhe Institute of Technology (KIT).
+
+A graph in \libFIRM~contains information about basics blocks, the control-flow, memory and, data dependencies.
+Basics blocks in \libFIRM~contain further nodes that are responsible for the control-flow of the program.
+These are pointed to by (other) basic blocks that are the target of these control-flow operations.
+The resulting control-flow edges will be represented by a red edge in visualizations of \libFIRM~graphs.
+Any node that does an operation on memory will be connected to memory nodes that are responsible for always assuring the current state of memory.
+Memory is, like control flow, connected by edges, which are rather than being colored red blue in graphical representations.
+Lastly, \libFIRM~has data dependency edges between nodes, which represent dependencies needed for calculations.
+
+In~\cref{fig:basics:firm} we can see an example firm graph of the program originally shown in~\cref{fig:basics:SSA-phi}.
+It is especially to be noted that the graph is in SSA form, as it contains the phi node and has both memory, data and, control-flow edges.
+
+\input{fig/max.tex}
+
+% Unroll loops
+\section{Loop unrolling}\label{sec:basics:unrolling}
+
+Loop unrolling is a compiler optimization that attempts to duplicate the loop body to reduce the loop controlling instructions, such as the loop condition or repetitive arithmetic~\cite{aho_ullman_1979}.
+Another benefit of this technique is, that there could be fewer dependencies on a potentially slow to load induction variable or that, through the repeated usage, of common variables within a loop, these variables are still within the processors' cache.
+Further, it could also be used to vectorize the code, eliminate repeating conditions and for many other following optimizations~\cite{fog_2018}.
+A negative side-effect of loop unrolling is that the binary size will increase and that there will be more pressure on the code cache and registers when executing the application~\cite{Sarkar2001}.
+
+\Cref{fig:basics:old-loop-unrolling} shows a pseudo code example of unrolling a simple loop with a factor (the number of times the body is copied) of value four.
+It is to be noted, that the loop condition has to be checked less often, as each loop iteration is four times as long as in the original program.
+
+Though the hope is that the benefit of less checking will outweigh the drawbacks and trade-offs that come along with the technique.
+
+\libFIRM~supports a variation of loop unrolling, for loops that have static bounds and increments~\cite{aebi18bachelorarbeit}.
+The benefits of this optimization were very slim, likely since the requirements for a loop to be unrollable are very strict.
+
+
+\input{fig/loop-unrolling.tex}
+
+% Duff's Device
+\section{Duff's device}\label{sec:basics:duffs}
+
+A common problem with the loop unrolling shown in \cref{fig:basics:old-loop-unrolling} is that it requires the number of iterations to be constant and divisible by the unroll factor.
+A way to tackle this issue is to use a construct known as duff's device: It will preemptively unroll a loop with a given factor and use \textit{fixup} code to ensure that the remaining iterations are completed~\cite{duff_1983}.
+Mathematically this means it will execute the loop body $N \div F + N \mod F = N$ times, where $N$ is the number of total times the loop body would be executed without the transformation and where $F$ is the unroll factor.
+
+\Cref{fig:basics:duff} shows an example of a loop with a non-divisible bound being unrolled using a factor of eight\footnote{The original duff's device used special C syntax to entangle the switch statement and loop~\cite{duff_1983}}.
+The loop body is copied eight times and to ensure that the number of executions is correct, the first time around the code will jump to the corresponding instruction, depending on the need for fixup code.
+
+Many compilers, such as GCC~\cite{gcc}, use duff's device for unrolling loops and improving performance, while keeping code size relatively small.
+
+\include{fig/loop-unrolling-duff}
+
+
+% Duff's in GCC

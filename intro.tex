@@ -1,0 +1,79 @@
+\chapter{Introduction}\label{sec:intro}
+
+%In diesem Kapitel wird das Problem vorgestellt, das diese Arbeit löst.
+%Es sollte verständlich sein (anschauliches Beispiel?).
+%Das Problem sollte wichtig sein,
+%denn das motiviert weiterzulesen.
+
+%Bestenfalls ist dieses Kapitel auch für Laien verständlich.
+
+When developers craft code, there is a need to convert it from a human-readable high-level language into a machine-understandable language, called assembly.
+In order to do this a programmer will run a compiler that checks the code for multiple sources of errors and, if the code is correct, convert it into an executable file.
+Whilst converting the program into machine code the compiler will use the chance to optimize the code.
+This is only beneficial to the developer, as it ensures that his/her application will, in the end, run faster and require fewer system resources.
+A simple example of this would be constant folding, where the compiler analyzes code and precalculating all constant values, instead of letting them waste valuable runtime to calculate each time the application runs.
+An example can be seen below:
+As humans we can immediately see that in~\cref{fig:intro:cf1} that $b$ will always be equal to $9$ and using constant folding the compiler will be able to also perform this computation.
+The result of this can be seen in~\cref{fig:intro:cf2}
+Henceforth, the runtime of the (admittedly small) program will be reduced, as there is one less calculation required.
+Of course, simplifying just one expression seems (and for a matter of fact is) quite useless, but in a real-world code, an optimization like this is possible for many expressions and hence do noticeably speed up the final product.
+\begin{figure}[h]
+    \begin{algorithmic}
+        \State $a \gets 7$
+        \State $b \gets a + 2$
+    \end{algorithmic}
+    \caption{Constant folding example before optimization}
+    \label{fig:intro:cf1}
+\end{figure}
+\begin{figure}[h]
+    \begin{algorithmic}
+        \State $a \gets 7$
+        \State $b \gets 9$
+    \end{algorithmic}
+    \caption{Constant folding example after optimization}
+    \label{fig:intro:cf2}
+\end{figure}
+
+Of course there are many more possibilities to optimize code using a compiler.
+As loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2000): 8.6\% of FIRM nodes are in loops}, they were a natural point to focus optimization efforts upon.
+Loops can be unrolled fairly straight forward if you know how often they are iterated, as we will discuss in~\cref{sec:basics}.
+
+\begin{figure}[h]
+    \label{fig:intro:unroll-simple-before}
+    \begin{algorithmic}
+        \State $i \gets 0$
+        \While{$i < 5$}
+            \State \Call{Print}{$i$}
+            \State $i \gets i + 1$
+        \EndWhile
+    \end{algorithmic}
+    \caption{Loop with constant bounds}
+\end{figure}
+\begin{figure}[h]
+    \begin{algorithmic}
+        \State \Call{Print}{$0$}
+        \State \Call{Print}{$1$}
+        \State \Call{Print}{$2$}
+        \State \Call{Print}{$3$}
+        \State \Call{Print}{$4$}
+    \end{algorithmic}
+    \caption{Loop with constant bounds unrolled}
+    \label{fig:intro:unroll-simple-after}
+\end{figure}
+For example, we can see that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics in tact.
+In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, as we do not know what the exact value of $N$ is going to be, we will not be able to simply unroll a loop by copying its body a fixed number of times.
+In section~\cref{sec:basics} it will be exactly described, as to what we can do about these kinds of loops, and in~\cref{sec:impl} the algorithms and techniques to unroll these loops will be discussed.
+Finally, in~\cref{sec:eval} the approach will be experimentally evaluated to see whether it yields a tangible benefit.
+\begin{figure}[h]
+    \begin{algorithmic}
+        \State $i \gets 0$
+        \State $N \gets$ \Call{FairDiceRoll}{}() \Comment{Random number in $[1,6]$}
+        \While{$i < N$}
+            \State \Call{Print}{$i$}
+            \State $i \gets i + 1$
+        \EndWhile
+    \end{algorithmic}
+    \caption{Loop without constant bound}
+    \label{fig:intro:unroll-nostatic-bound}
+\end{figure}
+

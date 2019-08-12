@@ -1,0 +1,33 @@
+\chapter{Design and implementation}\label{sec:impl}
+
+
+\section{Unrolling}\label{sec:impl:unroll}
+
+To get started with unrolling loops that have unknown bounds, we will unroll them with a given factor without considering whether the transformation is semantically invariant.
+In \cref{sec:impl:fixup} and \cref{sec:impl:preheader} we will be restoring the semantic equivalence.
+
+Since~\libFIRM~already provides an unrolling mechanism for unrolling a loop with a given factor~\cite{aebi18bachelorarbeit}, we will be using it to unroll our loop by a factor $f$.
+\Cref{fig:impl:unroll:existing-mechanism} shows a summary of the way the mechanism works.
+N.B.: The LCSSA property is preserved across all following operations.
+
+Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before} and,~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
+Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} the loop header is duplicated and that hence the number of conditions did not decrease through the loop unroll.
+With the previous usage this was not an issue though, as using a constant bit analysis~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
+Unfortunately though in the use cases of an unknown bound that of course does not work, as~\libFIRM~cannot recognize the additional semantics we are adding.
+Henceforth, the need to manually prune the graph to remove the excess headers arises.
+
+\input{fig/alg-old-unrolling.tex}
+
+\input{fig/plain-unrolling.tex}
+
+\section{Fixup strategies}\label{sec:impl:fixup}
+
+\subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
+
+\subsection{Loop duplication}\label{sec:impl:fixup:loop}
+
+\subsection{Updating the header condition}\label{sec:impl:fixup:header-cond}
+
+\section{Pre-check header}\label{sec:impl:preheader}
+
+\section{Determining unrollability}\label{sec:impl:unrollability}
