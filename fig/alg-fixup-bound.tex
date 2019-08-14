@@ -1,0 +1,18 @@
+\begin{figure}[H]
+    \begin{algorithmic}
+        \Switch{$N - \ipl + (c - 1)$}
+            \Case{$c \cdot f$}
+                \State \Call{Body}{}
+            \EndCase
+            \Case{$c \cdot (f - 1)$}
+                \State \Call{Body}{}
+            \EndCase
+            \State \ldots
+            \Case{$c \cdot 1$}
+                \State \Call{Body}{}
+            \EndCase
+        \EndSwitch
+    \end{algorithmic}
+    \caption{Generalized duff's device fixup code based on variables present}
+    \label{fig:impl:fixup:duff:fixup-bound}
+\end{figure}

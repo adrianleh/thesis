@@ -10,7 +10,7 @@ The unrolling process will be covered in \cref{sec:impl:unroll}.
 
 In the following a convention will be used, where we will assume loops are like the loop in~\ref{fig:impl:general-loop}.
 In \cref{fig:impl:general-loop} \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
-Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z}$ to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such loop.
+Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such loop.
 
 \input{fig/general-loop.tex}
 
@@ -48,6 +48,97 @@ In \cref{sec:impl:fixup:duff} a generalized version of duff's device will used t
 Later we will evaluate, which approach yields faster binary runtimes.
 
 \subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
+
+In \cref{sec:basics:duffs}, duff's device is described and shown.
+The problem with this inital approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero interger.
+Henceforth, a need for generalization arises.
+
+Let $M \in \mathbb{Z}$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times it will run in the unrolled loop, or the fixup code respectively, after the transformation.
+Further, the unroll-factor, will be again denoted by $f \in \mathbb{N}, f > 1$.
+
+\begin{equation}\label{eqn:impl:fixup:duff:conserve-semantics-identity}
+    \begin{aligned}
+        M = \Mloop + \Mfixup
+    \end{aligned}
+\end{equation}
+
+\begin{equation}\label{eqn:impl:fixup:duff:loop-iterations}
+    \begin{aligned}
+        \Mloop &\overset{\text{integer divison}}{=} \frac{M}{f} \cdot f\\
+        &\overset{\text{integer divison}}{\in} \medspace \rbrack M-f,f \rbrack
+    \end{aligned}
+\end{equation}
+
+\begin{equation}\label{eqn:impl:fixup:duff:fixup-interval}
+    \begin{aligned}
+        \Mfixup \in \lbrack0, f\lbrack \medspace \cap \medspace \mathbb{N}_0
+    \end{aligned}
+\end{equation}
+
+\begin{equation}\label{eqn:impl:fixup:duff:total-iteration-based-on-bounds}
+    \begin{aligned}
+        M &= \ceil{\frac{N - I}{c}} \\
+        & \overset{\text{integer divison}}{=} \frac{N - I + (c - 1)}{c}
+    \end{aligned}
+\end{equation}
+
+\begin{equation}\label{eqn:impl:fixup:duff:i-after-loop}
+    \begin{aligned}
+        \ipl = c \cdot \Mloop + I
+    \end{aligned}
+\end{equation}
+
+\begin{equation}\label{eqn:impl:fixup:duff:fixup-i}
+    \begin{aligned}
+        \Mfixup & \overset{\ref{eqn:impl:fixup:duff:conserve-semantics-identity}}{=} M - \Mloop \\
+        & \overset{\ref{eqn:impl:fixup:duff:total-iteration-based-on-bounds}}{=}
+            \frac{N - I + (c - 1)}{c} - \Mloop \\
+        & \overset{\ref{eqn:impl:fixup:duff:i-after-loop}}{=}
+        \frac{N - I + (c - 1)}{c} - \frac{\ipl + I}{c} \\
+        &= \frac{N - I + I - \ipl + (c - 1)}{c}\\
+        &= \frac{N - \ipl + (c - 1)}{c}
+    \end{aligned}
+\end{equation}
+
+\begin{equation}\label{eqn:impl:fixup:duff:fixup-i-mult}
+    \begin{aligned}
+        \ref{eqn:impl:fixup:duff:fixup-i} &\Longleftrightarrow \Mfixup \cdot c = N - \ipl + (c - 1) \overset{\ref{eqn:impl:fixup:duff:fixup-interval}}{\in} \lbrack 0, c \cdot f \lbrack
+    \end{aligned}
+\end{equation}
+
+The main identity that is to be consevered, in order to retain the original semantics, is shown in \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
+By construction of our unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations} will always be true, as our unrolled loop tries to run as often as possible, whilst running less than or equal times to the original loop.
+
+\begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
+    To prove this, consider the conjecture
+    \[\Mloop = M - f - b,  b \in \mathbb{N}_0 \cap \lbrack 0, f \lbrack\]
+    and hence
+    \[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack\]
+    , then by running the unrolled loop again the body would be executed $f$ times raising $\Mloop$ to $M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
+    This can then be trivally inducted for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \mathbb{N}_0 \cap \lbrack 0, f \lbrack$.
+    In these cases the loop must merely be iterated multiple times.
+\end{proof}
+
+Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must hold true.
+\begin{proof}\label{proof:impl:fixup:duff:fixup-interval}
+    Conjecture: $\Mfixup = f' > f$.\\
+    Then
+    \begin{align*}
+        \Mloop + \Mfixup &\geq M - f + f' \\
+        &> M - f + f \\
+        &= M \medspace \overset{\ref{eqn:impl:fixup:duff:conserve-semantics-identity}}{\mLightning}
+    \end{align*}
+\end{proof}
+
+\cref{eqn:impl:fixup:duff:total-iteration-based-on-bounds} and \cref{eqn:impl:fixup:duff:i-after-loop} are both true by the construction of our loop.
+
+Using these equations we can then deduce \cref{eqn:impl:fixup:duff:fixup-i}, and henceforth also \cref{eqn:impl:fixup:duff:fixup-i-mult}, which we will be using in the implmentation in order to avoid a costly division operation.
+
+Now we will create the fixup code, as that can be seen in \cref{fig:impl:fixup:duff:fixup-M_fixup}, which then will be practically implemented as the code shown in \cref{fig:impl:fixup:duff:fixup-bound}.
+
+\input{fig/alg-fixup-M_fixup.tex}
+
+\input{fig/alg-fixup-bound.tex}
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 

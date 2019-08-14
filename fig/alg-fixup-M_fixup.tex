@@ -1,0 +1,18 @@
+\begin{figure}[H]
+    \begin{algorithmic}
+        \Switch{$\Mfixup$}
+            \Case{$f$}
+                \State \Call{Body}{}
+            \EndCase
+            \Case{$f - 1$}
+                \State \Call{Body}{}
+            \EndCase
+            \State \ldots
+            \Case{$1$}
+                \State \Call{Body}{}
+            \EndCase
+        \EndSwitch
+    \end{algorithmic}
+    \caption{Generalized duff's device fixup code based on $\Mfixup$}
+    \label{fig:impl:fixup:duff:fixup-M_fixup}
+\end{figure}
