@@ -1,0 +1,24 @@
+\begin{figure}[h]
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \State $x \gets 1$
+            \State \Call{Print}{$x$}
+            \State $x \gets 7$
+            \State \Call{Print}{$x$}
+        \end{algorithmic}
+        Base code
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \State $x_1 \gets 1$
+            \State \Call{Print}{$x_1$}
+            \State $x_2 \gets 7$
+            \State \Call{Print}{$x_2$}
+        \end{algorithmic}
+        Code in SSA form
+    \end{minipage}
+    \caption{An example program in SSA form}
+    \label{fig:basics:SSA-simple}
+\end{figure}

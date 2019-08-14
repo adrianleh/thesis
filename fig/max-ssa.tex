@@ -1,0 +1,35 @@
+\begin{figure}[h]
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
+            \State $m: \mathbb{N}$
+            \If{a > b}
+            \State $m \gets a$
+            \Else
+            \State $m \gets b$
+            \EndIf
+            \State \Return $m$
+            \EndFunction
+        \end{algorithmic}
+        Code in SSA form
+    \end{minipage}
+    \begin{minipage}[t]{0.5\textwidth}
+        \centering
+        \begin{algorithmic}
+            \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
+            \State $m: \mathbb{N}$
+            \If{$a > b$}
+            \State $m_1 \gets a$
+            \Else
+            \State $m_2 \gets b$
+            \EndIf
+            \State $m \gets$ \Call{$\Phi$}{$m_1, m_2$}
+            \State \Return m
+            \EndFunction
+        \end{algorithmic}
+        Base code
+    \end{minipage}
+    \caption{An example program in SSA form}
+    \label{fig:basics:SSA-phi}
+\end{figure}

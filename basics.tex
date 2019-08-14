@@ -63,30 +63,7 @@ Moreover, every variable has to be assigned before it is being used~\cite{cytron
 This especially implies that the block in which a given variable $v$ is declared has to dominate all blocks in which $v$ is used.
 An example of a program in SSA form can be seen in~\cref{fig:basics:SSA-simple}.
 
-\begin{figure}[h]
-    \begin{minipage}[t]{0.5\textwidth}
-        \centering
-        \begin{algorithmic}
-            \State $x \gets 1$
-            \State \Call{Print}{$x$}
-            \State $x \gets 7$
-            \State \Call{Print}{$x$}
-        \end{algorithmic}
-        Base code
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
-        \centering
-        \begin{algorithmic}
-            \State $x_1 \gets 1$
-            \State \Call{Print}{$x_1$}
-            \State $x_2 \gets 7$
-            \State \Call{Print}{$x_2$}
-        \end{algorithmic}
-        Code in SSA form
-    \end{minipage}
-    \caption{An example program in SSA form}
-    \label{fig:basics:SSA-simple}
-\end{figure}
+\input{fig/simple-ssa-example.tex}
 
 In a loop or a conditional statement, a scenario might arise where multiple values could be assigned to a given variable.
 In cases like these a $\Phi$-function can be used.
@@ -94,41 +71,7 @@ A $\Phi$-function is a theoretical construct that will return the correct value 
 
 An example the use of a $\Phi$-function this can be seen in~\cref{fig:basics:SSA-phi}, where a depending on the control-flow either $m_1$ or $m_2$ are selected.
 
-\begin{figure}[h]
-    \begin{minipage}[t]{0.5\textwidth}
-        \centering
-        \begin{algorithmic}
-            \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
-                \State $m: \mathbb{N}$
-                \If{a > b}
-                    \State $m \gets a$
-                \Else
-                    \State $m \gets b$
-                \EndIf
-                \State \Return $m$
-            \EndFunction
-        \end{algorithmic}
-        Code in SSA form
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
-        \centering
-        \begin{algorithmic}
-            \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
-                \State $m: \mathbb{N}$
-                \If{$a > b$}
-                    \State $m_1 \gets a$
-                \Else
-                    \State $m_2 \gets b$
-                \EndIf
-                \State $m \gets$ \Call{$\Phi$}{$m_1, m_2$}
-                \State \Return m
-            \EndFunction
-        \end{algorithmic}
-        Base code
-    \end{minipage}
-    \caption{An example program in SSA form}
-    \label{fig:basics:SSA-phi}
-\end{figure}
+\input{fig/max-ssa.tex}
 
 % LCSAA
 
