@@ -1,6 +1,7 @@
 \renewcommand\qedsymbol{$\blacksquare$}
 
-
+\newcommand{\andinN}{\ensuremath{\medspace \cap \medspace \mathbb{N}_0}}
+\newcommand{\upto}{\ensuremath{\medspace \boldsymbol{\rightarrow} \medspace}}
 \newcommand{\zeroset}{\ensuremath{\{0\}}}
 \newcommand{\Mloop}{\ensuremath{M_{\text{loop}}}}
 \newcommand{\Mfixup}{\ensuremath{M_{\text{fixup}}}}
@@ -8,3 +9,9 @@
 \newcommand{\floor}[1]{\ensuremath{\lfloor{}#1\rfloor{}}}
 \newcommand{\ceil}[1]{\ensuremath{\lceil{}#1\rceil{}}}
 \newcommand{\mLightning}{\ensuremath{\text{\Lightning}}}
+\newcommand{\cinterval}{\ensuremath{
+    \begin{cases}
+        \lbrack 0, c \cdot (f + 1) \lbrack &, \medspace c > 0\\
+        \rbrack c \cdot (f + 1), 0 \rbrack &, \medspace c < 0
+    \end{cases}
+}}

@@ -65,20 +65,24 @@ Further, the unroll-factor, will be again denoted by $f \in \mathbb{N}, f > 1$.
 \begin{equation}\label{eqn:impl:fixup:duff:loop-iterations}
     \begin{aligned}
         \Mloop &\overset{\text{integer divison}}{=} \frac{M}{f} \cdot f\\
-        &\overset{\text{integer divison}}{\in} \medspace \rbrack M-f,f \rbrack
+        &\overset{\text{integer divison}}{\in} \medspace \rbrack M-f,f \rbrack \andinN
     \end{aligned}
 \end{equation}
 
 \begin{equation}\label{eqn:impl:fixup:duff:fixup-interval}
     \begin{aligned}
-        \Mfixup \in \lbrack0, f\lbrack \medspace \cap \medspace \mathbb{N}_0
+        \Mfixup \in \lbrack0, f\lbrack \medspace \andinN
     \end{aligned}
 \end{equation}
 
 \begin{equation}\label{eqn:impl:fixup:duff:total-iteration-based-on-bounds}
     \begin{aligned}
         M &= \ceil{\frac{N - I}{c}} \\
-        & \overset{\text{integer divison}}{=} \frac{N - I + (c - 1)}{c}
+        & \overset{\text{integer divison}}{=}
+        \begin{cases}
+              \frac{N - I + (c - 1)}{c} &, \medspace c > 0\\
+              \frac{N - I + (c + 1)}{c} &, \medspace c < 0
+        \end{cases}
     \end{aligned}
 \end{equation}
 
@@ -92,17 +96,17 @@ Further, the unroll-factor, will be again denoted by $f \in \mathbb{N}, f > 1$.
     \begin{aligned}
         \Mfixup & \overset{\ref{eqn:impl:fixup:duff:conserve-semantics-identity}}{=} M - \Mloop \\
         & \overset{\ref{eqn:impl:fixup:duff:total-iteration-based-on-bounds}}{=}
-            \frac{N - I + (c - 1)}{c} - \Mloop \\
+            \frac{N - I + (c \mp 1)}{c} - \Mloop \\
         & \overset{\ref{eqn:impl:fixup:duff:i-after-loop}}{=}
-        \frac{N - I + (c - 1)}{c} - \frac{\ipl + I}{c} \\
-        &= \frac{N - I + I - \ipl + (c - 1)}{c}\\
-        &= \frac{N - \ipl + (c - 1)}{c}
+        \frac{N - I + (c \mp 1)}{c} - \frac{\ipl + I}{c} \\
+        &= \frac{N - I + I - \ipl + (c \mp 1)}{c}\\
+        &= \frac{N - \ipl + (c \mp 1)}{c}
     \end{aligned}
 \end{equation}
 
 \begin{equation}\label{eqn:impl:fixup:duff:fixup-i-mult}
     \begin{aligned}
-        \ref{eqn:impl:fixup:duff:fixup-i} &\Longleftrightarrow \Mfixup \cdot c = N - \ipl + (c - 1) \overset{\ref{eqn:impl:fixup:duff:fixup-interval}}{\in} \lbrack 0, c \cdot f \lbrack
+        \ref{eqn:impl:fixup:duff:fixup-i} &\overset{integer division}{\Longleftrightarrow} \Mfixup \cdot c = N - \ipl + (c \mp 1) \overset{\ref{eqn:impl:fixup:duff:fixup-interval}}{\in} \cinterval
     \end{aligned}
 \end{equation}
 
@@ -111,11 +115,11 @@ By construction of our unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations}
 
 \begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
     To prove this, consider the conjecture
-    \[\Mloop = M - f - b,  b \in \mathbb{N}_0 \cap \lbrack 0, f \lbrack\]
+    \[\Mloop = M - f - b,  b \in \lbrack 0, f \lbrack \andinN\]
     and hence
-    \[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack\]
+    \[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack \andinN \]
     , then by running the unrolled loop again the body would be executed $f$ times raising $\Mloop$ to $M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
-    This can then be trivally inducted for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \mathbb{N}_0 \cap \lbrack 0, f \lbrack$.
+    This can then be trivally inducted for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \lbrack 0, f \lbrack \andinN$.
     In these cases the loop must merely be iterated multiple times.
 \end{proof}
 
@@ -124,7 +128,7 @@ Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must
     Conjecture: $\Mfixup = f' > f$.\\
     Then
     \begin{align*}
-        \Mloop + \Mfixup &\geq M - f + f' \\
+        \Mloop + \Mfixup &\overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\geq} M - f + f' \\
         &> M - f + f \\
         &= M \medspace \overset{\ref{eqn:impl:fixup:duff:conserve-semantics-identity}}{\mLightning}
     \end{align*}
@@ -134,11 +138,33 @@ Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must
 
 Using these equations we can then deduce \cref{eqn:impl:fixup:duff:fixup-i}, and henceforth also \cref{eqn:impl:fixup:duff:fixup-i-mult}, which we will be using in the implmentation in order to avoid a costly division operation.
 
-Now we will create the fixup code, as that can be seen in \cref{fig:impl:fixup:duff:fixup-M_fixup}, which then will be practically implemented as the code shown in \cref{fig:impl:fixup:duff:fixup-bound}.
+Now we will create the fixup code, as that can be seen in \cref{fig:impl:fixup:duff:fixup-M_fixup}, which then will be practically implemented, using \cref{eqn:impl:fixup:duff:fixup-i-mult}, as the code shown in \cref{fig:impl:fixup:duff:fixup-bound}.
 
 \input{fig/alg-fixup-M_fixup.tex}
 
 \input{fig/alg-fixup-bound.tex}
+
+In order for our fixup code work correctly, it is to be ensured that $\Mfixup \cdot c$ does not overflow, as otherwise the interval \cinterval could potentially be invalid, iff $
+\begin{cases}
+    c \cdot (f + 1) < 0 &, \medspace c > 0\\
+    c \cdot (f + 1) > 0 &, \medspace c < 0
+\end{cases}$.
+To avoid these problems all together, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f + 1}, \frac{t_{max}}{f + 1} \rbrack$.
+Using this restriction we can assert that $c \times (f + 1) \in \lbrack t_{min}, t_{max} \rbrack$ and henceforth does not overflow.
+
+\Cref{alg:impl:fixup:duff:create-fixup} details, how the described mechanics are translated into \libFIRM.
+At first the loop body will be duplicated $f - 1$ times and keepalive edges will be added to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
+After this all duplicated block will be wired such that, they be reachable by conditions, as those previously described.
+Further, upon false evaluation of a condition, the next condition will be evaluated, except if it is the last condition, in which case the false target is the post loop block.
+Additionally, unless in case of the first duplicated header, they will be attached to the previous blocks as fallthrough.
+Lastly, the post loop block will be now by predecessed by the last block of fixup code and the false exit fo the last condition.
+An example of the result for creating fixup code for a loop, as seen in \cref{fig:impl:fixup:duff:fixup-firm-loop}, can be seen in \cref{fig:impl:fixup:duff:fixup-firm}
+
+\input{fig/firm-duff-fixup-loop.tex}
+
+\input{fig/alg-create-fixup-duff.tex}
+
+\input{fig/firm-duff-fixup.tex}
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 

@@ -1,0 +1,50 @@
+\begin{algorithm}
+    \caption{Algorithm to build switch fixup for a given loop in \libFIRM}
+    \label{alg:impl:fixup:duff:create-fixup}
+    \begin{algorithmic}
+        \Function{CreateFixupSwitch}{$loop: \text{Loop}, factor: \mathbb{N}_{>1}$}
+            \For{$i \in \{0, .., (factor - 1)\}$}
+                \State \Call{DuplicateBody}{$loop$}
+            \EndFor
+            \For{$node \in allCopiedNodes$}
+                \If{$\neg$\Call{HasKeepalive}{$node.link$}}
+                    \State \Call{AddKeepAlive}{$node$} \Comment{Prevent premature disappearance}
+                \EndIf
+            \EndFor
+            \State $relation \gets header.cmp.relation$
+            \State $inverseRelation \gets $ \Call{GetInverseRelation}{$relation$}
+            \State $duffHeader \gets NewEmptyBlock$
+            \State $duffHeader.predecessors = \{loop.header\}$
+            \State $val \gets duffHeader.addNode(N - i + (c
+                \left\{\!\begin{aligned}
+                   - &, \medspace c > 0\\
+                   + &, \medspace c < 0
+                \end{aligned}\right\} 1)
+            )$
+            \State $i \gets 0$
+            \State $prevLast: \text{Block}$
+            \State $prevCond: \text{Block}$
+            \For{$body \in duplicatedLoopBodies$}
+                \State $firstBlock \gets$ \Call{GetFirstBlockInBody}{$body$}
+                \State $condBlock \gets$ \Call{NewEmptyBlock}{}
+                \State $cond \gets val \medspace `relation` \medspace (factor - i) \medspace \wedge \medspace val \medspace `inverseRelation` \medspace (factor - i - 1)$
+                \State $condBlock.addNode(cond)$
+                \State $condBlock.predecessors = \begin{cases}\{duffHeader\} &, \medspace i = 0\\ \{prevCond.falseExit, \medspace prevLast\} &, \medspace i \neq 0\end{cases}$
+                \State $firstBlock.predecessors = cond.trueExit$
+                \State $i \gets i + 1$
+                \State $prevLast \gets$ \Call{GetLastBlockInBody}{$body$}
+                \State $prevCond \gets cond$
+                \For{$phi \in body.phis$}
+                    \State $phi.predecessors = \begin{cases}\{phi.link.predecessors\} &, \medspace i = 0\\ \{phi.link.predecessors, \medspace prevLast.exitFor(phi)\} &, \medspace i \neq 0\end{cases}$
+                \EndFor
+            \EndFor
+            \For{$node \in allCopiedNodes$}
+                \If{$\neg$\Call{HasKeepalive}{$node.link$}}
+                    \State \Call{RemoveKeepAlive}{$node$}
+                \EndIf
+            \EndFor
+            \State $postLoopBlock.predecessors = \{prevCond.falseExit, \medspace prevLast\}$
+            \State \Call{RewirePhis}{} \Comment{Wire just like for duplicated loop body phi's}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
