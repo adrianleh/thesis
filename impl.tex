@@ -168,6 +168,8 @@ An example of the result for creating fixup code for a loop, as seen in \cref{fi
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
+
+
 \section{Updating the loop condition}\label{sec:impl:fixup:header-cond}
 
 In sections~\ref{sec:impl:fixup:duff}, and~\ref{sec:impl:fixup:loop} we assume that $\Mloop = \frac{M}{f} \cdot f$.
@@ -179,17 +181,17 @@ Now the conjecture that using the bound $\hat{N}$, the unrolled loop will run $\
 \begin{proof}
     Let $\Mloop'$ be the numer of times then unrolled loop with bound $\hat{N}$ runs.
     The proof is complete, iff $\Mloop' = \Mloop$.
-    \begin{align}
+    \begin{align*}
         \Mloop' &= \ceil{\frac{\hat{N} - I}{c \cdot f}} \cdot f\\
         &\overset{\text{integer division}}{=} \frac{\hat{N} - I + (c \cdot f \mp 1)}{c \cdot f} \cdot f\\
         &= \frac{N - c \cdot (f - 1) - I + (c \cdot f \mp 1)}{c \cdot f} \cdot f\\
         &= \frac{N - c \cdot f + c - I + c \cdot f \mp 1}{c \cdot f} \cdot f\\
-        &= \frac{N - I + c \mp 1}{c \dot f} \cdot f\\
+        &= \frac{N - I + c \mp 1}{c \cdot f} \cdot f\\
         &= \frac{\frac{N - I + c \mp 1}{c}}{f} \cdot f\\
         &\overset{\text{integer division}}{=} \frac{\ceil{\frac{N - I}{c}}}{f} \cdot f\\
         &\overset{\ref{eqn:impl:fixup:duff:total-iteration-based-on-bounds}}{=} \frac{M}{f} \cdot f\\
         &\overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{=} \Mloop
-    \end{align}
+    \end{align*}
 \end{proof}
 
 Therefore the header condition of the unrolled loop will be changed to $i < \hat{N}$.
