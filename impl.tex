@@ -3,14 +3,14 @@
 In order to unroll a loop with non-static bounds this thesis will be following the following approach:
 First, we will check whether a loop can be unrolled.
 \Cref{sec:impl:unrollability} describes the conditions necessary and how they are checked.
-After that, \textit{fixup code}
+After that, the \textit{fixup code}
 \footnote{The term \textit{fixup code} describes that code that has to be added to account for cases where the number of times the loop is executed modulo the unrolling factor is not equal to zero.}
-,as describe in \cref{sec:impl:fixup}, will be created, and the loop will be unrolled a set number of times and its header will be updated.
+, as described in \cref{sec:impl:fixup}, will be created, and the loop will be unrolled a set number of times and its header will be updated.
 The unrolling process will be covered in \cref{sec:impl:unroll}.
 
 In the following a convention will be used, where we will assume loops are like the loop in~\ref{fig:impl:general-loop}.
 In \cref{fig:impl:general-loop} \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
-Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such loop.
+Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such a loop.
 
 \input{fig/general-loop.tex}
 
@@ -27,34 +27,34 @@ N.B.: The LCSSA property is preserved across all following operations.
 
 Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before} and,~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} the loop header is duplicated and that hence the number of conditions did not decrease through the loop unroll.
-With the previous usage this was not an issue though, as using a constant bit analysis~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
-Unfortunately though in the use cases of an unknown bound that of course does not work, as~\libFIRM~cannot recognize the additional semantics we are adding.
+With the previous usage, this was not an issue though, as using a constant bit analysis~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
+Unfortunately though in the use cases of an unknown bound the constant bit analysis, of course, does not work, as~\libFIRM~cannot recognize the additional semantics we are adding.
 Henceforth, the need to manually prune the graph to remove the excess headers arises.
 \Cref{alg:impl:unroll:prune-headers} shows the algorithm used to accomplish this.
-First all phis in the header will be rewired, such that all in-loop nodes descending from any given phi node will each get the in-loop predecessesors of the phi node as predecessors themselves, whilst the phi node is no longer a predecessor of any of the descendants.
+First, all phis in the header will be rewired, such that all in-loop nodes descending from any given phi node will each get the in-loop predecessors of the phi node as predecessors themselves, whilst the phi node is no longer a predecessor of any of the descendants.
 The same will then be done to the descendants of the block itself.
 
-\input{fig/prune-header.tex}
+%\input{fig/prune-header.tex}
 
-\input{fig/alg-old-unrolling.tex}
+%\input{fig/alg-old-unrolling.tex}
 
-\input{fig/plain-unrolling.tex}
+%\input{fig/plain-unrolling.tex}
 
 \section{Fixup strategies}\label{sec:impl:fixup}
 
 In \cref{sec:impl:unroll} the unrolling process is discussed.
 That process is done without considering the fixup code needed.
-In \cref{sec:impl:fixup:duff} a generalized version of duff's device will used to create the needed fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop.
+In \cref{sec:impl:fixup:duff} a generalized version of duff's device will be used to create the needed fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop.
 Later we will evaluate, which approach yields faster binary runtimes.
 
 \subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
 
 In \cref{sec:basics:duffs}, duff's device is described and shown.
-The problem with this inital approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero interger.
+The problem with this initial approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero integer.
 Henceforth, a need for generalization arises.
 
 Let $M \in \mathbb{Z}$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times it will run in the unrolled loop, or the fixup code respectively, after the transformation.
-Further, the unroll-factor, will be again denoted by $f \in \mathbb{N}, f > 1$.
+Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
 
 \begin{equation}\label{eqn:impl:fixup:duff:conserve-semantics-identity}
     \begin{aligned}
@@ -110,7 +110,7 @@ Further, the unroll-factor, will be again denoted by $f \in \mathbb{N}, f > 1$.
     \end{aligned}
 \end{equation}
 
-The main identity that is to be consevered, in order to retain the original semantics, is shown in \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
+The main identity that is to be conserved, to retain the original semantics, is shown in \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
 By construction of our unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations} will always be true, as our unrolled loop tries to run as often as possible, whilst running less than or equal times to the original loop.
 
 \begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
@@ -119,8 +119,8 @@ By construction of our unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations}
     and hence
     \[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack \andinN \]
     , then by running the unrolled loop again the body would be executed $f$ times raising $\Mloop$ to $M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
-    This can then be trivally inducted for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \lbrack 0, f \lbrack \andinN$.
-    In these cases the loop must merely be iterated multiple times.
+    This can then be trivially inducted for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \lbrack 0, f \lbrack \andinN$.
+    In these cases, the loop must merely be iterated multiple times.
 \end{proof}
 
 Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must hold true.
@@ -136,7 +136,7 @@ Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must
 
 \cref{eqn:impl:fixup:duff:total-iteration-based-on-bounds} and \cref{eqn:impl:fixup:duff:i-after-loop} are both true by the construction of our loop.
 
-Using these equations we can then deduce \cref{eqn:impl:fixup:duff:fixup-i}, and henceforth also \cref{eqn:impl:fixup:duff:fixup-i-mult}, which we will be using in the implmentation in order to avoid a costly division operation.
+Using these equations we can then deduce \cref{eqn:impl:fixup:duff:fixup-i}, and henceforth also \cref{eqn:impl:fixup:duff:fixup-i-mult}, which we will be using in the implementation to avoid a costly division operation.
 
 Now we will create the fixup code, as that can be seen in \cref{fig:impl:fixup:duff:fixup-M_fixup}, which then will be practically implemented, using \cref{eqn:impl:fixup:duff:fixup-i-mult}, as the code shown in \cref{fig:impl:fixup:duff:fixup-bound}.
 
@@ -144,20 +144,20 @@ Now we will create the fixup code, as that can be seen in \cref{fig:impl:fixup:d
 
 \input{fig/alg-fixup-bound.tex}
 
-In order for our fixup code work correctly, it is to be ensured that $\Mfixup \cdot c$ does not overflow, as otherwise the interval \cinterval could potentially be invalid, iff $
+For our fixup code to work correctly, it is to be ensured that $\Mfixup \cdot c$ does not overflow, as otherwise, the interval \cinterval could potentially be invalid, iff $
 \begin{cases}
     c \cdot (f + 1) < 0 &, \medspace c > 0\\
     c \cdot (f + 1) > 0 &, \medspace c < 0
 \end{cases}$.
-To avoid these problems all together, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f + 1}, \frac{t_{max}}{f + 1} \rbrack$.
+To avoid these problems altogether, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f + 1}, \frac{t_{max}}{f + 1} \rbrack$.
 Using this restriction we can assert that $c \times (f + 1) \in \lbrack t_{min}, t_{max} \rbrack$ and henceforth does not overflow.
 
 \Cref{alg:impl:fixup:duff:create-fixup} details, how the described mechanics are translated into \libFIRM.
-At first the loop body will be duplicated $f - 1$ times and keepalive edges will be added to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
-After this all duplicated block will be wired such that, they be reachable by conditions, as those previously described.
+At first, the loop body will be duplicated $f - 1$ times and keepalive edges will be added to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
+After this, all duplicated block will be wired such that, they be reachable by conditions, like those previously described.
 Further, upon false evaluation of a condition, the next condition will be evaluated, except if it is the last condition, in which case the false target is the post loop block.
-Additionally, unless in case of the first duplicated header, they will be attached to the previous blocks as fallthrough.
-Lastly, the post loop block will be now by predecessed by the last block of fixup code and the false exit fo the last condition.
+Additionally, unless in the case of the first duplicated header, they will be attached to the previous blocks as fallthrough.
+Lastly, the post loop block will be now by preceded by the last block of the fixup code, and the false exit fo the last condition.
 An example of the result for creating fixup code for a loop, as seen in \cref{fig:impl:fixup:duff:fixup-firm-loop}, can be seen in \cref{fig:impl:fixup:duff:fixup-firm}
 
 \input{fig/firm-duff-fixup-loop.tex}
@@ -174,12 +174,12 @@ An example of the result for creating fixup code for a loop, as seen in \cref{fi
 
 In sections~\ref{sec:impl:fixup:duff}, and~\ref{sec:impl:fixup:loop} we assume that $\Mloop = \frac{M}{f} \cdot f$.
 Though, when we unroll (as described in~\cref{sec:impl:unroll}), we keep the original bound.
-Unfortunately this does not gurantee $\Mloop$ to be correct, as we can see in an example where we unroll a loop with $I = 0, N = 3, c = 1, f = 2$.
-Henceforth, we would yield the following: $\Mloop = 4 > M = 3 \mLightning$.
-In order to combat this, we will set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$.
+Unfortunately, this does not gurantee $\Mloop$ to be correct, as we can see in an example where we unroll a loop with $I = 0, N = 3, c = 1, f = 2$.
+In this example, we would yield the following: $\Mloop = 4 > M = 3 \mLightning$, as after the first iteration of the unrolled loop $i = 2 < 3 = N$.
+To combat this, we will set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$.
 Now the conjecture that using the bound $\hat{N}$, the unrolled loop will run $\Mloop$ times will be proven.
 \begin{proof}
-    Let $\Mloop'$ be the numer of times then unrolled loop with bound $\hat{N}$ runs.
+    Let $\Mloop'$ be the number of times then unrolled loop with bound $\hat{N}$ runs.
     The proof is complete, iff $\Mloop' = \Mloop$.
     \begin{align*}
         \Mloop' &= \ceil{\frac{\hat{N} - I}{c \cdot f}} \cdot f\\
