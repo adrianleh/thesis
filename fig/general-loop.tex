@@ -1,9 +1,9 @@
 \begin{figure}[H]
     \centering
     \begin{algorithmic}
-        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset$}
+        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >, \leq, \geq\}$}
             \State $i \gets I$
-            \While{$i~\text{cmp}~N$}
+            \While{$i~`cmp`~N$}
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$
             \EndWhile
