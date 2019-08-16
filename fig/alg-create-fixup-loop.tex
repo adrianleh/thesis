@@ -1,0 +1,30 @@
+\begin{algorithm}[H]
+    \begin{algorithmic}
+        \Function{CreateFixupLoop}{$loop: \text{Loop}$}
+            \State $loop' \gets $ \Call{ExactCopy}{$loop$}
+            \For{$succ \in loop.header.sucessors$}
+                \If{$succ.loop \notin loop$}
+                    \State $succ.predecessors = succ.predecessors \backslash \{loop.header\} \cup \{loop'.header\}$
+                \EndIf
+            \EndFor
+            \For{$node \in loop.header$}
+                \For{$succ \in loop.header.sucessors$}
+                    \If{$succ.loop \notin loop$}
+                        \State $succ.predecessors = succ.predecessors \backslash \{node\} \cup \{node.link\}$
+                    \EndIf
+                \EndFor
+            \EndFor
+            \For{$phi \in loop.header.phis$}
+                \For{$pred \in phi.predecessors$}
+                    \If{$pred \notin loop$}
+                        \State $phi.link.predecessors =phi.link.predecessors \backslash \{pred\} \cup \{phi\}$
+                    \EndIf
+                \EndFor
+            \EndFor
+            \State $loop'.header.predecessors \gets \{loop.header.falseExit\}$
+            \Comment{Now unroll $loop$}
+        \EndFunction
+    \end{algorithmic}
+    \caption{The algorithm to create a fixup loop in~\libFIRM}
+    \label{alg:impl:fixup:loop:fixup-loop}
+\end{algorithm}

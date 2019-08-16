@@ -65,7 +65,7 @@ Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
 \begin{equation}\label{eqn:impl:fixup:duff:loop-iterations}
     \begin{aligned}
         \Mloop &\overset{\text{integer divison}}{=} \frac{M}{f} \cdot f\\
-        &\overset{\text{integer divison}}{\in} \medspace \rbrack M-f,f \rbrack \andinN
+        &\overset{\text{integer divison}}{\in} \medspace \rbrack M-f,M \rbrack \andinN
     \end{aligned}
 \end{equation}
 
@@ -168,7 +168,32 @@ An example of the result for creating fixup code for a loop, as seen in \cref{fi
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
+Just like when using the generalized form of duff's device, we will firstly unroll our loop using the existing mechanics by a factor of $f$.
+Henceforth, equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:i-after-loop} still hold true.
 
+The approach now taken is to copy the original loop, change its initial value to $\ipl$ and use it as fixup code, as seen in \cref{fig:impl:fixup:loop:fixup-loop}.
+
+\input{fig/alg-fixup-loop.tex}
+
+\begin{proof}
+    To prove that this fixup code preserves semantics, we first note that $\Mloop \overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\leq} M$.
+    Let us consider two cases:
+    \begin{enumerate}
+        \item $\Mloop = M$
+        \item $\Mloop < M$
+    \end{enumerate}
+    In the first case, $\ipl~`cmp`~N$ must be false, as otherwise the unrolled loop would have broken semantics, and hence the new loop is never run.
+    Therefore: $\Mfixup = 0 \Rightarrow \Mloop + \Mfixup = M$
+
+    In the second case the new loop will be run until the condition is met.
+    As the unrolled loop, kept the increment semantics in tact, the result will hence be $\Mfixup = M - \Mloop$, which conserves the semantics, as per \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
+\end{proof}
+
+\Cref{alg:impl:fixup:duff:create-fixup} shows how this structure is created in~\libFIRM.
+Firstly, the loop is copied, after which it will be rewired, such that the fixup loop will point to it, and its old successors will point to the new loop.
+Once this is completed, the original loop can be unrolled.
+
+\input{fig/alg-create-fixup-loop.tex}
 
 \section{Updating the loop condition}\label{sec:impl:fixup:header-cond}
 
