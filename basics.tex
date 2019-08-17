@@ -1,19 +1,4 @@
-\chapter{Grundlagen und Verwandte Arbeiten}\label{sec:basics}
-
-% In diesem Kapitel landet alles,
-% was nicht vom Autor selbst erfunden wurde.
-% Einerseits Grundlagen,
-% die für das Verständnis der Arbeit notwendig sind.
-% Andererseits verwandte Arbeiten,
-% wobei bei diesen klar gemacht werden soll,
-% inwiefern diese Arbeit darauf aufbaut bzw. etwas anders macht.
-
-% Beispiel wäre ein Standardwerk in Sachen SSA-Form~\cite{cytron91}
-% welches bei uns häufig zitiert wird.
-
-% Es soll klar werden,
-% dass dem Studenten der Stand der Technik bewusst war
-% und keine redundante Arbeit gemacht wurde.
+\chapter{Basics and relateed works}\label{sec:basics}
 
 % Compiler
 \section{Compiler}\label{sec:basics:compiler}
@@ -22,7 +7,7 @@ The basic function of a compiler is to automatically convert high-level code cre
 As a compiler is an inherently large software project, the architecture needs to be chosen that allows for extensions and modifications easily.
 Modern compilers mostly follow a layered architecture style: They each entice a front-, middle-, and back-end.
 In this architecture, the front-end will convert the high-level code into an abstract intermediary representation that is then used by the middle-end for optimizations and transformations.
-Lastly, the backend is responsible for converting the optimized intermediary code into instructions for the target system (e.g. \texttt{RISC-V}, \texttt{x86}, \texttt{ARM}, etc.)
+Lastly, the backend is responsible for converting the optimized intermediary code into instructions for the target system (e.g. \texttt{RISC-V}, \texttt{x86}, \texttt{ARM}, etc.).
 
 % Basic blocks
 \section{Basic blocks and control-flow}\label{sec:basics:bb-cf}
@@ -40,8 +25,9 @@ They merely are non-cyclical graphs, iff the original code does not contain any 
 
 Another important concept of CFGs is dominance.
 In order to explain this concept, a starting node $S$ is defined and assume we have any two nodes from the CFG $N_1$, and $N_2$.
+With this information, dominance is defined as follows:
 $$N_1~\text{dominates}~N_2 \Longleftrightarrow \forall p \in \text{Paths}(S, N_2),~N_1 \in p$$
-In plain english this means that $N_1$ dominates $N_2$, iff in order to get to $N_2$ from $S$ you have to visit $N_1$ on the way.
+In lucid terms this means that $N_1$ dominates $N_2$, iff in order to get to $N_2$ from $S$ you have to visit $N_1$ on the way.
 Please also note that a block always dominates itself.
 
 % Lifetime
@@ -49,11 +35,18 @@ Please also note that a block always dominates itself.
 \section{Loops}\label{sec:basics:loops}
 
 A loop has been defined as a set of nodes that are all in a cyclical control-flow structure.
+Formally this can be expresses as:
+
+$$L~\text{is a loop} \Longleftrightarrow L \neq \emptyset \wedge \forall n_1, n_2 \in L \exists Path(n_1, n_2)$$
+
 Loops can furthermore have a header, which is the sole entry point into a loop~\cite{aebi18bachelorarbeit} and defined as follows
 
 $$N~\text{is header of}~L \Longleftrightarrow N \in L \wedge \forall n \in L: N~\text{dominates}~n$$
 
 N.B.: Not all loops have to have a header.
+
+If a loop has a header, its body is the set of all nodes in the loop, except for the header.
+$$B~\text{is body of}~L \Longleftrightarrow B = L \backslash \{H\}, H~\text{is header of}~L$$
 
 % SSA
 \section{Single-Static-Assignment (SSA)}\label{sec:basics:ssa}
@@ -61,12 +54,16 @@ N.B.: Not all loops have to have a header.
 The \textit{single-static-assignment} (\textit{SSA}) form is a property of intermediary representations, that requires each variable to only be assigned exactly once.
 Moreover, every variable has to be assigned before it is being used~\cite{cytron91}.
 This especially implies that the block in which a given variable $v$ is declared has to dominate all blocks in which $v$ is used.
+
+The SSA form is used to simply optimzations in the regard that one can be sure, that a given variable in use is currently defined by a set point in the code.
+
 An example of a program in SSA form can be seen in~\cref{fig:basics:SSA-simple}.
+Whilst in the base code $x$ is assigned twice, we can see that in the SSA form, simply a new variable was defined to make sure, that each variable is only define once.
 
 \input{fig/simple-ssa-example.tex}
 
 In a loop or a conditional statement, a scenario might arise where multiple values could be assigned to a given variable.
-In cases like these a $\Phi$-function can be used.
+In cases like these a \textit{$\Phi$-function} can be used.
 A $\Phi$-function is a theoretical construct that will return the correct value depending on the control-flow predecessor.
 
 An example the use of a $\Phi$-function this can be seen in~\cref{fig:basics:SSA-phi}, where a depending on the control-flow either $m_1$ or $m_2$ are selected.
@@ -94,7 +91,7 @@ Basics blocks in \libFIRM~contain further nodes that are responsible for the con
 These are pointed to by (other) basic blocks that are the target of these control-flow operations.
 The resulting control-flow edges will be represented by a red edge in visualizations of \libFIRM~graphs.
 Any node that does an operation on memory will be connected to memory nodes that are responsible for always assuring the current state of memory.
-Memory is, like control flow, connected by edges, which are rather than being colored red blue in graphical representations.
+Memory is, like control flow, connected by edges, which are rather than being colored red, are colored blue in graphical representations.
 Lastly, \libFIRM~has data dependency edges between nodes, which represent dependencies needed for calculations.
 
 In~\cref{fig:basics:firm} we can see an example firm graph of the program originally shown in~\cref{fig:basics:SSA-phi}.
@@ -106,16 +103,18 @@ It is especially to be noted that the graph is in SSA form, as it contains the p
 \section{Loop unrolling}\label{sec:basics:unrolling}
 
 Loop unrolling is a compiler optimization that attempts to duplicate the loop body to reduce the loop controlling instructions, such as the loop condition or repetitive arithmetic~\cite{aho_ullman_1979}.
-Another benefit of this technique is, that there could be fewer dependencies on a potentially slow to load induction variable or that, through the repeated usage, of common variables within a loop, these variables are still within the processors' cache.
-Further, it could also be used to vectorize the code, eliminate repeating conditions and for many other following optimizations~\cite{fog_2018}.
-A negative side-effect of loop unrolling is that the binary size will increase and that there will be more pressure on the code cache and registers when executing the application~\cite{Sarkar2001}.
 
 \Cref{fig:basics:old-loop-unrolling} shows a pseudo code example of unrolling a simple loop with a factor (the number of times the body is copied) of value four.
 It is to be noted, that the loop condition has to be checked less often, as each loop iteration is four times as long as in the original program.
 
+Another benefit of this technique is, that there could be fewer dependencies on a potentially slow to load induction variable or that, through the repeated usage, of common variables within a loop, these variables are still within the processors' cache.
+Further, it could also be used to vectorize the code, eliminate repeating conditions and for many other following optimizations~\cite{fog_2018}.
+A negative side-effect of loop unrolling is that the binary size will increase and that there will be more pressure on the code cache and registers when executing the application~\cite{Sarkar2001}.
+
 Though the hope is that the benefit of less checking will outweigh the drawbacks and trade-offs that come along with the technique.
 
 \libFIRM~supports a variation of loop unrolling, for loops that have static bounds and increments~\cite{aebi18bachelorarbeit}.
+This optimization requires the intermediary representation to be in LCSSA form, which means the~\libFIRM intermediary representation has to be converted into LCSSA form prior to the optimization running\cite{aebi18bachelorarbeit}.
 The benefits of this optimization were very slim, likely since the requirements for a loop to be unrollable are very strict.
 
 

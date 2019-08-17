@@ -20,15 +20,15 @@
 `               \Switch{$N \mod 4$}
                     \Case{$0$}
                         \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$
+                        \State $i \gets i + 1$ \Comment{Fallthrough}
                     \EndCase
                     \Case{$3$}
                         \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$
+                        \State $i \gets i + 1$ \Comment{Fallthrough}
                     \EndCase
                     \Case{$2$}
                         \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$
+                        \State $i \gets i + 1$ \Comment{Fallthrough}
                     \EndCase
                     \Case{$1$}
                         \State \Call{Print}{$i$}

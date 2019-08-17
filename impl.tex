@@ -19,12 +19,12 @@ Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$
 \section{Unrolling}\label{sec:impl:unroll}
 
 To get started with unrolling loops that have unknown bounds, we will unroll them with a given factor without considering whether the transformation is semantically invariant.
-In \cref{sec:impl:fixup} and \cref{sec:impl:preheader} we will be restoring the semantic equivalence.
+In \cref{sec:impl:fixup} we will be restoring the semantic equivalence.
 
 Since~\libFIRM~already provides an unrolling mechanism for unrolling a loop with a given factor~\cite{aebi18bachelorarbeit}, we will be using it to unroll our loop by a factor $f$.
-\Cref{fig:impl:unroll:existing-mechanism} shows a summary of the way the mechanism works.
 N.B.: The LCSSA property is preserved across all following operations.
 
+%TODO: CREATE FIGURES
 Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before} and,~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} the loop header is duplicated and that hence the number of conditions did not decrease through the loop unroll.
 With the previous usage, this was not an issue though, as using a constant bit analysis~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
@@ -45,15 +45,15 @@ The same will then be done to the descendants of the block itself.
 In \cref{sec:impl:unroll} the unrolling process is discussed.
 That process is done without considering the fixup code needed.
 In \cref{sec:impl:fixup:duff} a generalized version of duff's device will be used to create the needed fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop.
-Later we will evaluate, which approach yields faster binary runtimes.
+In \cref{sec:eval} will evaluate, which approach yields faster binary runtimes.
 
 \subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
 
 In \cref{sec:basics:duffs}, duff's device is described and shown.
-The problem with this initial approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero integer.
+The problem with this initial approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero integer in the considered loops.
 Henceforth, a need for generalization arises.
 
-Let $M \in \mathbb{Z}$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times it will run in the unrolled loop, or the fixup code respectively, after the transformation.
+Let $M \in \mathbb{N}_0$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times it will run in the unrolled loop, or the fixup code respectively, after the transformation.
 Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
 
 \begin{equation}\label{eqn:impl:fixup:duff:conserve-semantics-identity}
@@ -82,7 +82,8 @@ Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
         \begin{cases}
               \frac{N - I + (c - 1)}{c} &, \medspace c > 0\\
               \frac{N - I + (c + 1)}{c} &, \medspace c < 0
-        \end{cases}
+        \end{cases}\\
+        &\text{\reflectbox{$\coloneqq$}} \frac{N - I + (c \mp 1)}{c}
     \end{aligned}
 \end{equation}
 
@@ -114,22 +115,23 @@ The main identity that is to be conserved, to retain the original semantics, is 
 By construction of our unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations} will always be true, as our unrolled loop tries to run as often as possible, whilst running less than or equal times to the original loop.
 
 \begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
-    To prove this, consider the conjecture
+    To prove this conjecture, consider the assumption
     \[\Mloop = M - f - b,  b \in \lbrack 0, f \lbrack \andinN\]
     and hence
     \[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack \andinN \]
-    , then by running the unrolled loop again the body would be executed $f$ times raising $\Mloop$ to $M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
+    , then by running the unrolled loop again the body would be executed $f$ times causing $\Mloop = M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
     This can then be trivially inducted for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \lbrack 0, f \lbrack \andinN$.
     In these cases, the loop must merely be iterated multiple times.
 \end{proof}
 
 Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must hold true.
 \begin{proof}\label{proof:impl:fixup:duff:fixup-interval}
-    Conjecture: $\Mfixup = f' > f$.\\
-    Then
+    Conjecture: $\Mfixup \in \rbrack 0,  f \rbrack$.\\
+
+    Assume $\Mfixup = f' > (f - 1)$
     \begin{align*}
-        \Mloop + \Mfixup &\overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\geq} M - f + f' \\
-        &> M - f + f \\
+        \Mloop + \Mfixup &\overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\geq} M - (f - 1) + f' \\
+        &> M - (f - 1) + (f - 1) \\
         &= M \medspace \overset{\ref{eqn:impl:fixup:duff:conserve-semantics-identity}}{\mLightning}
     \end{align*}
 \end{proof}
@@ -190,7 +192,7 @@ The approach now taken is to copy the original loop, change its initial value to
 \end{proof}
 
 \Cref{alg:impl:fixup:duff:create-fixup} shows how this structure is created in~\libFIRM.
-Firstly, the loop is copied, after which it will be rewired, such that the fixup loop will point to it, and its old successors will point to the new loop.
+Firstly, the loop is copied, after which it will be rewired, such that the fixup loop will point to it, and its old successors will point to the fixup loop.
 Once this is completed, the original loop can be unrolled.
 
 \input{fig/alg-create-fixup-loop.tex}
@@ -199,15 +201,15 @@ Once this is completed, the original loop can be unrolled.
 
 In sections~\ref{sec:impl:fixup:duff}, and~\ref{sec:impl:fixup:loop} we assume that $\Mloop = \frac{M}{f} \cdot f$.
 Though, when we unroll (as described in~\cref{sec:impl:unroll}), we keep the original bound.
-Unfortunately, this does not gurantee $\Mloop$ to be correct, as we can see in an example where we unroll a loop with $I = 0, N = 3, c = 1, f = 2$.
+Unfortunately, this does not gurantee $\Mloop$ to be correct, as we can see in an example where we unroll a loop with $I = 0, N = 3, c = 1, f = 2, cmp = <$.
 In this example, we would yield the following: $\Mloop = 4 > M = 3 \mLightning$, as after the first iteration of the unrolled loop $i = 2 < 3 = N$.
-To combat this, we will set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$.
+To combat this, we will set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$\footnote{N.B.: $c \cdot f$ does not overflow, as per preconditions}.
 Now the conjecture that using the bound $\hat{N}$, the unrolled loop will run $\Mloop$ times will be proven.
 \begin{proof}
     Let $\Mloop'$ be the number of times then unrolled loop with bound $\hat{N}$ runs.
     The proof is complete, iff $\Mloop' = \Mloop$.
     \begin{align*}
-        \Mloop' &= \ceil{\frac{\hat{N} - I}{c \cdot f}} \cdot f\\
+        \Mloop' &\overset{\text{loop construction}}{=} \ceil{\frac{\hat{N} - I}{c \cdot f}} \cdot f\\
         &\overset{\text{integer division}}{=} \frac{\hat{N} - I + (c \cdot f \mp 1)}{c \cdot f} \cdot f\\
         &= \frac{N - c \cdot (f - 1) - I + (c \cdot f \mp 1)}{c \cdot f} \cdot f\\
         &= \frac{N - c \cdot f + c - I + c \cdot f \mp 1}{c \cdot f} \cdot f\\
@@ -219,7 +221,7 @@ Now the conjecture that using the bound $\hat{N}$, the unrolled loop will run $\
     \end{align*}
 \end{proof}
 
-Therefore the header condition of the unrolled loop will be changed to $i < \hat{N}$.
+Therefore the header condition of the unrolled loop will be changed to $i~`cmp`~\hat{N}$.
 
 \Cref{fig:impl:fixup:header-cond:firm} shows the result of the changed header condition, for the loop shown in \cref{fig:impl:fixup:duff:fixup-firm-loop}.
 
