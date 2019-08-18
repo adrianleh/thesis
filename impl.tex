@@ -8,13 +8,35 @@ After that, the \textit{fixup code}
 , as described in \cref{sec:impl:fixup}, will be created, and the loop will be unrolled a set number of times and its header will be updated.
 The unrolling process will be covered in \cref{sec:impl:unroll}.
 
-In the following a convention will be used, where we will assume loops are like the loop in~\ref{fig:impl:general-loop}.
-In \cref{fig:impl:general-loop} \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
+In the following a convention will be used, where we will assume loops are like the loop in~\cref{fig:impl:general-loop}.
+In the reference loop \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
 Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such a loop.
 
 \input{fig/general-loop.tex}
 
 \section{Determining unrollability}\label{sec:impl:unrollability}
+
+As the main goal of any optimization is to conserve semantics, and most optimization are based upon assumptions, these assumptions need to be checked before the optimization is applied.
+
+In the case of the optimzation dicussed, we laid out in \cref{sec:impl}, what the loops we are targetting look like.
+This section will now formalize these requirements and extend them, such that the further unrolling process will conserve semantics.
+
+Firstly, as we will be using the existing loop unrolling functionality as a sub-step (see \cref{sec:impl:unroll}), we need to ensure that the graph we are working on is in LCSSA form.
+This will be done using the existing mechanics~\cite{aebi18bachelorarbeit}, and is possible on any graph.
+Henceforth, whilst we need to ensure the condition, theree is no case in which the lack of it could prevent us from optimizing.
+
+Moreover, in order for loops to be in the form described in \cref{sec:impl}, loops have to have a header, which itself controls the control flow by comparing a counter, to a bound, using any of the four allow comparison types.
+Further, these loops only exit, when the header condition is reached.
+That especially requires there to not be any \texttt{break}-like structures.
+
+As there is explicit entry point for the loop, the header, we do not require any preconditions for $I$, as it is only once evaluated before the loop, but inherently not determining of the control flow after the initial evaluation.
+On the contrary, $N$, the bound, has to be loop-invariant, which means that it does not change through the entrie evaluation of the loop.
+
+If $N$ is constant it is obviously loop-invariant, but what if it is a function call or loading from memory?
+For the case that $N$ is function call, this function call must be pure (i.e. not have any side-effects), and only have loop-invariant arguments, as the calls are then by definition are themselves loop-invariant.
+Given that $N$ is being loaded from memory, stricter conditions have to be met.
+All stores within the loop must be sure not to alias the memory location of $N$.
+Further, any calls, must either have functions known at compile time and neither have aliasing stores or aliasing parameters, or mean that the loop cannot be unrolled with a loaded bound, as these called functions might potentially have aliasing stores in them.
 
 \section{Unrolling}\label{sec:impl:unroll}
 
@@ -24,7 +46,6 @@ In \cref{sec:impl:fixup} we will be restoring the semantic equivalence.
 Since~\libFIRM~already provides an unrolling mechanism for unrolling a loop with a given factor~\cite{aebi18bachelorarbeit}, we will be using it to unroll our loop by a factor $f$.
 N.B.: The LCSSA property is preserved across all following operations.
 
-%TODO: CREATE FIGURES
 Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before} and,~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} the loop header is duplicated and that hence the number of conditions did not decrease through the loop unroll.
 With the previous usage, this was not an issue though, as using a constant bit analysis~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
@@ -34,11 +55,11 @@ Henceforth, the need to manually prune the graph to remove the excess headers ar
 First, all phis in the header will be rewired, such that all in-loop nodes descending from any given phi node will each get the in-loop predecessors of the phi node as predecessors themselves, whilst the phi node is no longer a predecessor of any of the descendants.
 The same will then be done to the descendants of the block itself.
 
-%\input{fig/prune-header.tex}
+\input{fig/prune-header.tex}
 
-%\input{fig/alg-old-unrolling.tex}
+\input{fig/alg-old-unrolling.tex}
 
-%\input{fig/plain-unrolling.tex}
+\input{fig/plain-unrolling.tex}
 
 \section{Fixup strategies}\label{sec:impl:fixup}
 
