@@ -1,0 +1,26 @@
+\begin{figure}[h]
+    \begin{subfigure}[b]{0.5\textwidth}
+        \label{fig:intro:unroll-simple-before}
+        \begin{algorithmic}
+            \State $i \gets 0$
+            \While{$i < 5$}
+            \State \Call{Print}{$i$}
+            \State $i \gets i + 1$
+            \EndWhile
+        \end{algorithmic}
+        \caption{Loop with constant bounds}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
+        \begin{algorithmic}
+            \State \Call{Print}{$0$}
+            \State \Call{Print}{$1$}
+            \State \Call{Print}{$2$}
+            \State \Call{Print}{$3$}
+            \State \Call{Print}{$4$}
+        \end{algorithmic}
+        \caption{Loop with constant bounds unrolled}
+        \label{fig:intro:unroll-simple-after}
+    \end{subfigure}
+    \caption{Unrolling a loop with constant bounds}
+    \label{fig:intro:unroll-simple}
+\end{figure}

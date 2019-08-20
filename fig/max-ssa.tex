@@ -1,5 +1,5 @@
 \begin{figure}[h]
-    \begin{minipage}[t]{0.5\textwidth}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
@@ -12,9 +12,9 @@
             \State \Return $m$
             \EndFunction
         \end{algorithmic}
-        Code in SSA form
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
+        \caption{Non-SSA Code for a function that returns the maximum of its parameters}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{max}{$a: \mathbb{N},b: \mathbb{N}$}
@@ -28,8 +28,8 @@
             \State \Return m
             \EndFunction
         \end{algorithmic}
-        Base code
-    \end{minipage}
-    \caption{An example program in SSA form}
+        \caption{Same Function converted into SSA}
+    \end{subfigure}
+    \caption{An example program transformed into SSA form}
     \label{fig:basics:SSA-phi}
 \end{figure}

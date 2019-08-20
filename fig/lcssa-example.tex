@@ -1,5 +1,5 @@
 \begin{figure}[h]
-    \begin{minipage}[t]{0.5\textwidth}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{Foo}{}
@@ -15,9 +15,9 @@
             \State $y \gets x + 3$
             \EndFunction
         \end{algorithmic}
-        Code in SSA form
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
+        \caption{Sample loop in SSA form}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{Foo}{}
@@ -34,8 +34,8 @@
             \State $y \gets x + 3$
             \EndFunction
         \end{algorithmic}
-        Code in LCSSA form
-    \end{minipage}
+        \caption{Same sample loop in LCSSA form}
+    \end{subfigure}
     \caption{An example program transformed into LCSSA Form (adapted from~\cite{LLVM_LCSSA})}
     \label{fig:basics:LCSSA}
 \end{figure}

@@ -1,5 +1,5 @@
 \begin{figure}[h]
-    \begin{minipage}[t]{0.5\textwidth}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{Foo}{$N: \mathbb{N}$}
@@ -10,8 +10,9 @@
                 \EndWhile
             \EndFunction
         \end{algorithmic}
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
+        \caption{An example function with a loop}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{FooDuffed}{$N: \mathbb{N}$}
@@ -45,7 +46,8 @@
                 \EndWhile
             \EndFunction
         \end{algorithmic}
-    \end{minipage}
+        \caption{A function with the loop unrolled using duff's device}
+    \end{subfigure}
     \caption{A simple loop unrolled using firm}
     \label{fig:basics:duff}
 \end{figure}

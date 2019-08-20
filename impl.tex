@@ -30,13 +30,20 @@ Further, these loops only exit, when the header condition is reached.
 That especially requires there to not be any \texttt{break}-like structures.
 
 As there is explicit entry point for the loop, the header, we do not require any preconditions for $I$, as it is only once evaluated before the loop, but inherently not determining of the control flow after the initial evaluation.
-On the contrary, $N$, the bound, has to be loop-invariant, which means that it does not change through the entrie evaluation of the loop.
+On the contrary, $N$, the bound, has to be loop-invariant, which means that it does not change through the entrie evaluation of the loop, as it will be checked against every iteration.
+Only if $N$ is loop-invariant, these checks can be performed less often, whilst keeping the original semantics intact.
 
 If $N$ is constant it is obviously loop-invariant, but what if it is a function call or loading from memory?
 For the case that $N$ is function call, this function call must be pure (i.e. not have any side-effects), and only have loop-invariant arguments, as the calls are then by definition are themselves loop-invariant.
 Given that $N$ is being loaded from memory, stricter conditions have to be met.
 All stores within the loop must be sure not to alias the memory location of $N$.
 Further, any calls, must either have functions known at compile time and neither have aliasing stores or aliasing parameters, or mean that the loop cannot be unrolled with a loaded bound, as these called functions might potentially have aliasing stores in them.
+
+Lastly we will restrict $f$ and $c$ such that $t_{min} \leq c \cdot f \leq t_{max}$, where $t_{min}$ is the minium value of the integer type of $c$ and $t_{max}$ the respective maximum.
+This will prevent $c \cdot f$ from overflowing, which will turn out to be important in \cref{sec:impl:fixup:duff} and further discussed.
+Further, by hence forcing $c$ to be a compile-time constant, $c$ will certainly be loop invariant.
+Even though, the restrictions on $c$ seem comparatively tight, in real-world code (spec2000) only approximately $1.2\%$ of loops with headers, and a loop-invariant bound, are not unrollable because of this restriction.
+
 
 \section{Unrolling}\label{sec:impl:unroll}
 

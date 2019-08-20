@@ -1,5 +1,5 @@
 \begin{figure}[H]
-    \begin{minipage}[t]{0.5\textwidth}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{Foo}{}
@@ -10,8 +10,9 @@
                 \EndWhile
             \EndFunction
         \end{algorithmic}
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
+        \caption{A function with a simple loop inside of it}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \Function{FooUnrolled}{}
@@ -25,7 +26,8 @@
                 \EndWhile
             \EndFunction
         \end{algorithmic}
-    \end{minipage}
+        \caption{A function with the same loop unrolled}
+    \end{subfigure}
     \caption{A simple loop unrolled using firm}
     \label{fig:basics:old-loop-unrolling}
 \end{figure}

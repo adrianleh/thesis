@@ -1,5 +1,5 @@
 \begin{figure}[h]
-    \begin{minipage}[t]{0.5\textwidth}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \State $x \gets 1$
@@ -7,9 +7,9 @@
             \State $x \gets 7$
             \State \Call{Print}{$x$}
         \end{algorithmic}
-        Base code
-    \end{minipage}
-    \begin{minipage}[t]{0.5\textwidth}
+        \caption{An example piece of code not in SSA form}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \begin{algorithmic}
             \State $x_1 \gets 1$
@@ -17,8 +17,8 @@
             \State $x_2 \gets 7$
             \State \Call{Print}{$x_2$}
         \end{algorithmic}
-        Code in SSA form
-    \end{minipage}
+        \caption{Thre same code in SSA form}
+    \end{subfigure}
     \caption{An example program in SSA form}
     \label{fig:basics:SSA-simple}
 \end{figure}

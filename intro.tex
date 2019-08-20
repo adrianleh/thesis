@@ -17,49 +17,15 @@ As humans we can immediately see that in~\cref{fig:intro:cf1} that $b$ will alwa
 The result of this can be seen in~\cref{fig:intro:cf2}
 Henceforth, the runtime of the (admittedly small) program will be reduced, as there is one less calculation required.
 Simplifying just one expression seems (and for a matter of fact is) quite useless, but in a real-world code, optimization like this is possible on expressions and hence noticeably improves the final product.
-\begin{figure}[h]
-    \begin{algorithmic}
-        \State $a \gets 7$
-        \State $b \gets a + 2$
-    \end{algorithmic}
-    \caption{Constant folding example before optimization}
-    \label{fig:intro:cf1}
-\end{figure}
-\begin{figure}[h]
-    \begin{algorithmic}
-        \State $a \gets 7$
-        \State $b \gets 9$
-    \end{algorithmic}
-    \caption{Constant folding example after optimization}
-    \label{fig:intro:cf2}
-\end{figure}
+
+\input{fig/constant-folding.tex}
 
 Of course there are many more possibilities to optimize code using a compiler.
 As loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2000): 8.6\% of FIRM nodes are in loops}, they were a natural point to focus optimization efforts upon.
 Loops can be unrolled fairly straight forward if you know how often they are iterated, as we will discuss in~\cref{sec:basics}.
 
-\begin{figure}[h]
-    \label{fig:intro:unroll-simple-before}
-    \begin{algorithmic}
-        \State $i \gets 0$
-        \While{$i < 5$}
-            \State \Call{Print}{$i$}
-            \State $i \gets i + 1$
-        \EndWhile
-    \end{algorithmic}
-    \caption{Loop with constant bounds}
-\end{figure}
-\begin{figure}[h]
-    \begin{algorithmic}
-        \State \Call{Print}{$0$}
-        \State \Call{Print}{$1$}
-        \State \Call{Print}{$2$}
-        \State \Call{Print}{$3$}
-        \State \Call{Print}{$4$}
-    \end{algorithmic}
-    \caption{Loop with constant bounds unrolled}
-    \label{fig:intro:unroll-simple-after}
-\end{figure}
+\input{fig/basic-unrolling.tex}
+
 For example, we can see that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics in tact.
 In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, as we do not know what the exact value of $N$ is going to be, we will not be able to simply unroll a loop by copying its body a fixed number of times.
 In~\cref{sec:basics} it will be exactly described, as to what we can do about these kinds of loops, and in~\cref{sec:impl} the algorithms and techniques to unroll these loops will be discussed.
