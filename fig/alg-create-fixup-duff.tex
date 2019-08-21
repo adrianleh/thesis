@@ -14,7 +14,7 @@
             \State $relation \gets header.cmp.relation$
             \State $inverseRelation \gets $ \Call{GetInverseRelation}{$relation$}
             \State $duffHeader \gets NewEmptyBlock$
-            \State $duffHeader.predecessors = \{loop.header\}$
+            \State $duffHeader.predecessors \gets \{loop.header\}$
             \State $val \gets duffHeader.addNode(N - i + (c
                 \left\{\!\begin{aligned}
                    - &, \medspace c > 0\\
@@ -29,13 +29,13 @@
                 \State $condBlock \gets$ \Call{NewEmptyBlock}{}
                 \State $cond \gets val \medspace `relation` \medspace (factor - i) \medspace \wedge \medspace val \medspace `inverseRelation` \medspace (factor - i - 1)$
                 \State $condBlock.addNode(cond)$
-                \State $condBlock.predecessors = \begin{cases}\{duffHeader\} &, \medspace i = 0\\ \{prevCond.falseExit, \medspace prevLast\} &, \medspace i \neq 0\end{cases}$
-                \State $firstBlock.predecessors = cond.trueExit$
+                \State $condBlock.predecessors \gets \begin{cases}\{duffHeader\} &, \medspace i = 0\\ \{prevCond.falseExit, \medspace prevLast\} &, \medspace i \neq 0\end{cases}$
+                \State $firstBlock.predecessors \gets cond.trueExit$
                 \State $i \gets i + 1$
                 \State $prevLast \gets$ \Call{GetLastBlockInBody}{$body$}
                 \State $prevCond \gets cond$
                 \For{$phi \in body.phis$}
-                    \State $phi.predecessors = \begin{cases}\{phi.link.predecessors\} &, \medspace i = 0\\ \{phi.link.predecessors, \medspace prevLast.exitFor(phi)\} &, \medspace i \neq 0\end{cases}$
+                    \State $phi.predecessors \gets \begin{cases}\{phi.link.predecessors\} &, \medspace i = 0\\ \{phi.link.predecessors, \medspace prevLast.exitFor(phi)\} &, \medspace i \neq 0\end{cases}$
                 \EndFor
             \EndFor
             \For{$node \in allCopiedNodes$}
@@ -43,7 +43,7 @@
                     \State \Call{RemoveKeepAlive}{$node$}
                 \EndIf
             \EndFor
-            \State $postLoopBlock.predecessors = \{prevCond.falseExit, \medspace prevLast\}$
+            \State $postLoopBlock.predecessors \gets \{prevCond.falseExit, \medspace prevLast\}$
             \State \Call{RewirePhis}{} \Comment{Wire just like for duplicated loop body phi's}
         \EndFunction
     \end{algorithmic}
