@@ -232,7 +232,7 @@ Though, when we unroll (as described in~\cref{sec:impl:unroll}), we keep the ori
 Unfortunately, this does not gurantee $\Mloop$ to be correct, as we can see in an example where we unroll a loop with $I = 0, N = 3, c = 1, f = 2, cmp = <$.
 In this example, we would yield the following: $\Mloop = 4 > M = 3 \mLightning$, as after the first iteration of the unrolled loop $i = 2 < 3 = N$.
 To combat this, we will set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$\footnote{N.B.: $c \cdot f$ does not overflow, as per preconditions}.
-Now the conjecture that using the bound $\hat{N}$, the unrolled loop will run $\Mloop$ times will be proven.
+Now the conjecture that using the bound $\hat{N}$, the unrolled loop will run $\Mloop$ times will be proven, given the operation to calculate $\hat{N}$ will not over- or underflow .
 \begin{proof}
     Let $\Mloop'$ be the number of times then unrolled loop with bound $\hat{N}$ runs.
     The proof is complete, iff $\Mloop' = \Mloop$.
@@ -254,3 +254,17 @@ Therefore the header condition of the unrolled loop will be changed to $i~`cmp`~
 \Cref{fig:impl:fixup:header-cond:firm} shows the result of the changed header condition, for the loop shown in \cref{fig:impl:fixup:duff:fixup-firm-loop}.
 
 \input{fig/changed-loop-condition.tex}
+
+When the assumption of $N - c \cdot (f - 1)$ not over- or underflowing is lifted, we can still construct an example where this change will not conserve semantics.
+
+Let's say we are using an unsigned integer (with more than 3 bits) as our datatype for a loop with $N = 2, I = 0, c = 1, cmp = <$ and we unroll it with a factor $f = 4$.
+In this case $\hat{N} = 2 - 1 \cdot (4 - 1) = -2 \overset{unsigned integer}{=} t_{max} - 1$.
+With this bound the loop would run $t_{max} - 1 > 2$ times.
+
+To circumvent this problem we will use \cref{alg:basics:overflow:detect} from \cref{sec:basics:overflow} as a check for over or underflows of the operation.
+This check will be implemented that as a block that sits between the header and its predecessors and for if an over- or underflow is detected it will jump straight to the fixup code.
+Otherwise, it will route the control flow to the header and let the loop progress as normal, as now $\hat{N}$ now restores semantics in the header.
+\Cref{alg:impl:fixup:header-cond:preheader} shows the creation of this structure in~\libFIRM.
+
+
+\input{fig/alg-preheader-check.tex}

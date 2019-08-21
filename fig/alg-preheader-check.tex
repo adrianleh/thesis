@@ -1,0 +1,23 @@
+\begin{algorithm}[H]
+    \begin{algorithmic}
+        \Function{CreatePreHeader}{$header, firstFixupBlock: \text{block}, loop: \text{loop}$}
+            \State $pre \gets $ \Call{NewEmptyBlock}{}
+            \State $pre.predecessors \gets \{node \vert node \in header.predecessors, node \notin loop\}$
+            \For{$phi \in header.phis$}
+                \State $phi' \gets $ \Call{NewPhiInBlock}{$pre$}
+                \State $phi'.predecessors \gets \{node \vert node \in phi.predecessors, node.block \notin loop\}$
+                \State $phi.predecessors \gets \{phi'\} \cup \{node \vert node \in phi.predecessors, node.block \in loop\}$
+                \For{$succ \in phi.successors$}
+                    \If{$succ.block$~dominated by~$firstFixupBlock$}
+                        \State $succ.predecessors$.prepend($pre$)
+                    \EndIf
+                \EndFor
+            \EndFor
+            \State $(trueExit, falseExit) \gets $\Call{CreateConditionForOverflow}
+            \State $firstFixupBlock.predecessors.prepend(falseExit)$
+            \State $header.predecessors \gets \{trueExit\} \cup \{node \vert node \in header.predecessors, node \in loop\}$
+        \EndFunction
+    \end{algorithmic}
+    \caption{Algorithm that creates the check to ensure $\hat{N}$ does not over- or underflow}
+    \label{alg:impl:fixup:header-cond:preheader}
+\end{algorithm}

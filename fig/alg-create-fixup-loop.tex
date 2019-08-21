@@ -2,13 +2,13 @@
     \begin{algorithmic}
         \Function{CreateFixupLoop}{$loop: \text{Loop}$}
             \State $loop' \gets $ \Call{ExactCopy}{$loop$}
-            \For{$succ \in loop.header.sucessors$}
+            \For{$succ \in loop.header.successors$}
                 \If{$succ.loop \notin loop$}
                     \State $succ.predecessors \gets succ.predecessors \backslash \{loop.header\} \cup \{loop'.header\}$
                 \EndIf
             \EndFor
             \For{$node \in loop.header$}
-                \For{$succ \in loop.header.sucessors$}
+                \For{$succ \in loop.header.successors$}
                     \If{$succ.loop \notin loop$}
                         \State $succ.predecessors \gets succ.predecessors \backslash \{node\} \cup \{node.link\}$
                     \EndIf

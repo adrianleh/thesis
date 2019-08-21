@@ -134,5 +134,11 @@ Many compilers, such as GCC~\cite{gcc}, use duff's device for unrolling loops an
 
 \include{fig/loop-unrolling-duff}
 
+\section{Overflow detection}\label{sec:basics:overflow}
 
-% Duff's in GCC
+When subtracting (or adding) two numbers that are in some form of integer-like representation the operation might over- or underflow, as the intereger represenation is a fixed bit two's complement represenation.
+Due to the henceforth inherent resulting limitations as for possible values, this problem is unavoiable, yet detecable.
+
+\Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow will occur for an operation $x - a, (x, a) \in (\NInt)^2$, by checking whether the result increased or decreased relative to the bounds and comparing it to what was expected: an increase or decrease.
+\input{fig/alg-detect-overflow.tex}
+
