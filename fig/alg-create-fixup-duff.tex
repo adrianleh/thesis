@@ -31,12 +31,12 @@
                 \State $condBlock.addNode(cond)$
                 \State $condBlock.predecessors \gets \begin{cases}\{duffHeader\} &, \medspace i = 0\\ \{prevCond.falseExit, \medspace prevLast\} &, \medspace i \neq 0\end{cases}$
                 \State $firstBlock.predecessors \gets cond.trueExit$
-                \State $i \gets i + 1$
                 \State $prevLast \gets$ \Call{GetLastBlockInBody}{$body$}
                 \State $prevCond \gets cond$
                 \For{$phi \in body.phis$}
                     \State $phi.predecessors \gets \begin{cases}\{phi.link.predecessors\} &, \medspace i = 0\\ \{phi.link.predecessors, \medspace prevLast.exitFor(phi)\} &, \medspace i \neq 0\end{cases}$
                 \EndFor
+                \State $i \gets i + 1$
             \EndFor
             \For{$node \in allCopiedNodes$}
                 \If{$\neg$\Call{HasKeepalive}{$node.link$}}
