@@ -268,3 +268,16 @@ Otherwise, it will route the control flow to the header and let the loop progres
 
 
 \input{fig/alg-preheader-check.tex}
+
+\section{Selecting an unroll-factor}\label{sec:impl:sel-factor}
+
+Previously the factor $f$ seemed like it was chosen rather arbitrarily.
+Further, \cref{sec:basics:unrolling} describes that there are multiple factors influencing peerformance of unrolled loops.
+Usign this, a formalized selection process will now be devised.
+
+The, admittely straighforward, algorithm that is going to used, will try to find a factor $f = 2^n, n \in \mathbb{N}_{>0}$, that will minimize the euclidean distance between the unrolled size, and a pre-determined maximum size.
+\Cref{alg:impl:sel-factor:sel-factor} shows the procedure used to find these values.
+It is to be noted that the algorithm can also return $0$ and $1$, which dies not fit the definition of the $f$ described.
+In the case that one of these two values will be returned the will be interpreted as ``do not unroll''.
+
+\input{fig/alg-calc-factor.tex}

@@ -1,0 +1,18 @@
+\begin{algorithm}[H]
+    \begin{algorithmic}
+        \Function{CalculateFactor}{$loop: \text{loop}, maxSize: \mathbb{N}_{>0}$}
+            \State $loopSize \gets $ \Call{CountNodes}{$loop$}
+            \State $factorPlain \gets maxSize \div loopSize$
+            \State $factor_h \gets $ \Call{RoundToNextHigherPowerOfTwo}{$factorPlain$}
+            \State $factor_l \gets factor_h \div 2$
+            \State $size_{h,l} \gets loopSize \cdot factor_{h,l}$
+            \If{$\norm{size_h - maxsize} < \norm{size_l - maxsize}$}
+                \State \Return $factor_h$
+            \Else
+                \State \Return $factor_l$
+            \EndIf
+        \EndFunction
+    \end{algorithmic}
+    \caption{Algorithm to determinee the optimal unroll factor}
+    \label{alg:impl:sel-factor:sel-factor}
+\end{algorithm}
