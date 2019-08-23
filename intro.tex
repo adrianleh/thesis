@@ -13,33 +13,22 @@ Whilst converting the program into machine code the compiler will optimize the c
 This is only beneficial to the developer, as it ensures that his/her application will, in the end, run faster and/or require fewer system resources.
 A simple example of an optimziation would be constant folding, where the compiler analyzes code and precalculating all constant values, instead of letting them waste valuable runtime to calculate each time the application runs.
 An example can be seen below:
-As humans we can immediately see that in~\cref{fig:intro:cf1} that $b$ will always be equal to $9$ and using constant folding the compiler will be able to also perform this computation.
+Humans can immediately see that in~\cref{fig:intro:cf1} that $b$ will always be equal to $9$ and using constant folding the compiler will be able to also perform this precomputation.
 The result of this can be seen in~\cref{fig:intro:cf2}
 Henceforth, the runtime of the (admittedly small) program will be reduced, as there is one less calculation required.
-Simplifying just one expression seems (and for a matter of fact is) quite useless, but in a real-world code, optimization like this is possible on expressions and hence noticeably improves the final product.
+Simplifying just one expression seems (and for a matter of fact is) quite useless, but in a real-world code, an optimization like this can be applied on numerous similar expressions and hence noticeably improves the final product.
 
 \input{fig/constant-folding.tex}
 
-Of course there are many more possibilities to optimize code using a compiler.
-As loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2000): 8.6\% of FIRM nodes are in loops}, they were a natural point to focus optimization efforts upon.
-Loops can be unrolled fairly straight forward if you know how often they are iterated, as we will discuss in~\cref{sec:basics}.
+Of course there are many more possibilities to optimize code.
+As loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2000): 8.6\% of FIRM nodes are in loops}, they are a natural point to focus optimization efforts upon.
+Loops can be unrolled fairly straight forward if you know how often they are iterated, as is discussed in~\cref{sec:basics}.
+
+For example, it can be seen that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics in tact.
+In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, as the exact value of $N$ is unknownn, simply unrolling a loop by copying its body a fixed number of times, will not preserve the original semantics.
+In~\cref{sec:basics} it will be fundamentals for working with these loops will be discussed, which will be enhanced, juxtaposed and integrated in~\cref{sec:impl}.
+Finally, in~\cref{sec:eval} the approach will be experimentally evaluated to see whether it yields a tangible benefit.
 
 \input{fig/basic-unrolling.tex}
 
-For example, we can see that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics in tact.
-In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, as we do not know what the exact value of $N$ is going to be, we will not be able to simply unroll a loop by copying its body a fixed number of times.
-In~\cref{sec:basics} it will be exactly described, as to what we can do about these kinds of loops, and in~\cref{sec:impl} the algorithms and techniques to unroll these loops will be discussed.
-Finally, in~\cref{sec:eval} the approach will be experimentally evaluated to see whether it yields a tangible benefit.
-\begin{figure}[h]
-    \begin{algorithmic}
-        \State $i \gets 0$
-        \State $N \gets$ \Call{FairDiceRoll}{}() \Comment{Random number in $[1,6]$}
-        \While{$i < N$}
-            \State \Call{Print}{$i$}
-            \State $i \gets i + 1$
-        \EndWhile
-    \end{algorithmic}
-    \caption{Loop without constant bound}
-    \label{fig:intro:unroll-nostatic-bound}
-\end{figure}
-
+\input{fig/basic-unrolling-non-const.tex}

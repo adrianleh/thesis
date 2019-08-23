@@ -1,0 +1,12 @@
+\begin{figure}[t]
+    \begin{algorithmic}
+        \State $i \gets 0$
+        \State $N \gets$ \Call{FairDiceRoll}{}() \Comment{Random number in $[1,6]$}
+        \While{$i < N$}
+        \State \Call{Print}{$i$}
+        \State $i \gets i + 1$
+        \EndWhile
+    \end{algorithmic}
+    \caption{Loop without constant bound}
+    \label{fig:intro:unroll-nostatic-bound}
+\end{figure}
