@@ -39,6 +39,14 @@ Formally this can be expresses as:
 
 $$L~\text{is a loop} \Longleftrightarrow L \neq \emptyset \wedge \forall n_1, n_2 \in L \exists Path(n_1, n_2)$$
 
+If a loop is completely contained inside another loop, it is said to be nested.
+
+$$\tilde{L}~\text{is nested in} L \Longleftrightarrow \forall n \in \tilde{L}: n \in L$$
+
+If a loop has no nested loops inside of it is said to be the \textit{innermost} loop.
+
+$$L~\text{is innermost loop} \Longleftrightarrow \forall L' \subseteq L: L'~\text{is a loop}$$
+
 Loops can furthermore have a header, which is the sole entry point into a loop~\cite{aebi18bachelorarbeit} and defined as follows
 
 $$H~\text{is header of}~L \Longleftrightarrow H \in L \wedge \forall n \in L: H~\text{dominates}~n$$

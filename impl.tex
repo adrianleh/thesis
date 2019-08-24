@@ -29,6 +29,9 @@ Firstly, as the existing loop unrolling functionality is used as a sub-step (see
 This will be done using the existing mechanics~\cite{aebi18bachelorarbeit}, and is possible on any graph.
 Henceforth, whilst the condition needs to be ensured, there is no case in which ensuring the condition would prove to be impossible.
 Therefore, whilst it is a preliminary step, assuring LCSSA form will never be a hindrance to unrolling.
+Due to the restrictions of the existing loop unrolling mechanism, a loop must also be the innermost loop, meaning it does not have any nested loops inside of it.
+As nested loops inherently cause larger code sizes this restriction is in practice not to be considered harsh, as most of the loops with nested loops in them, would be too large for unrolling anyways.
+\Cref{sec:impl:sel-factor} describes the mechanics for determining based on size, if and how a given loop should be unrolled.
 
 Moreover, in order for loops to be in the form described in \cref{sec:impl}, loops have to have a header, which itself controls the control flow by comparing a counter, to a bound, using any of the four allow comparison types.
 The header will also be the only point in the loop, from which the loop can exit; meaning there are no conditionals in the body, that allow the control flow to leave the loop.
