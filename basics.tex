@@ -126,6 +126,7 @@ Though the hope is that the benefit of less checking will outweigh the drawbacks
 \libFIRM~supports a variation of loop unrolling, for loops that have static bounds and increments~\cite{aebi18bachelorarbeit}.
 This optimization requires the intermediary representation to be in LCSSA form, which means the~\libFIRM~intermediary representation has to be converted into LCSSA form prior to the optimization running\cite{aebi18bachelorarbeit}.
 The benefits of this optimization were very slim, likely since the requirements for a loop to be unrollable are very strict.
+With these restrictions in place, only approximately half of the innnermost loops can be unrolled\footnote{Measured in spec2006}.
 
 
 \input{fig/loop-unrolling.tex}

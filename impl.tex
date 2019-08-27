@@ -52,7 +52,7 @@ Further, any calls, must either have functions known at compile time and neither
 Lastly the unroll factor - meaning how often the loop body will be copied inside the unrolled loop - $f$, and increment $c$, are restricted, such that $t_{min} \leq c \cdot (f+1) \leq t_{max}$, where $t_{min}$ is the minium value of the integer type of $c$ and $t_{max}$ the respective maximum.
 This will prevent $c \cdot (f + 1)$ from overflowing, which will turn out to be important in \cref{sec:impl:fixup:header-cond} and \cref{sec:impl:fixup:duff} and further discussed.
 Further, by hence forcing $c$ to be a compile-time constant, $c$ will certainly be loop invariant.
-Even though, the restrictions on $c$ seem comparatively tight, in real-world code (gcc, spec2000) only approximately $1.2\%$ of loops, that meet the previous conditions, are not unrollable because of this restriction.
+Even though, the restrictions on $c$ seem comparatively tight, in real-world code (gcc, spec2006) only approximately $1.2\%$ of loops, that meet the previous conditions, are not unrollable because of this restriction.
 
 It is worth mentioning, that the unrollability will only be checked, if the current loop unrolling mechanism determines that it cannot be applied.
 This design choice was consciously done, as statically unrolling without any further fixup code, inherently simplifies the control flow and hence should yield better, or at least equal, performance.

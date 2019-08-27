@@ -1,34 +1,31 @@
 \chapter{Evaluation}\label{sec:eval}
 
-Hier wird nun das Ergebnis des vorherigen Kapitels kritisch betrachtet.
-Verbesserungen werden anhand von konkreten Experimenten und Zahlen belegt.
-Eine saubere statistische Auswertung ist das Ziel.
+\section{Unrollability}\label{sec:eval:unrollability}
 
-Für schöne Tabellen ist das \enquote{booktabs} package zu empfehlen.
-Ein Beispiel ist in \cref{fig:example_table} zu sehen.
+One of the primary goals of this thesis, was to increase the number of loops that are unrollable within~\libFIRM.
+To evaluate to which extent this goal was achieved\footnote{N.B.: The test was conduncted with a max loop size of $\infty$}, the benchmark suite \texttt{spec2006} was run, and it was logged, how many loops were encountered, how many of them were innermost loops, how many could be unrolled using the old method, and how many that were previously not unrollable can now be unrolled.
+As it is expected for many loops to have non constant bounds, such as the length of a container datastructure (e.g., a list or an unbounded array), it is predicted to cause a significant increase in unrollable loops
+\Cref{fig:eval:unrollability:cmp-unrollability} shows a table with the results.
+We can see, as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 51.83\% of the innermost loops could be unrolled.
+Now we can unroll an additional 8.39\% of loops.
+Contrasted to the baseline of the constant bound unrolled loops this is a 16.19\% increase.
+Furthermore, it can be seen that more than 70\% of loops are actually innermost loops, meaning a evaluated target for our optimization.
 
-\begin{figure}[hb]
-\begin{center}
-\begin{tabular}{lrrrr}
-\toprule
-Fach & xkcd Comics & Spaß & $\sigma$ & p \\
-\midrule
-Informatik & 1325 &  100\% & 12,3 & 3\% \\
-Physik     & 1324,31 &  87\%& 1,733 & 0.03\%  \\
-Geologie & 123 & 23\% & 1,3 & 11\% \\
-Wirtschaft & 5 & 4\% & 12 & 1\% \\
-Deutsch & 0 & 101 & 92,3 & 33\% \\
-\midrule
-Geom. Mittel & 743 & 63\% & 12,3 & 3\% \\
-\bottomrule
-\end{tabular}
-\end{center}
-\caption{Eine Beispieltabelle.
-Man beachte, dass zwischen Datenzeilen keine Linien sind.
-Außerdem ist der Beschreibungstext hier sehr ausführlich,
-damit der Leser nicht den zugehörigen Abschnitt im Fließtext finden muss.
-}
-\label{fig:example_table}
-\end{figure}
+\input{fig/result-unrollability.tex}
 
-Zum Benchmarken empfehlen wir das Tool \enquote{temci}~\cite{temci} und ein Studium der zugehörigen Bachelorarbeit~\cite{bechberger16bachelorarbeit}.
+\section{Performance}\label{sec:eval:perf}
+
+Even though a high unrollability is a nice goal, any opitimization aims to improve the runtime of produced binaries.
+In order to evaluate the optimization in this regard, \texttt{spec2006} will be used as a benchmark suite, and run on a machine with an Intel Core~\textregistered~i7 6700 clocked at 3.4GHz across all 4 cores/8 threads.
+The tests will be run on a Ubuntu 16.04 machine, with cparser~\cite{cparser} as the frontend for~\libFIRM~, and the native \texttt{x86} backend of~\libFIRM in use.
+This configuration was selected to gain comparable results to~\cite{aebi18bachelorarbeit}, as in this thesis the exact same configuration, and in fact, machine was used.
+
+In order to evaluate the performance gain, the new optimizaton, will be run in conjunction with the old unrolling, as it is intended as an extension.
+As there were two approaches for the fixup, as seen in \cref{sec:impl:fixup}, both of these will be tried, to see if one or the other yields better binary runtimes.
+Further, as described in~\cref{sec:impl:sel-factor}, the scope of the optimization is determined by the maximum unrolled size.
+Henceforth, all sizes~$s \in \{2^n, n \in \lbrack 2, 10 \rbrack \cap \mathbb{N}\}$~will each be tried for both the fixup code strategies.
+The following pages will contain the resulting statistics.
+
+\subsection{Duff's device fixup}\label{sec:eval:perf:duff}
+
+\subsection{Loop fixup}\label{sec:eval:perf:loop}
