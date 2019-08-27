@@ -14,6 +14,8 @@ This is described in~\cref{sec:impl:fixup:header-cond}.
 In the following a convention will be used, where loops are assumed to be like the loop shown in~\cref{fig:impl:general-loop}.
 In the reference loop \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
 Further, $I \in \mathbb{Z}$ will refer to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such a loop.
+This form is selected, as most loops follow the form of using a counter or iterating over a given container, which bascially condenses down to this form.
+Furthermore, this form allows for many arithmetic properties to be used, as will be seen in~\cref{sec:impl:unroll}.
 
 \input{fig/general-loop.tex}
 
@@ -52,6 +54,8 @@ This will prevent $c \cdot (f + 1)$ from overflowing, which will turn out to be 
 Further, by hence forcing $c$ to be a compile-time constant, $c$ will certainly be loop invariant.
 Even though, the restrictions on $c$ seem comparatively tight, in real-world code (gcc, spec2000) only approximately $1.2\%$ of loops, that meet the previous conditions, are not unrollable because of this restriction.
 
+It is worth mentioning, that the unrollability will only be checked, if the current loop unrolling mechanism determines that it cannot be applied.
+This design choice was consciously done, as statically unrolling without any further fixup code, inherently simplifies the control flow and hence should yield better, or at least equal, performance.
 
 \section{Unrolling}\label{sec:impl:unroll}
 
