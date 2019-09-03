@@ -25,8 +25,11 @@ As there were two approaches for the fixup, as seen in \cref{sec:impl:fixup}, bo
 Further, as described in~\cref{sec:impl:sel-factor}, the scope of the optimization is determined by the maximum unrolled size.
 Henceforth, all sizes~$s \in \{2^n, n \in \lbrack 5, 10 \rbrack \cap \mathbb{N}\}$~will each be tried for both the fixup code strategies.
 The reason that 32 is chosen as a lower bound, is that very small loops are already more than 8 nodes in size and hence wouldn't be unrolled with a smaller power of two maximum size.
-In order to compensate for measurement uncertainties, all benchmarks will be run 10 times and the average, as well as the standard devotion will be recorded and discussed.
-The following pages will contain the resulting statistics.
+In order to compensate for measurement uncertainties, all benchmarks will be run 10 times and the average ($\mu$), as well as the standard deviation ($\sigma$) will be recorded and discussed.
+All results will be compared to the reference benchmark run, which itself is a run of \texttt{spec2006} without any loop unrolling turned on.
+These reference results can be seen in \cref{fig:eval:perf:ref}.
+
+\input{fig/bench-result-ref.tex}
 
 \subsection{Duff's device fixup}\label{sec:eval:perf:duff}
 
