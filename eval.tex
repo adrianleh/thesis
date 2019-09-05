@@ -15,17 +15,30 @@ Furthermore, it can be seen that more than 70\% of loops are actually innermost 
 
 \section{Performance}\label{sec:eval:perf}
 
-Even though a high unrollability is a nice goal, any opitimization aims to improve the runtime of produced binaries.
+Even though a high unrollability is a nice goal, any optimization aims to improve the runtime of produced binaries.
 In order to evaluate the optimization in this regard, \texttt{spec2006} will be used as a benchmark suite, and run on a machine with an Intel Core~\textregistered~i7 6700 clocked at 3.4GHz across all 4 cores/8 threads.
-The tests will be run on a Ubuntu 16.04 machine, with cparser~\cite{cparser} as the frontend for~\libFIRM~, and the native \texttt{x86} backend of~\libFIRM in use.
+The tests will be run on the Ubuntu 16.04 operating system, with cparser~\cite{cparser} as the frontend for~\libFIRM~, and the native \texttt{x86} backend of~\libFIRM~in use.
 This configuration was selected to gain comparable results to~\cite{aebi18bachelorarbeit}, as in this thesis the exact same configuration, and in fact, machine was used.
 
-In order to evaluate the performance gain, the new optimizaton, will be run in conjunction with the old unrolling, as it is intended as an extension.
-As there were two approaches for the fixup, as seen in \cref{sec:impl:fixup}, both of these will be tried, to see if one or the other yields better binary runtimes.
+In order to evaluate the performance gain, the new optimization, will be run in conjunction with the old unrolling, as it is intended as an extension.
+As there were two approaches for the fixup, as seen in \cref{sec:impl:fixup}, both of these will be tried, to see if one, or the other yields better binary runtimes.
 Further, as described in~\cref{sec:impl:sel-factor}, the scope of the optimization is determined by the maximum unrolled size.
-Henceforth, all sizes~$s \in \{2^n, n \in \lbrack 2, 10 \rbrack \cap \mathbb{N}\}$~will each be tried for both the fixup code strategies.
-The following pages will contain the resulting statistics.
+Henceforth, all sizes~$s \in \{2^n, n \in \lbrack 5, 10 \rbrack \cap \mathbb{N}\}$~will each be tried for both the fixup code strategies.
+The reason that 32 is chosen as a lower bound, is that very small loops are already more than 8 nodes in size and hence wouldn't be unrolled with a smaller power of two maximum size.
+In order to compensate for measurement uncertainties, all benchmarks will be run 10 times and the average ($\mu$), as well as the standard deviation ($\sigma$) will be recorded and discussed.
+All results will be compared to the reference benchmark run, which itself is a run of \texttt{spec2006} without any loop unrolling turned on.
+These reference results can be seen in \cref{fig:eval:perf:ref}.
+
+\input{fig/bench-result-ref.tex}
 
 \subsection{Duff's device fixup}\label{sec:eval:perf:duff}
+
+\input{fig/bench-result-duff.tex}
+
+Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the obtained results.
+Whilst for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to benefit from maximum sizes 32 and 64.
+Though as the ratios of all the other benchmarks are only diverting at most by three percent from the reference runtimes, these neither seem to have a particular positive, nor negative impact, through unrolling.
+Even though the standard deviations, as they are usually very small, due to the highly controlled test environment, do not entirely account for these percentage deltas, they are small, yet measurable.
+Further the averages of benchmark runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$.
 
 \subsection{Loop fixup}\label{sec:eval:perf:loop}

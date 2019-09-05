@@ -1,0 +1,144 @@
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 245.60s & 0.15s & 245.18s & 0.62s & 100.17\%\\
+            bzip2 & 349.34s & 0.50s & 342.68s & 0.49s & 101.94\%\\
+            gcc & 180.70s & 0.31s & 181.74s & 0.45s & 99.43\%\\
+            mcf & 129.34s & 0.40s & 129.16s & 0.18s & 100.14\%\\
+            gobmk & 354.00s & 0.42s & 356.15s & 0.29s & 99.40\%\\
+            hmmer & 603.70s & 0.15s & 603.86s & 0.07s & 99.97\%\\
+            sjeng & 390.68s & 0.23s & 393.72s & 0.40s & 99.23\%\\
+            libquantum & 297.33s & 0.61s & 297.28s & 0.47s & 100.02\%\\
+            h264ref & 383.62s & 0.73s & 405.12s & 0.27s & 94.69\%\\
+            \midrule
+            Average & & & & & 99.44\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 32 using the modified duff's device fixup strategy}
+    \label{fig:eval:perf:duff:32}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 243.65s & 0.55s & 245.18s & 0.62s & 99.37\%\\
+            bzip2 & 349.74s & 1.07s & 342.68s & 0.49s & 102.06\%\\
+            gcc & 181.47s & 0.30s & 181.74s & 0.45s & 99.86\%\\
+            mcf & 129.68s & 0.60s & 129.16s & 0.18s & 100.40\%\\
+            gobmk & 354.12s & 0.22s & 356.15s & 0.29s & 99.43\%\\
+            hmmer & 603.80s & 0.19s & 603.86s & 0.07s & 99.99\%\\
+            sjeng & 390.77s & 0.43s & 393.72s & 0.40s & 99.25\%\\
+            libquantum & 297.82s & 2.06s & 297.28s & 0.47s & 100.18\%\\
+            h264ref & 383.16s & 0.49s & 405.12s & 0.27s & 94.58\%\\
+            \midrule
+            Average & & & & & 99.46\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 64 using the modified duff's device fixup strategy}
+    \label{fig:eval:perf:duff:64}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 246.36s & 0.26s & 245.18s & 0.62s & 100.48\%\\
+            bzip2 & 342.24s & 0.32s & 342.68s & 0.49s & 99.87\%\\
+            gcc & 181.36s & 0.16s & 181.74s & 0.45s & 99.79\%\\
+            mcf & 129.57s & 0.47s & 129.16s & 0.18s & 100.32\%\\
+            gobmk & 356.85s & 0.31s & 356.15s & 0.29s & 100.19\%\\
+            hmmer & 603.68s & 0.22s & 603.86s & 0.07s & 99.97\%\\
+            sjeng & 394.15s & 0.12s & 393.72s & 0.40s & 100.11\%\\
+            libquantum & 297.32s & 0.40s & 297.28s & 0.47s & 100.01\%\\
+            h264ref & 401.97s & 0.33s & 405.12s & 0.27s & 99.22\%\\
+            \midrule
+            Average & & & & & 100.00\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 128 using the modified duff's device fixup strategy}
+    \label{fig:eval:perf:duff:128}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 248.95s & 0.69s & 245.18s & 0.62s & 101.54\%\\
+            bzip2 & 348.61s & 0.48s & 342.68s & 0.49s & 101.73\%\\
+            gcc & 181.01s & 0.22s & 181.74s & 0.45s & 99.60\%\\
+            mcf & 129.62s & 0.43s & 129.16s & 0.18s & 100.36\%\\
+            gobmk & 355.51s & 0.22s & 356.15s & 0.29s & 99.82\%\\
+            hmmer & 603.34s & 0.17s & 603.86s & 0.07s & 99.91\%\\
+            sjeng & 396.56s & 0.37s & 393.72s & 0.40s & 100.72\%\\
+            libquantum & 297.14s & 0.34s & 297.28s & 0.47s & 99.95\%\\
+            h264ref & 402.13s & 0.47s & 405.12s & 0.27s & 99.26\%\\
+            \midrule
+            Average & & & & & 100.32\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 256 using the modified duff's device fixup strategy}
+    \label{fig:eval:perf:duff:256}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 252.26s & 0.29s & 245.18s & 0.62s & 102.89\%\\
+            bzip2 & 349.73s & 0.34s & 342.68s & 0.49s & 102.06\%\\
+            gcc & 180.59s & 0.30s & 181.74s & 0.45s & 99.37\%\\
+            mcf & 129.43s & 0.45s & 129.16s & 0.18s & 100.21\%\\
+            gobmk & 353.90s & 0.25s & 356.15s & 0.29s & 99.37\%\\
+            hmmer & 603.68s & 0.19s & 603.86s & 0.07s & 99.97\%\\
+            sjeng & 390.69s & 0.22s & 393.72s & 0.40s & 99.23\%\\
+            libquantum & 297.20s & 0.47s & 297.28s & 0.47s & 99.97\%\\
+            h264ref & 392.48s & 0.71s & 405.12s & 0.27s & 96.88\%\\
+            \midrule
+            Average & & & & & 99.99\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 512 using the modified duff's device fixup strategy}
+    \label{fig:eval:perf:duff:512}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 252.07s & 0.23s & 245.18s & 0.62s & 102.81\%\\
+            bzip2 & 349.04s & 0.46s & 342.68s & 0.49s & 101.86\%\\
+            gcc & 181.40s & 0.45s & 181.74s & 0.45s & 99.82\%\\
+            mcf & 129.58s & 0.49s & 129.16s & 0.18s & 100.33\%\\
+            gobmk & 356.92s & 0.23s & 356.15s & 0.29s & 100.22\%\\
+            hmmer & 603.31s & 0.14s & 603.86s & 0.07s & 99.91\%\\
+            sjeng & 390.46s & 0.29s & 393.72s & 0.40s & 99.17\%\\
+            libquantum & 297.96s & 2.23s & 297.28s & 0.47s & 100.23\%\\
+            h264ref & 396.44s & 0.26s & 405.12s & 0.27s & 97.86\%\\
+            \midrule
+            Average & & & & & 100.24\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 1024 using the modified duff's device fixup strategy}
+    \label{fig:eval:perf:duff:1024}
+\end{figure}
