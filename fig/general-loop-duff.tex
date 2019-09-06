@@ -9,7 +9,7 @@
                 \State $i \gets i + c$ \Comment{$f$ times}
             \EndWhile
         \EndIf
-        \Switch{$N - i + (c - 1)$}
+        \Switch{$N - i + (c \mp 1)$}
             \Case{$c \cdot f \upto c \cdot (f + 1)$} \Comment flip bounds for $c < 0$
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$
