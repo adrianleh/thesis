@@ -1,0 +1,32 @@
+\begin{figure}[H]
+    \centering
+    \begin{algorithmic}
+        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >, \leq, \geq\}$}
+        \State $i \gets I$
+        \If{$N > c \cdot (f - 1)$}
+            \While{$i~`cmp`~ (N - c \cdot (f - 1))$}
+                \State \Call{DoSomething}{} \Comment{$f$ times}
+                \State $i \gets i + c$ \Comment{$f$ times}
+            \EndWhile
+        \EndIf
+        \Switch{$N - i + (c - 1)$}
+            \Case{$c \cdot f \upto c \cdot (f + 1)$} \Comment flip bounds for $c < 0$
+                \State \Call{DoSomething}{}
+                \State $i \gets i + c$
+            \EndCase
+            \Case{$c \cdot (f - 1) \upto c \cdot f$}
+                \State \Call{DoSomething}{}
+                \State $i \gets i + c$
+            \EndCase
+            \State
+            \ldots
+            \Case{$c \cdot 1 \upto c \cdot 2$}
+                \State \Call{DoSomething}{}
+                \State $i \gets i + c$
+            \EndCase
+        \EndSwitch
+        \EndFunction
+    \end{algorithmic}
+    \caption{The general form of loop starting at $I$ and counting in increments of $c$ up to $N$ transformed by the created loop unrolling with generalized duff's device fixup}
+    \label{fig:impl:fixup:duff:general-loop}
+\end{figure}

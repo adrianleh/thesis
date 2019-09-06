@@ -42,3 +42,8 @@ Even though the standard deviations, as they are usually very small, due to the 
 Further the averages of benchmark runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$.
 
 \subsection{Loop fixup}\label{sec:eval:perf:loop}
+
+\input{fig/bench-result-loop.tex}
+
+Figures~\ref{fig:eval:perf:loop:32} through~\ref{fig:eval:perf:loop:1024} show the obtained results for the unrolling run with the loop fixup code.
+As was the case in~\cref{sec:eval:perf:duff} there does not seem to be any noticable performance gain or loss in any benchmark, except for \texttt{h264ref}, which again sped up through unrolling.

@@ -178,73 +178,9 @@ Using these equations \cref{eqn:impl:fixup:duff:fixup-i} can then be deduced, an
 
 These equtations will be especially signifact in~\cref{sec:impl:fixup:duff}.
 
-\subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
+\subsection{Updating the loop condition}\label{sec:impl:fixup:header-cond}
 
-In \cref{sec:basics:duffs}, duff's device is described and shown.
-The problem with this initial approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero integer in the considered loops.
-Henceforth, a need for generalization arises.
-
-Using equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:fixup-i-mult} and the general idea of duff's device (see \cref{sec:basics:duffs}), fixup code will be created in form of a generalized duff's device.
-The structure of this fixup code can be seen in \cref{fig:impl:fixup:duff:fixup-M_fixup}, which then will be practically implemented, using \cref{eqn:impl:fixup:duff:fixup-i-mult}, as the code shown in \cref{fig:impl:fixup:duff:fixup-bound}.
-
-\input{fig/alg-fixup-M_fixup.tex}
-
-\input{fig/alg-fixup-bound.tex}
-
-For the fixup code to work correctly, it is to be ensured that $\Mfixup \cdot c$ does not overflow, as otherwise, the interval \cinterval could potentially be invalid, iff $
-\begin{cases}
-    c \cdot (f + 1) < 0 &, \medspace c > 0\\
-    c \cdot (f + 1) > 0 &, \medspace c < 0
-\end{cases}$.
-To avoid these problems altogether, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f + 1}, \frac{t_{max}}{f + 1} \rbrack$.
-Using this restriction it can be asserted that $c \times (f + 1) \in \lbrack t_{min}, t_{max} \rbrack$ and henceforth does not overflow.
-
-\Cref{alg:impl:fixup:duff:create-fixup} details, how the described mechanics are translated into \libFIRM.
-At first, the loop body will be duplicated $f - 1$ times and keepalive edges will be added to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
-After this, all duplicated block will be wired such that, they be reachable by conditions, like those previously described.
-Further, upon false evaluation of a condition, the next condition will be evaluated, except if it is the last condition, in which case the false target is the post loop block.
-Additionally, unless in the case of the first duplicated header, they will be attached to the previous blocks as fallthrough.
-Lastly, the post loop block will be now by preceded by the last block of the fixup code, and the false exit fo the last condition.
-An example of the result for creating fixup code for a loop, as seen in \cref{fig:impl:fixup:duff:fixup-firm-loop}, can be seen in \cref{fig:impl:fixup:duff:fixup-firm}
-
-\input{fig/firm-duff-fixup-loop.tex}
-
-\input{fig/alg-create-fixup-duff.tex}
-
-\input{fig/firm-duff-fixup.tex}
-
-\subsection{Loop duplication}\label{sec:impl:fixup:loop}
-
-Just like when using the generalized form of duff's device, firstly the loop will be unrolled using the existing mechanics by a factor of $f$.
-Henceforth, equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:i-after-loop} still hold true.
-
-The approach now taken is to copy the original loop, change its initial value to $\ipl$ and use it as fixup code, as seen in \cref{fig:impl:fixup:loop:fixup-loop}.
-
-\input{fig/alg-fixup-loop.tex}
-
-\begin{proof}
-    To prove that this fixup code preserves semantics, first note that $\Mloop \overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\leq} M$.
-    Then consider two cases:
-    \begin{enumerate}
-        \item $\Mloop = M$
-        \item $\Mloop < M$
-    \end{enumerate}
-    In the first case, $\ipl~`cmp`~N$ must be false, as otherwise the unrolled loop would have broken semantics, and hence the new loop is never run.
-    Therefore: $\Mfixup = 0 \Rightarrow \Mloop + \Mfixup = M$
-
-    In the second case the new loop will be run until the condition is met.
-    As the unrolled loop, kept the increment semantics in tact, the result will hence be $\Mfixup = M - \Mloop$, which conserves the semantics, as per \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
-\end{proof}
-
-\Cref{alg:impl:fixup:duff:create-fixup} shows how this structure is created in~\libFIRM.
-Firstly, the loop is copied, after which it will be rewired, such that the fixup loop will point to it, and its old successors will point to the fixup loop.
-Once this is completed, the original loop can be unrolled.
-
-\input{fig/alg-create-fixup-loop.tex}
-
-\section{Updating the loop condition}\label{sec:impl:fixup:header-cond}
-
-In sections~\ref{sec:impl:fixup:duff}, and~\ref{sec:impl:fixup:loop} it is assumed that $\Mloop = \frac{M}{f} \cdot f$.
+In sections~\ref{sec:impl:fixup:duff}, and~\ref{sec:impl:fixup:loop} it will be assumed that $\Mloop = \frac{M}{f} \cdot f$.
 Though, when unrolling (as described in~\cref{sec:impl:unroll}), the original bound ($N$) is kept.
 Unfortunately, this does not gurantee $\Mloop$ to be correct, as made clear by an example where a loop with $I = 0, N = 3, c = 1, f = 2, cmp = <$ is unrolled.
 In this example, this would yield the following: $\Mloop = 4 > M = 3 \mLightning$, as after the first iteration of the unrolled loop $i = 2 < 3 = N$.
@@ -283,8 +219,80 @@ This check will be implemented that as a block that sits between the header and 
 Otherwise, it will route the control flow to the header and let the loop progress as normal, as now $\hat{N}$ now restores semantics in the header.
 \Cref{alg:impl:fixup:header-cond:preheader} shows the creation of this structure in~\libFIRM.
 
-
 \input{fig/alg-preheader-check.tex}
+
+\subsection{Generalized duff's device}\label{sec:impl:fixup:duff}
+
+In \cref{sec:basics:duffs}, duff's device is described and shown.
+The problem with this initial approach is that it assumes $c = 1$, even though \hyperref[sec:impl::def-c]{$c$ is defined} as any non-zero integer in the considered loops.
+Henceforth, a need for generalization arises.
+
+Using equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:fixup-i-mult} and the general idea of duff's device (see \cref{sec:basics:duffs}), fixup code will be created in form of a generalized duff's device.
+The structure of this fixup code can be seen in \cref{fig:impl:fixup:duff:fixup-M_fixup}, which then will be practically implemented, using \cref{eqn:impl:fixup:duff:fixup-i-mult}, as the code shown in \cref{fig:impl:fixup:duff:fixup-bound}.
+
+\input{fig/alg-fixup-M_fixup.tex}
+
+\input{fig/alg-fixup-bound.tex}
+
+For the fixup code to work correctly, it is to be ensured that $\Mfixup \cdot c$ does not overflow, as otherwise, the interval \cinterval could potentially be invalid, iff $
+\begin{cases}
+    c \cdot (f + 1) < 0 &, \medspace c > 0\\
+    c \cdot (f + 1) > 0 &, \medspace c < 0
+\end{cases}$.
+To avoid these problems altogether, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f + 1}, \frac{t_{max}}{f + 1} \rbrack$.
+Using this restriction it can be asserted that $c \times (f + 1) \in \lbrack t_{min}, t_{max} \rbrack$ and henceforth does not overflow.
+
+\Cref{alg:impl:fixup:duff:create-fixup} details, how the described mechanics are translated into \libFIRM.
+At first, the loop body will be duplicated $f - 1$ times and keepalive edges will be added to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
+After this, all duplicated block will be wired such that, they be reachable by conditions, like those previously described.
+Further, upon false evaluation of a condition, the next condition will be evaluated, except if it is the last condition, in which case the false target is the post loop block.
+Additionally, unless in the case of the first duplicated header, they will be attached to the previous blocks as fallthrough.
+Lastly, the post loop block will be now by preceded by the last block of the fixup code, and the false exit fo the last condition.
+An example of the result for creating fixup code for a loop, as seen in \cref{fig:impl:fixup:duff:fixup-firm-loop}, can be seen in \cref{fig:impl:fixup:duff:fixup-firm}
+
+\input{fig/firm-duff-fixup-loop.tex}
+
+\input{fig/alg-create-fixup-duff.tex}
+
+\input{fig/firm-duff-fixup.tex}
+
+\input{fig/general-loop-duff.tex}
+
+Once this process is completed~\cref{fig:impl:fixup:duff:general-loop} shows the hence resulting structure in pseudo-code notation.
+
+
+\subsection{Loop duplication}\label{sec:impl:fixup:loop}
+
+Just like when using the generalized form of duff's device, firstly the loop will be unrolled using the existing mechanics by a factor of $f$.
+Henceforth, equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:i-after-loop} still hold true.
+
+The approach now taken is to copy the original loop, change its initial value to $\ipl$ and use it as fixup code, as seen in \cref{fig:impl:fixup:loop:fixup-loop}.
+
+\input{fig/alg-fixup-loop.tex}
+
+\begin{proof}
+    To prove that this fixup code preserves semantics, first note that $\Mloop \overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\leq} M$.
+    Then consider two cases:
+    \begin{enumerate}
+        \item $\Mloop = M$
+        \item $\Mloop < M$
+    \end{enumerate}
+    In the first case, $\ipl~`cmp`~N$ must be false, as otherwise the unrolled loop would have broken semantics, and hence the new loop is never run.
+    Therefore: $\Mfixup = 0 \Rightarrow \Mloop + \Mfixup = M$
+
+    In the second case the new loop will be run until the condition is met.
+    As the unrolled loop, kept the increment semantics in tact, the result will hence be $\Mfixup = M - \Mloop$, which conserves the semantics, as per \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
+\end{proof}
+
+\Cref{alg:impl:fixup:duff:create-fixup} shows how this structure is created in~\libFIRM.
+Firstly, the loop is copied, after which it will be rewired, such that the fixup loop will point to it, and its old successors will point to the fixup loop.
+Once this is completed, the original loop can be unrolled.
+
+\input{fig/general-loop-loop.tex}
+
+Once this process is completed~\cref{fig:impl:fixup:loop:general-loop} shows the hence resulting structure in pseudo-code notation.
+
+\input{fig/alg-create-fixup-loop.tex}
 
 \section{Selecting an unroll-factor}\label{sec:impl:sel-factor}
 

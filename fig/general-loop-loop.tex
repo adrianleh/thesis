@@ -1,0 +1,20 @@
+\begin{figure}[H]
+    \centering
+    \begin{algorithmic}
+        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >, \leq, \geq\}$}
+        \State $i \gets I$
+        \If{$N > c \cdot (f - 1)$}
+            \While{$i~`cmp`~ (N - c \cdot (f - 1))$}
+                \State \Call{DoSomething}{} \Comment{$f$ times}
+                \State $i \gets i + c$ \Comment{$f$ times}
+            \EndWhile
+        \EndIf
+        \While{$i~`cmp`~N$}
+            \State \Call{DoSomething}{}
+            \State $i \gets i + c$
+        \EndWhile
+        \EndFunction
+    \end{algorithmic}
+    \caption{The general form of loop starting at $I$ and counting in increments of $c$ up to $N$ transformed by the created loop unrolling with loop fixup}
+    \label{fig:impl:fixup:loop:general-loop}
+\end{figure}

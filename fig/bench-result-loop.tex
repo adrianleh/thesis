@@ -1,0 +1,144 @@
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 243.77s & 0.62s & 245.04s & 0.31s & 99.48\%\\
+            bzip2 & 339.12s & 0.54s & 342.69s & 0.38s & 98.96\%\\
+            gcc & 181.65s & 0.18s & 181.86s & 0.26s & 99.88\%\\
+            mcf & 128.88s & 0.38s & 129.60s & 0.49s & 99.44\%\\
+            gobmk & 357.52s & 0.47s & 355.54s & 0.09s & 100.56\%\\
+            hmmer & 603.34s & 0.09s & 603.98s & 0.13s & 99.89\%\\
+            sjeng & 393.71s & 0.31s & 393.89s & 0.32s & 99.95\%\\
+            libquantum & 297.27s & 0.47s & 297.30s & 0.56s & 99.99\%\\
+            h264ref & 402.55s & 0.54s & 402.67s & 0.44s & 99.97\%\\
+            \midrule
+            Average & & & & & 99.79\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 32 using the loop fixup strategy}
+    \label{fig:eval:perf:loop:32}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 252.32s & 0.63s & 245.04s & 0.31s & 102.97\%\\
+            bzip2 & 349.91s & 1.04s & 342.69s & 0.38s & 102.11\%\\
+            gcc & 180.74s & 0.32s & 181.86s & 0.26s & 99.38\%\\
+            mcf & 129.65s & 0.62s & 129.60s & 0.49s & 100.04\%\\
+            gobmk & 353.93s & 0.16s & 355.54s & 0.09s & 99.55\%\\
+            hmmer & 603.71s & 0.24s & 603.98s & 0.13s & 99.96\%\\
+            sjeng & 390.49s & 0.28s & 393.89s & 0.32s & 99.14\%\\
+            libquantum & 298.51s & 2.76s & 297.30s & 0.56s & 100.41\%\\
+            h264ref & 392.60s & 0.29s & 402.67s & 0.44s & 97.50\%\\
+            \midrule
+            Average & & & & & 100.12\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 64 using the loop fixup strategy}
+    \label{fig:eval:perf:loop:64}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 251.88s & 0.21s & 245.04s & 0.31s & 102.79\%\\
+            bzip2 & 349.04s & 0.45s & 342.69s & 0.38s & 101.85\%\\
+            gcc & 181.25s & 0.22s & 181.86s & 0.26s & 99.67\%\\
+            mcf & 129.86s & 0.52s & 129.60s & 0.49s & 100.20\%\\
+            gobmk & 356.96s & 0.06s & 355.54s & 0.09s & 100.40\%\\
+            hmmer & 603.31s & 0.14s & 603.98s & 0.13s & 99.89\%\\
+            sjeng & 390.44s & 0.21s & 393.89s & 0.32s & 99.12\%\\
+            libquantum & 297.42s & 0.41s & 297.30s & 0.56s & 100.04\%\\
+            h264ref & 396.57s & 0.30s & 402.67s & 0.44s & 98.49\%\\
+            \midrule
+            Average & & & & & 100.27\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 128 using the loop fixup strategy}
+    \label{fig:eval:perf:loop:128}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 246.02s & 0.70s & 245.04s & 0.31s & 100.40\%\\
+            bzip2 & 349.61s & 0.38s & 342.69s & 0.38s & 102.02\%\\
+            gcc & 180.83s & 0.25s & 181.86s & 0.26s & 99.43\%\\
+            mcf & 129.77s & 0.30s & 129.60s & 0.49s & 100.13\%\\
+            gobmk & 353.86s & 0.22s & 355.54s & 0.09s & 99.53\%\\
+            hmmer & 603.65s & 0.16s & 603.98s & 0.13s & 99.95\%\\
+            sjeng & 390.45s & 0.32s & 393.89s & 0.32s & 99.13\%\\
+            libquantum & 297.06s & 0.25s & 297.30s & 0.56s & 99.92\%\\
+            h264ref & 383.45s & 0.18s & 402.67s & 0.44s & 95.23\%\\
+            \midrule
+            Average & & & & & 99.53\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 256 using the loop fixup strategy}
+    \label{fig:eval:perf:loop:256}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 243.47s & 0.36s & 245.04s & 0.31s & 99.36\%\\
+            bzip2 & 349.52s & 0.59s & 342.69s & 0.38s & 101.99\%\\
+            gcc & 181.78s & 0.53s & 181.86s & 0.26s & 99.96\%\\
+            mcf & 129.75s & 0.46s & 129.60s & 0.49s & 100.11\%\\
+            gobmk & 354.08s & 0.29s & 355.54s & 0.09s & 99.59\%\\
+            hmmer & 603.63s & 0.06s & 603.98s & 0.13s & 99.94\%\\
+            sjeng & 390.44s & 0.25s & 393.89s & 0.32s & 99.12\%\\
+            libquantum & 297.29s & 0.36s & 297.30s & 0.56s & 100.00\%\\
+            h264ref & 383.05s & 0.20s & 402.67s & 0.44s & 95.13\%\\
+            \midrule
+            Average & & & & & 99.47\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 512 using the loop fixup strategy}
+    \label{fig:eval:perf:loop:512}
+\end{figure}
+\begin{figure}[h]
+    \begin{center}
+        \begin{tabular}{lrrrrr}
+            \toprule
+            & \multicolumn{2}{c}{Result} & \multicolumn{2}{c}{Reference}\\
+            Benchmark & $\mu$ & $\sigma$ & $\mu$ & $\sigma$ & Ratio to reference\\
+            \midrule
+            perlbench & 248.73s & 0.53s & 245.04s & 0.31s & 101.51\%\\
+            bzip2 & 348.71s & 0.46s & 342.69s & 0.38s & 101.76\%\\
+            gcc & 181.01s & 0.27s & 181.86s & 0.26s & 99.53\%\\
+            mcf & 129.49s & 0.51s & 129.60s & 0.49s & 99.92\%\\
+            gobmk & 355.54s & 0.13s & 355.54s & 0.09s & 100.00\%\\
+            hmmer & 603.39s & 0.13s & 603.98s & 0.13s & 99.90\%\\
+            sjeng & 396.64s & 0.32s & 393.89s & 0.32s & 100.70\%\\
+            libquantum & 297.20s & 0.36s & 297.30s & 0.56s & 99.97\%\\
+            h264ref & 402.27s & 0.58s & 402.67s & 0.44s & 99.90\%\\
+            \midrule
+            Average & & & & & 100.35\%\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{Results of spec2006 after unrolling with a factor of 1024 using the loop fixup strategy}
+    \label{fig:eval:perf:loop:1024}
+\end{figure}
