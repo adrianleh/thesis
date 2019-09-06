@@ -36,7 +36,7 @@ These reference results can be seen in \cref{fig:eval:perf:ref}.
 \input{fig/bench-result-duff.tex}
 
 Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the obtained results.
-Whilst for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to benefit from maximum sizes 32 and 64.
+Whilst for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to profit from unrolling with maximum sizes 32 and 64.
 Though as the ratios of all the other benchmarks are only diverting at most by three percent from the reference runtimes, these neither seem to have a particular positive, nor negative impact, through unrolling.
 Even though the standard deviations, as they are usually very small, due to the highly controlled test environment, do not entirely account for these percentage deltas, they are small, yet measurable.
 Further the averages of benchmark runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$.
