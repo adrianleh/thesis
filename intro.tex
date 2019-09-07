@@ -8,14 +8,14 @@
 %Bestenfalls ist dieses Kapitel auch für Laien verständlich.
 
 When developers craft code, there is a need to convert it from a human-readable high-level language into a machine-understandable language, called assembly.
-In order to do this a programmer will run a \textit{compiler} that checks the code for multiple sources of errors, and, if the code is correct, convert it into an executable file.
-Whilst converting the program into machine code the compiler will optimize the code.
-This is only beneficial to the developer, as it ensures that his/her application will, in the end, run faster and/or require fewer system resources.
+In order to do this a programmer runs a \textit{compiler} that checks the code for multiple sources of errors, and, if the code is correct, convert it into an executable file.
+Whilst converting the program into machine code the compiler optimizes the code.
+This is only beneficial to the developer, as it ensures that his/her application, in the end, runs faster and/or require fewer system resources.
 A simple example of an optimziation would be constant folding, where the compiler analyzes code and precalculating all constant values, instead of letting them waste valuable runtime to calculate each time the application runs.
 An example can be seen below:
-Humans can immediately see that in~\cref{fig:intro:cf1} that $b$ will always be equal to $9$ and using constant folding the compiler will be able to also perform this precomputation.
+Humans can immediately see that in~\cref{fig:intro:cf1} that $b$ is always equal to $9$ and using constant folding the compiler will be able to also perform this precomputation.
 The result of this can be seen in~\cref{fig:intro:cf2}
-Henceforth, the runtime of the (admittedly small) program will be reduced, as there is one less calculation required.
+Therefore, the optimization reduces the runtime of the (admittedly small) program, as there is one less calculation required.
 Simplifying just one expression seems (and for a matter of fact is) quite useless, but in a real-world code, an optimization like this can be applied on numerous similar expressions and hence noticeably improves the final product.
 
 \input{fig/constant-folding.tex}
@@ -24,10 +24,10 @@ Of course there is a plethora of possibilities to optimize code.
 As loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2006): 8.6\% of FIRM nodes are in loops}, they are a natural point to focus optimization efforts upon.
 Loops can be unrolled fairly straight forward if you know how often they are iterated, as is discussed in~\cref{sec:basics}.
 
-For example, it can be seen that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics in tact.
-In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, as the exact value of $N$ is unknownn, simply unrolling a loop by copying its body a fixed number of times, will not preserve the original semantics.
-In~\cref{sec:basics} it will be fundamentals for working with these loops will be discussed, which will be enhanced, juxtaposed and integrated in~\cref{sec:impl}.
-Finally, in~\cref{sec:eval} the approach will be experimentally evaluated to see whether it yields a tangible benefit.
+For example, it can be seen that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics intact.
+In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, as the exact value of $N$ is unknown, simply unrolling a loop by copying its body a fixed number of times, does not preserve the original semantics.
+In~\cref{sec:basics} fundamentals for working with these loops are discussed, which are enhanced, juxtaposed and integrated in~\cref{sec:impl}.
+Finally, in~\cref{sec:eval} we evaluate the approach experimentally to see whether it yields a tangible benefit.
 
 \input{fig/basic-unrolling.tex}
 
