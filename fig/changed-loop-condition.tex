@@ -1,6 +1,23 @@
 \begin{figure}[H]
-    \centering
-    \input{fig/changed-loop-condition-firm.tex}
-    \caption{The changed header condition for \cref{fig:impl:fixup:duff:fixup-firm-loop} after constant folding}
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{adjustbox}{max width=0.49\textwidth}
+            \centering
+            \input{fig/changed-loop-condition-firm-orig.tex}
+        \end{adjustbox}
+        \caption{The original condition with bound $N$}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{adjustbox}{max width=0.49\textwidth}
+            \centering
+            \input{fig/changed-loop-condition-firm.tex}
+        \end{adjustbox}
+        \caption{The new and changed condition with bound $\hat{N}$}
+    \end{subfigure}
+    \caption{
+    The change of header condition for \cref{fig:impl:fixup:fixup-firm-loop}.
+    Please note that through an implicit optimization by \libFIRM{}, the comparison has been changed to $\leq$ and hence $N$ to 28.
+    }
     \label{fig:impl:fixup:header-cond:firm}
 \end{figure}

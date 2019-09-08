@@ -13,7 +13,7 @@
                     \EndIf
                 \EndFor
             \EndFor
-            \State $(trueExit, falseExit) \gets $\Call{CreateConditionForOverflow}
+            \State $(trueExit, falseExit) \gets $\Call{CreateOverflowCondition}{}
             \State $firstFixupBlock.predecessors.prepend(falseExit)$
             \State $header.predecessors \gets \{trueExit\} \cup \{node \vert node \in header.predecessors, node \in loop\}$
         \EndFunction

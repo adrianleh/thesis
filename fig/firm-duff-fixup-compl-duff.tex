@@ -1,0 +1,22 @@
+\begin{figure}[H]
+	\begin{algorithmic}
+		\State $i \gets 0$
+		\While{i < 21}
+			\State \Call{Print}{$\text{HelloWorld}$}
+			\State $i \gets i + 3$
+			\State \Call{Print}{$\text{HelloWorld}$}
+			\State $i \gets i + 3$
+		\EndWhile
+		\Switch{31 - i}
+			\Case{$6 \rightarrow 9$}
+				\State \Call{Print}{$\text{HelloWorld}$}
+				\State $i \gets i + 3$
+			\EndCase
+			\Case{$3 \rightarrow 6$}
+				\State \Call{Print}{$\text{HelloWorld}$}
+				\State $i \gets i + 3$
+			\EndCase
+		\EndSwitch
+	\end{algorithmic}
+	\caption{An example loop, as seen in \cref{fig:impl:fixup:fixup-firm-loop}, unrolled by a factor of two, and with generalized Duff's device fixup}\label{fig:impl:fixup:duff:fixup-firm-comp}
+\end{figure}

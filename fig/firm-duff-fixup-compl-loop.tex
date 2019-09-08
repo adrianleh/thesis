@@ -1,0 +1,16 @@
+\begin{figure}[H]
+	\begin{algorithmic}
+		\State $i \gets 0$
+		\While{i < 21}
+			\State \Call{Print}{$\text{HelloWorld}$}
+			\State $i \gets i + 3$
+			\State \Call{Print}{$\text{HelloWorld}$}
+			\State $i \gets i + 3$
+		\EndWhile
+		\While{i < 29}
+			\State \Call{Print}{$\text{HelloWorld}$}
+			\State $i \gets i + 3$
+		\EndWhile
+	\end{algorithmic}
+	\caption{An example loop, as seen in \cref{fig:impl:fixup:fixup-firm-loop}, unrolled by a factor of two, and with loop duplication fixup}\label{fig:impl:fixup:loop:fixup-firm-comp}
+\end{figure}
