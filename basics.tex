@@ -61,7 +61,7 @@ $$B~\text{is body of}~L \Longleftrightarrow B = L \backslash \{H\}, H~\text{is h
 
 The \textit{single-static-assignment} (\textit{SSA}) form is a property of intermediary representations, that requires each variable to only be assigned exactly once.
 Moreover, every value has to be assigned before it is being used~\cite{cytron91}.
-This especially implies that the block in which a given value $v$ is declared has to dominate all blocks in which $v$ is used.
+This especially implies that the block in which a given value $v$ is declared has to dominate all blocks in which $v$ is used, and that this declaration point will be unambiguous across all possible usages.
 
 The SSA form is used to simplify optimzations in the regard that one can be sure, that a given value in use is currently defined by a set point in the code.
 

@@ -4,24 +4,25 @@
 
 One of the primary goals of this thesis, was to increase the number of loops that are unrollable within~\libFIRM.
 To evaluate to which extent this goal was achieved\footnote{N.B.: The test was conducted with a max loop size of $\infty$}, the benchmark suite \texttt{spec2006} was run, and it was logged, how many loops were encountered, how many of them were innermost loops, how many could be unrolled using the old method, and how many that were previously not unrollable can now be unrolled.
-Considering that it is expected for many loops to have non constant bounds, such as the length of a container data-structure (e.g., a list or an unbounded array), it is predicted to cause a significant increase in unrollable loops
+Considering that it is expected for many loops to have non constant bounds, such as the length of a container data-structure (e.g., a list or an unbounded array), we predicted to cause a significant increase in unrollable loops.
 \Cref{fig:eval:unrollability:cmp-unrollability} shows a table with the results.
 We can see, as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 51.83\% of the innermost loops could be unrolled.
 Now we can unroll an additional 8.39\% of loops.
 Contrasted to the baseline of the constant bound unrolled loops this is a 16.19\% increase.
-Furthermore, it can be seen that more than 70\% of loops are actually innermost loops, meaning a evaluated target for our optimization.
+Furthermore, it can be seen that more than 70\% of loops are actually innermost loops.
+Thus, even if unrolling nested loops were advantageous -- which is highly doubted --  we would not miss out on that many loops.
 
 \input{fig/result-unrollability.tex}
 
 \section{Performance}\label{sec:eval:perf}
 
 Even though a high unrollability is a nice goal, any optimization aims to improve the runtime of produced binaries.
-In order to evaluate the optimization in this regard, \texttt{spec2006} is used as a benchmark suite, and run on a machine with an Intel Core~\textregistered~i7 6700 clocked at 3.4GHz across all 4 cores/8 threads.
-We run the tests on the Ubuntu 16.04 operating system, with cparser~\cite{cparser} as the frontend for~\libFIRM~, and the native \texttt{x86} backend of~\libFIRM~in use.
+In order to evaluate the optimization in this regard, \texttt{spec2006} is used as a benchmark suite, and run on a machine with an Intel Core~\textregistered~i7 6700 clocked at 3.4GHz.
+We run the tests on the Ubuntu 16.04 operating system, with cparser~\cite{cparser} as the frontend for~\libFIRM, and the native \texttt{x86} backend of~\libFIRM~in use.
 We selected this configuration to gain comparable results to~\cite{aebi18bachelorarbeit}, due to the fact that in this thesis the exact same configuration, and in fact, machine was used.
 
 In order to evaluate the performance gain, we run the new optimization in conjunction with the old unrolling, given that it is intended as an extension.
-As a result of there being two approaches for the fixup, as seen in \cref{sec:impl:fixup}, we will try both of these, to see if one, or the other yields better binary runtimes.
+As a result of there being two approaches for the fixup, as seen in \cref{sec:impl:fixup}, we will try both of these, to see if one or the other yields better binary runtimes.
 Further, as described in~\cref{sec:impl:sel-factor}, the scope of the optimization is determined by the maximum unrolled size.
 Therefore, all sizes~$l \in \{2^n, n \in \lbrack 5, 10 \rbrack \cap \mathbb{N}\}$~are each tried for both the fixup code strategies.
 The reason that 32 is chosen as a lower bound, is that very small loops are already more than 8 nodes in size and hence wouldn't be unrolled with a smaller power of two maximum size.
@@ -37,7 +38,7 @@ These reference results can be seen in \cref{fig:eval:perf:ref}.
 
 Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the obtained results.
 Whilst for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to profit from unrolling with maximum sizes 32 and 64.
-Though, on account of the ratios of all the other benchmarks are only diverting at most by three percent from the reference runtimes, these neither seem to have a particular positive, nor negative impact, through unrolling.
+Though, on account of the ratios of all the other benchmarks only divert at most by three percent from the reference runtimes, these neither seem to have a particular positive, nor negative impact, through unrolling.
 Even though the standard deviations, owning they are usually very small, due to the highly controlled test environment, do not entirely account for these percentage deltas, they are small, yet measurable.
 Further the averages of benchmark runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$.
 

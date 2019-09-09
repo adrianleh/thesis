@@ -353,7 +353,8 @@ Previously the factor $f$ seemed like it was chosen rather arbitrarily.
 Further, \cref{sec:basics:unrolling} describes that there are multiple factors influencing performance of unrolled loops.
 Using this, we devise a formalized selection process.
 
-The, admittedly straightforward, algorithm tries to find a factor $f = 2^n, n \in \mathbb{N}_{>0}$, that minimizes the euclidean distance between the unrolled size ($= f \cdot \text{original size}$), and a pre-determined maximum size.
+As a convention, we will henceforth let size be the number of~\libFIRM-nodes in a given loop.
+The, admittedly straightforward, algorithm tries to find a factor $f = 2^n, n \in \mathbb{N}_{>0}$, that minimizes the absolute difference between the unrolled size ($= f \cdot \text{original size}$), and a pre-determined maximum size.
 \Cref{alg:impl:sel-factor:sel-factor} shows the procedure used to find these values.
 It is to be noted that the algorithm can also return $0$ and $1$, which dies not fit the definition of the $f$ described.
 In the case that the algorithm returns one of these two values, we will interpret it as ``do not unroll''.
