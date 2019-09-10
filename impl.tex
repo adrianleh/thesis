@@ -333,7 +333,7 @@ The approach now taken is to copy the original loop, change its initial value to
     As the unrolled loop kept the increment semantics intact, the result is hence $\Mfixup = M - \Mloop$, which conserves the semantics, as per \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
 \end{proof}
 
-\Cref{alg:impl:fixup:loop:create-fixup} shows how we create this structure in~\libFIRM.
+\Cref{alg:impl:fixup:loop:fixup-loop} shows how we create this structure in~\libFIRM.
 Firstly, we copy the loop, after which we rewire it, such that the fixup loop points to it, and its old successors point to the fixup loop.
 Once this is completed, we can unroll the original loop.
 
