@@ -1,8 +1,8 @@
 \chapter{Conclusion}\label{sec:conclusion}
 
-The results, that are in line with the results from~\cite{aebi18bachelorarbeit}, and therefore strongly suggest, that there is now empirical evidence, that independent of the factor chosen loop unrolling does not yield a significant performance benefit in the current state of~\libFIRM.
+The results, that are in line with the results from the ones for static bound unrolling~\cite{aebi18bachelorarbeit}, and therefore strongly suggest, that there is now empirical evidence, that independent of the factor chosen loop unrolling does not yield a significant performance benefit in the current state of~\libFIRM.
 Even though through the added loop optimization, more loops were able to be unrolled, the increase in unrollability was significantly less than predicted in the preliminary hypothesis, which certainly is a contributing factor to the underwhelming improvements.
-Probably some restrictions, such as disallowing \texttt{break}-like structures, are too limited and could be dealt with through further optimizations.
+Probably some restrictions, such as disallowing \texttt{break}-like structures, are too limited and could be dealt with through further development.
 Other restrictions, such as the conservative alias, or call manipulation, checks for the bound are unavoidable if the semantics are to be kept and forthright inherent to the task at hand.
 Yet, inconsiderate of these reasons, the eminent challenge seems to be the lack of performance gain through unrolling loops.
 Further, it can be concluded that the choice of the fixup code strategy seems to have a neglectable impact on performance.

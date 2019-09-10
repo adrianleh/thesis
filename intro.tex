@@ -21,7 +21,7 @@ Simplifying just one expression seems (and for a matter of fact is) quite useles
 \input{fig/constant-folding.tex}
 
 Of course there is a plethora of possibilities to optimize code.
-Considerin that loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2006): 8.6\% of FIRM nodes are in loops}, they are a natural point to focus optimization efforts upon.
+Considering that loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2006): 8.6\% of FIRM nodes are in loops}, they are a natural point to focus optimization efforts upon.
 Loops can be unrolled fairly straight forward if you know how often they are iterated, as is discussed in~\cref{sec:basics}.
 
 For example, it can be seen that~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, whilst keeping all semantics intact.
