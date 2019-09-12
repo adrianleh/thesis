@@ -10,6 +10,7 @@
         \EndFunction
         \Function{PrunePhi}{$phi: \text{Phi-Node}, copiedHeader: \text{Block}$}
             \ForAll{$out \in phi.descendants$}
+                \Comment $out$ is ensured to be $\phi$ node by the LCSSA construction algorithm~\cite{aebi18bachelorarbeit}
                 \If{$out.block \neq copiedHeader$}
                     \State $out.predecessors \gets (out.predecessors \backslash \{phi\}) \cup \newline \{n \vert  n \in phi.predecessors, n.loop = out.loop\}$
                 \EndIf

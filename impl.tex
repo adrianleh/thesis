@@ -1,9 +1,9 @@
 \chapter{Design and implementation}\label{sec:impl}
 
-In order to unroll a loop with non-static bounds this thesis follows a specific approach:
-First, we check the loop, whether it can be unrolled.
-\Cref{sec:impl:unrollability} describes the conditions necessary and how they are checked.
-If a loop is determined to be unrollable, we will unroll it with the unrolling process is covered in \cref{sec:impl:unroll}.
+In order to unroll a loop with non-static bounds, this thesis follows a specific approach:
+First, we check whether we are able to unroll the loop.
+\Cref{sec:impl:unrollability} describes the conditions necessary and how we check them.
+If we determine a loop to be unrollable, we will unroll it with the unrolling process covered in \cref{sec:impl:unroll}.
 After that, we will create the \textit{fixup code}
 \footnote{The term \textit{fixup code} describes that code that has to be added to account for cases where the number of times the loop is executed modulo the unrolling factor is not equal to zero.}
 , as described in \cref{sec:impl:fixup}.
@@ -14,44 +14,44 @@ It is to be noted that in terms of actually implementing this procedure, we will
 While this order seems counter-intuitive, we chose it in order to simplify loop duplication, as described in~\cref{sec:impl:fixup:loop}.
 
 
-Henceforth, we assume loops to be in form, like the one of the loop shown in~\cref{fig:impl:general-loop}.
+Henceforth, we assume loops to be in the form, of the loop shown in~\cref{fig:impl:general-loop}.
 In the reference loop \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
 Further, $I \in \mathbb{Z}$ refers to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such a loop.
-We select this form, in view of the fact that most loops follow the form of using a counter or iterating over a given container, which basically condenses down to this form.
+We select this form, in view of the fact that most loops follow the form of using a counter or iterating over a given container, which condenses down to this form.
 Furthermore, this form allows for many arithmetic properties to be used, as seen in~\cref{sec:impl:unroll}.
 
 \input{fig/general-loop.tex}
 
 \section{Determining unrollability}\label{sec:impl:unrollability}
 
-Given that the main goal of any optimization is to conserve semantics, most optimizations are based upon assumptions.
-These assumptions will be assured, by checking corresponding preconditions before the optimization is applied, to ensure that the optimization is only applied, iff all conditions are met, such that its transformed product will be semantically equivalent.
+Given that the primary goal of any optimization is to conserve semantics, most optimizations are based upon assumptions.
+These assumptions will be assured, by checking corresponding preconditions before the optimization is applied, to ensure that the optimization is only applied, if all conditions are met, such that its transformed product will be semantically equivalent.
 
 In the case of loop unrolling, in~\cref{fig:impl:general-loop} we laid out the structured of the targeted loops.
 This section formalizes these requirements and extends them, such that the further unrolling process conserves semantics.
 
 Firstly, in the view of the fact that we use the existing loop unrolling functionality as a sub-step (see~\cref{sec:impl:unroll}), it needs to be ensured that the respective~\libFIRM-graph is in LCSSA form.
 We accomplish this by using the existing mechanics~\cite{aebi18bachelorarbeit}, and is possible on any graph.
-Therefore, whilst the condition needs to be ensured, there is no case in which ensuring the condition would prove to be impossible.
-Therefore, whilst it is a preliminary step, assuring LCSSA form can never be a hindrance to unrolling.
+Therefore, while it is a preliminary step, assuring LCSSA form can never be a hindrance to unrolling.
 Due to the restrictions of the existing loop unrolling mechanism, a loop must also be the innermost loop, meaning it does not have any nested loops inside of it.
-Since nested loops inherently cause larger code sizes and hardly saves jumps, since most jumps will occur in the inner loops, this restriction is in practice not to be considered harsh, as most of the loops with nested loops in them, would be too large for unrolling anyways.
+Nested loops inherently cause larger code sizes and hardly saves jumps, since most jumps will occur in the inner loops.
+Therefore, the restriction will in practice most likely not harm performance.
 \Cref{sec:impl:sel-factor} describes the mechanics for determining based on size, if and how a given loop should be unrolled.
 
 Moreover, in order for loops to be in the form described in \cref{sec:impl}, loops have to have a header, which itself controls the control flow by comparing a counter, to a bound, using any of the four allow comparison types.
 The header is the only point in the loop, from which the loop can exit; meaning there are no conditionals in the body, that allow the control flow to leave the loop.
-This especially requires there to not be any \texttt{break}-like structures.
+This primarily requires there not to be any \texttt{break}-like structures.
 
-Seeing that there is explicit entry point for the loop, the header, there are no required preconditions for $I$, considering it therefore is only once evaluated before the loop, but inherently not determining of the control flow after the initial evaluation.
-On the contrary, $N$, the bound, has to be loop-invariant, which means that it does not change through the entire evaluation of the loop, because it is checked against every iteration.
-As an example consider a loop, such as the one in \cref{fig:impl:general-loop}, replacing \texttt{DoSomething} with \texttt{$N =$ randomNumber}.
-If we now execute the body $f > 1$ times consecutively, we will effectively loose $f - 1$ checks.
+Seeing that there is an explicit entry point for the loop, the header, there are no required preconditions for $I$, considering it, therefore, is only once evaluated before the loop, but inherently not determining of the control flow after the initial evaluation.
+On the contrary,  $N$, the bound, has to be loop-invariant, which means that it may not change through the entire evaluation of the loop, because it is checked against every iteration.
+As an example, consider a loop, such as the one in \cref{fig:impl:general-loop}, replacing \texttt{DoSomething} with \texttt{$N =$ randomNumber}.
+If we now execute the body $f > 1$ times consecutively, we will effectively lose $f - 1$ checks.
 Assume that initially $I = 0, c = 1, f = 2, N = 2$, and assume in the first execution in the loop body $N$ is set to $0$ by chance, whereas in the second iteration it is set to $7$.
-Now given that when unrolling the condition is removed for the entering the second body, the loop body would at least 4 times, which obviously does not conserve semantics, as it should be only executed once.
-Concluding, iff $N$ is loop-invariant, the bound checks can be performed less often, whilst keeping the original semantics intact.
+Now given that when unrolling the condition is removed for the entering the second body, the loop body would at least four times, which does not conserve semantics, as it should only be executed once.
+Concluding, iff $N$ is loop-invariant, the bound checks can be performed less often, while keeping the original semantics intact.
 
 If $N$ is constant it is obviously loop-invariant, but what if it is the result of a function call or of a load from memory?
-For the case that $N$ is function call, this function call must be pure (i.e. not have any side-effects), and only have loop-invariant arguments, seeing that the call is then by definition loop-invariant itself.
+For the case that $N$ is function call, this function call must be pure (i.e., not have any side-effects), and only have loop-invariant arguments, seeing that the call is then by definition loop-invariant itself.
 
 In case that $N$ is being loaded from memory, stricter conditions have to be met.
 All stores within the loop must be sure not to alias the memory location of $N$.
@@ -64,7 +64,7 @@ In order to assure this property, we thus have to force $c$ to be a compile-time
 Even though, the restrictions on $c$ seem comparatively tight, in real-world code (gcc, spec2006) only approximately $1.2\%$ of loops, that meet the previous conditions, are not unrollable because of the restriction that  $t_{min} \leq c \cdot (f+1) \leq t_{max}$.
 
 It is worth mentioning that the unrollability with the method above is only checked, if the current loop unrolling mechanism~\cite{aebi18bachelorarbeit} determines that the current unrolling process cannot be applied.
-We chose this design, for the reason that statically unrolling without any further fixup code inherently simplifies the control flow and hence should yield better, or at least equal, performance.
+We chose this design, for the reason that statically unrolling without any further fixup code inherently simplifies the control flow and hence should yield better, or (at least) equal, performance.
 
 \section{Unrolling}\label{sec:impl:unroll}
 
@@ -76,12 +76,12 @@ Since~\libFIRM~already provides an unrolling mechanism for unrolling a loop with
 
 Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before}~and~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} we duplicate the loop header, and that hence the number of conditional jumps did not decrease through the loop unroll.
-With the previous usage, this was not an issue though, due to using its constant bit analysis,~\libFIRM~would automatically removes these excess headers~\cite{aebi18bachelorarbeit}.
+With the previous usage, this was not an issue though, due to using its constant bit analysis,~\libFIRM~would automatically remove these excess headers~\cite{aebi18bachelorarbeit}.
 Unfortunately though in the use cases of an unknown bound, the constant bit analysis does not suffice.
 This is due to the fact that~\libFIRM~cannot recognize the additional semantics, meaning that we are sure not to have to exit the unrolled loop from its body at any time, that are implicitly affixed to the transformed loop.
 Therefore, the need to manually prune the graph to remove the excess headers arises.
 \Cref{alg:impl:unroll:prune-headers} shows the algorithm used to accomplish this.
-First, we rewire all $\phi$-nodes in the header, such that all in-loop nodes descending from any given $\phi$-node each get the in-loop predecessors of the $\phi$-node as predecessors themselves, whilst the $\phi$-node is no longer a predecessor of any of the descendants.
+First, we rewire all $\phi$-nodes in the header, such that all in-loop nodes descending from any given $\phi$-node each get the in-loop predecessors of the $\phi$-node as predecessors themselves, while the $\phi$-node is no longer a predecessor of any of the descendants.
 We apply the same transformations to the descendants of the block itself.
 
 \input{fig/prune-header.tex}
@@ -93,16 +93,16 @@ We apply the same transformations to the descendants of the block itself.
 \section{Fixup strategies}\label{sec:impl:fixup}
 
 In \cref{sec:impl:unroll} we discussed the unrolling process.
-In this section we did not consider the fixup code needed, but rather plainly focused on unrolling the loop.
-\Cref{sec:impl:fixup:duff} uses a generalized version of Duff's device to create the needed fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop will be used.
-Whereas in \cref{sec:eval}, we evaluate, which approach yields faster binary run-times.
+In this section, we did not consider the fixup code needed, but instead plainly focused on unrolling the loop.
+\Cref{sec:impl:fixup:duff} uses a generalized version of Duff's device to create the required fixup, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop will be used.
+After that, in \cref{sec:eval}, we evaluate, which approach yields faster binary run-times.
 
 To see the reason why and to understand what is required of fixup code, in the following equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\cref{eqn:impl:fixup:duff:fixup-i-mult} we formally lay out conditions that need to be met.
 
 Let $M \in \mathbb{N}_0$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times the unrolled body will run in the unrolled loop, or the fixup code respectively, after the transformation.
 Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
 Henceforth, we will assume all arithmetic operations to be integer operations for integers in the interval $\lbrack t_{min}, t_{max} \rbrack$.
-Please note that integer division, will be a down-rounding division: For example $\frac{5}{3} \overset{\text{integer divison}}{=} 1$.
+Please note that integer division will be assumed to round towards zero: For example $\frac{5}{3} \overset{\text{integer divison}}{=} 1$.
 Another convention we will introduce is that any interval will be integral, meaning it will only contain integers.
 Additionally $x \mp y$ is henceforth defined as
 $\begin{cases}
@@ -116,14 +116,14 @@ $\begin{cases}
 \end{aligned}
 \end{equation}
 
-The main identity that is to be conserved, to retain the original semantics, is shown above in \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
+The primary identity that is to be conserved, to retain the original semantics, is shown above in \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
 
 \begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
 To prove the conjecture of \cref{eqn:impl:fixup:duff:conserve-semantics-identity}, consider the assumption
-\[\Mloop = M - f - b,  b \in \lbrack 0, f \lbrack \]
+\[\Mloop = M - f - b,  b \in \left \lbrack 0, f \right\lbrack \]
 and hence
-\[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack  \]
-, then by running the unrolled loop again the body would be executed $f$ times causing $\Mloop = M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
+\[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack,\]
+then by rerunning the unrolled again the body would be executed $f$ times causing $\Mloop = M - b \in \medspace \rbrack M-f,f \rbrack$, which would be a contradiction of the assumption.
 We then induct this pattern for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \in \lbrack 0, f \lbrack $.
 In these cases, the loop must merely be iterated multiple times.
 \end{proof}
@@ -134,7 +134,7 @@ In these cases, the loop must merely be iterated multiple times.
     &\overset{\text{integer divison}}{\in} \medspace \rbrack M-f,M \rbrack
 \end{aligned}
 \end{equation}
-By construction of the unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations} is always true, as the unrolled loop tries to run as often as possible, whilst running less than or equal times to the original loop.
+By construction of the unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations} is always true, as the unrolled loop tries to run as often as possible, while running less than or equal times to the original loop.
 
 \begin{equation}\label{eqn:impl:fixup:duff:fixup-interval}
 \begin{aligned}
@@ -144,7 +144,7 @@ By construction of the unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations}
 
 Additionally, \cref{eqn:impl:fixup:duff:fixup-interval} is an identity that must hold true.
 \begin{proof}\label{proof:impl:fixup:duff:fixup-interval}
-Conjecture: $\Mfixup \in \rbrack 0,  f \rbrack$.\\
+Conjecture: $\Mfixup \in \left \rbrack 0,  f \right \rbrack$.\\
 
 Assume $\Mfixup = f' > (f - 1)$
 \begin{align*}
@@ -154,7 +154,7 @@ Assume $\Mfixup = f' > (f - 1)$
 \end{align*}
 \end{proof}
 
-For the coming mathematical consideration, we need to figure out a way, to round up in integer division.
+For the following mathematical consideration, we need to round up in integer division.
 The following lemma describes how this can be accomplished.
 \begin{lem}\label{lem:impl:fixup:duff:ceil-mp}
     Given $Y \neq 0: \medspace \ceil{\frac{X}{Y}} = \frac{X + (Y \mp 1)}{Y}$
@@ -253,14 +253,17 @@ Therefore we change the header condition of the unrolled loop to $i~`cmp`~\hat{N
 
 \input{fig/changed-loop-condition.tex}
 
-When the assumption of $N - c \cdot (f - 1)$ not over- or underflowing is lifted, there is still a possibility to construct an example where this change does not conserve semantics.
+We know that $c \cdot (f + 1)$ cannot over- or underflow, as per the preconditions layed out in \cref{sec:impl:unrollability}.
+Since $f > 0$, $c \cdot (f - 1)$ will therfore also not overflow.
+Though, $N - c \cdot (f - 1)$ can still over- or underflow, due to the subtraction of $c \cdot (f - 1)$ from $N$, and there hence is nevertheless a possibility to construct an example where this change does not conserve semantics.
 
-Suppose the datatype of a loop with parameters $N = 2, I = 0, c = 1, cmp = <$ is an unsigned integer (with more than two bits), and this exact loop is unrolled it with a factor $f = 4$.
-In this case $\hat{N} = 2 - 1 \cdot (4 - 1) = -2 \overset{\text{unsigned integer}}{=} t_{max} - 1$.
-With this bound the loop would run $t_{max} - 1 > 2$ times.
+Suppose the datatype of a loop with parameters $N = 2, I = 0, c = 1, cmp = <$ is an unsigned integer (with more than two bits), and we unroll this loop by a factor of four.
+In this case $\hat{N} = 2 - 1 \cdot (4 - 1) = -1 \overset{\text{unsigned integer}}{=} t_{max}$.
+With this bound the loop would run $t_{max} > 2$ times.
 
 To circumvent this problem, we use \cref{alg:basics:overflow:detect} from \cref{sec:basics:overflow} as a check for over- or underflows of the operation.
-We implement this check, that as a block that sits between the header and its predecessors and for if an over- or underflow is detected, the control flow jumps straight to the fixup code.
+We implement this check by placing a block between the header and its predecessors.
+For if an under- or overflow is detected, the control flow will jump directly the fixup code.
 Otherwise, it will route the control flow to the header and let the loop progress as normal, given that $\hat{N}$ now restores semantics in the header.
 \Cref{alg:impl:fixup:header-cond:preheader} shows the creation of this structure in~\libFIRM.
 
@@ -285,16 +288,16 @@ For the fixup code to work correctly, it is to be ensured that $\Mfixup \cdot c$
     c \cdot (f + 1) > 0 &, \medspace c < 0
 \end{cases}$.
 To avoid these problems altogether, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f + 1}, \frac{t_{max}}{f + 1} \rbrack$.
-Using this restriction it can be asserted that $c \cdot (f + 1) \in \lbrack t_{min}, t_{max} \rbrack$ and therefore does not overflow.
+Using this restriction, it can be asserted that $c \cdot (f + 1) \in \lbrack t_{min}, t_{max} \rbrack$ and therefore does not overflow.
 
 \Cref{alg:impl:fixup:duff:create-fixup} details how the mechanics describe above are translated into \libFIRM.
 At first, we duplicate the loop body $f - 1$ times and add keepalive edges to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
 Then we will create the \textit{fixup header}, meaning a block, with the calculation of $N - i + (c \mp 1)$.
-The calculated value by the header will then be used by $f - 1$ newly created condition blocks.
+$f - 1$ newly created condition blocks will then use the calculated value by the header.
 In the $i^{\text{th}}$ (counting starts at 0) condition block, it will be checked whether n is in the interval spanned by $c \cdot (f - i)$ and  $c \cdot (f - i + 1)$.\footnote{Please note: $c$ being positive or not determines, which limit is the upper, and, which is the lower bound.}
 After this, we will wire all duplicated blocks such that, they are reachable by the conditions.
-Further, upon false evaluation of a condition, the next condition is evaluated, except if it is the last condition, in which case the false target is the post loop block.
-Additionally, unless in the case of the first duplicated header, they are attached to the previous blocks as fallthrough.
+Further, upon false evaluation of a condition, the following condition is evaluated, except if it is the last condition, in which case the false target is the post loop block.
+Additionally, except in the case of the first duplicated header, they are attached to the previous blocks as fallthrough.
 Lastly, the last block of the fixup code now precedes the post loop block, and the false exit fo the last condition.
 An example of the result for creating fixup code for a loop and for $f = 2$, as seen in \cref{fig:impl:fixup:fixup-firm-loop}, can be seen in \cref{fig:impl:fixup:duff:fixup-firm}.
 Further, \cref{fig:impl:fixup:duff:fixup-firm-comp} shows the completed unroll process with the added generalized duff's device, given $f = 2$.
@@ -329,7 +332,7 @@ The approach now taken is to copy the original loop, change its initial value to
     In the first case, $\ipl~`cmp`~N$ must be false, as otherwise the unrolled loop would have broken semantics, and hence the new loop is never run.
     Therefore: $\Mfixup = 0 \Rightarrow \Mloop + \Mfixup = M$
 
-    In the second case the new loop is run until the condition is met.
+    In the second case, the new loop runs until the condition is met.
     As the unrolled loop kept the increment semantics intact, the result is hence $\Mfixup = M - \Mloop$, which conserves the semantics, as per \cref{eqn:impl:fixup:duff:conserve-semantics-identity}.
 \end{proof}
 
@@ -349,12 +352,12 @@ Once this process is completed~\cref{fig:impl:fixup:loop:general-loop} shows the
 
 \section{Selecting an unroll-factor}\label{sec:impl:sel-factor}
 
-Previously the factor $f$ seemed like it was chosen rather arbitrarily.
+Previously the factor $f$ seemed like it was chosen somewhat arbitrarily.
 Further, \cref{sec:basics:unrolling} describes that there are multiple factors influencing performance of unrolled loops.
 Using this, we devise a formalized selection process.
 
 As a convention, we will henceforth let size be the number of~\libFIRM-nodes in a given loop.
-The, admittedly straightforward, algorithm tries to find a factor $f = 2^n, n \in \mathbb{N}_{>0}$, that minimizes the absolute difference between the unrolled size ($= f \cdot \text{original size}$), and a pre-determined maximum size.
+The -- admittedly straightforward -- algorithm tries to find a factor $f = 2^n, n \in \mathbb{N}_{>0}$, that minimizes the absolute difference between the unrolled size ($= f \cdot \text{original size}$), and a pre-determined maximum size.
 \Cref{alg:impl:sel-factor:sel-factor} shows the procedure used to find these values.
 It is to be noted that the algorithm can also return $0$ and $1$, which dies not fit the definition of the $f$ described.
 In the case that the algorithm returns one of these two values, we will interpret it as ``do not unroll''.
