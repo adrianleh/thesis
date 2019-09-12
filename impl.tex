@@ -22,6 +22,8 @@ Furthermore, this form allows for many arithmetic properties to be used, as seen
 
 \input{fig/general-loop.tex}
 
+\newpage
+
 \section{Determining unrollability}\label{sec:impl:unrollability}
 
 Given that the primary goal of any optimization is to conserve semantics, most optimizations are based upon assumptions.
@@ -302,6 +304,8 @@ Lastly, the last block of the fixup code now precedes the post loop block, and t
 An example of the result for creating fixup code for a loop and for $f = 2$, as seen in \cref{fig:impl:fixup:fixup-firm-loop}, can be seen in \cref{fig:impl:fixup:duff:fixup-firm}.
 Further, \cref{fig:impl:fixup:duff:fixup-firm-comp} shows the completed unroll process with the added generalized duff's device, given $f = 2$.
 
+Once this process is completed~\cref{fig:impl:fixup:duff:general-loop} shows the hence resulting structure in pseudo-code notation.
+
 \input{fig/firm-duff-fixup-compl-duff.tex}
 
 \input{fig/firm-duff-fixup.tex}
@@ -309,8 +313,6 @@ Further, \cref{fig:impl:fixup:duff:fixup-firm-comp} shows the completed unroll p
 \input{fig/alg-create-fixup-duff.tex}
 
 \input{fig/general-loop-duff.tex}
-
-Once this process is completed~\cref{fig:impl:fixup:duff:general-loop} shows the hence resulting structure in pseudo-code notation.
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
