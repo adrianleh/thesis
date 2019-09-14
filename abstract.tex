@@ -27,5 +27,6 @@
     That said, we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop while running as often as possible, always run less than or equal times to the original loop.
     To compensate for the hence resulting discrepancy, we create so-called fixup code, which is responsible for running the remaining iterations.
 
-    When experimentally evaluating the approach, it becomes clear that without further optimization loop unrolling is not beneficial, as we cannot note any speed-up outside of the margin of error.
+    When experimentally evaluating the approach, even though we doubled the amount of unrollable loops to now unroll more than 10\% of all loops,  we cannot note any speed-up outside of the margin of error.
+    The results hence indicate that loop unrolling does not seem to have a (significant) benefit without further optimization.
 \end{abstract}

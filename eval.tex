@@ -4,11 +4,11 @@
 
 One of the primary goals of this thesis was to increase the number of loops that are unrollable within~\libFIRM.
 To evaluate to which extent this goal was achieved\footnote{N.B.: The test was conducted with a max loop size of $\infty$}, we ran the benchmark suite \texttt{spec2006}, and  logged, how many loops we encountered, how many of them were innermost loops, how many could be unrolled using the old method, and how many that were previously not unrollable can now be unrolled.
-Considerit it is expected for many loops to have non-constant bounds, such as the length of a container data-structure (e.g., a list or an unbounded array), we predicted to cause a significant increase in unrollable loops.
+Considering it is expected for many loops to have non-constant bounds, such as the length of a container data-structure (e.g., a list or an unbounded array), we predicted to cause a significant increase in unrollable loops.
 \Cref{fig:eval:unrollability:cmp-unrollability} shows a table with the results.
-We can see as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 51.83\% of the innermost loops could be unrolled.
-Now we can unroll an additional 8.39\% of loops.
-Contrasted to the baseline of the constant bound unrolled loops this is a 16.19\% increase.
+We can see as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 4.17\% of the innermost loops could be unrolled.
+Now we can unroll an additional 7.37\% of loops.
+Contrasted to the baseline of the constant bound unrolled loops this is a 125.65\% increase, which more than double the number of unrollable loops.
 Furthermore, we note that more than 70\% of loops are innermost loops.
 Thus, even if unrolling nested loops were advantageous -- which is highly doubted -- we would not miss out on many loops.
 
