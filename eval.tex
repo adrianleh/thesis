@@ -8,7 +8,8 @@ Considering it is expected for many loops to have non-constant bounds, such as t
 \Cref{fig:eval:unrollability:cmp-unrollability} shows a table with the results.
 We can see as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 4.17\% of the innermost loops could be unrolled.
 Now we can unroll an additional 7.37\% of loops.
-Contrasted to the baseline of the constant bound unrolled loops this is a 125.65\% increase, which more than double the number of unrollable loops.
+Contrasted to the baseline of the constant bound unrolled loops this is a 125.65\% increase.
+This means we more than doubled the number of unrollable loops using our approach.
 Furthermore, we note that more than 70\% of loops are innermost loops.
 Thus, even if unrolling nested loops were advantageous -- which is highly doubted -- we would not miss out on many loops.
 

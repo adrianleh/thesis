@@ -4,7 +4,7 @@
 \section{Compiler}\label{sec:basics:compiler}
 
 The primary function of a compiler is to automatically convert high-level code created by a developer into (optimized) machine code.
-As a compiler is an inherently large software project, an architecture needs to be chosen that allows for extensions and modifications easily.
+As a compiler is an inherently large software project, an architecture needs to be chosen that allows for extensions and modifications.
 Modern compilers mostly follow a layered architecture style: They are each comprised of a front-, middle-, and back-end.
 In this architecture, the front-end converts the high-level code into an abstract intermediary representation that is then used by the middle-end for optimizations and transformations.
 Lastly, the back-end is responsible for converting the optimized intermediary code into instructions for the target system architecture (e.g., RISC-V, x86, ARM, or similar).
@@ -12,7 +12,7 @@ Lastly, the back-end is responsible for converting the optimized intermediary co
 % Basic blocks
 \section{Basic blocks and control-flow}\label{sec:basics:bb-cf}
 
-To better handle code and give it a logical structure, most compilers divide code up into so-called basic blocks.
+To better handle code and give it a logical structure, most compilers divide code up into so-called \textit{basic blocks}.
 Basic blocks are sets of consecutive operations that do not contain jumps or targets of thereof, but rather only jumps connecting them.
 Therefore, a basic block is either be executed entirely or not executed at all.
 
@@ -24,7 +24,7 @@ We note that CFGs, in general, are cyclical graphs.
 They are non-cyclical graphs if the original code does not contain any jumps going backward in the control-flow.
 
 Another important concept of CFGs is dominance.
-In oTo explain this concept, we define a starting node $S$, and assume there are two (not necessarily different) nodes, present in the CFG, $N_1$, and $N_2$.
+To explain this concept, we define a starting node $S$, and assume there are two (not necessarily different) nodes, present in the CFG, $N_1$, and $N_2$.
 With this information, we define dominance as follows:
 $$N_1~\text{dominates}~N_2 \Longleftrightarrow \forall p \in \text{Paths}(S, N_2):~N_1 \in p$$
 In lucid terms, this means $N_1$ dominates $N_2$, iff to get to $N_2$ from $S$ you have to visit $N_1$ on the way.
@@ -59,7 +59,7 @@ $$B~\text{is body of}~L \Longleftrightarrow B = L \backslash \{H\}, H~\text{is h
 % SSA
 \section{Single-Static-Assignment (SSA)}\label{sec:basics:ssa}
 
-The \textit{single-static-assignment} (\textit{SSA}) form is a property of intermediary representations, that requires each variable to only be assigned exactly once.
+The \textit{single-static-assignment} (\textit{SSA}) form is a property of intermediary representations, that requires each value to only be assigned exactly once.
 Moreover, every value has to be assigned before it is being used~\cite{cytron91}.
 This property mainly implies that the block, which declares a given value $v$, has to dominate all blocks that use $v$.
 This declaration point will be unambiguous across all possible usages.
@@ -75,7 +75,7 @@ In a loop or a conditional statement, a scenario might arise where a given value
 In cases like these we can use a \textit{$\Phi$-function}.
 A $\Phi$-function is a theoretical construct that returns the correct value depending on the control-flow predecessor.
 
-\Cref{fig:basics:SSA-simple} shows an example of the use of a $\phi$-function, where depending on the control-flow, either $m_1$ or $m_2$  are selected.
+\Cref{fig:basics:SSA-simple} shows an example of the use of a $\Phi$-function, where depending on the control-flow, either $m_1$ or $m_2$  are selected.
 \input{fig/max-ssa.tex}
 
 % LCSAA
@@ -83,7 +83,7 @@ A $\Phi$-function is a theoretical construct that returns the correct value depe
 \section{Loop-Closed-Single-Static-Assignment (LCSSA)}\label{sec:basics:LCSSA}
 
 An extension to the SSA form is the \textit{loop-closed-single-static-assignment} (\textit{LCSSA}) form.
-A CFG in LCSSA form has all properties, that a CFG in SSA form has, and additionally the property that each value assigned in a given loop and used outside of this loop, has to be used by $\phi$-node in the first block after a loop.
+A CFG in LCSSA form has all properties, that a CFG in SSA form has, and additionally the property that each value assigned in a given loop and used outside of this loop, has to be used by $\Phi$-node in the first block after a loop.
 This form is used to reduce special casing when transforming loops~\cite{aebi18bachelorarbeit}, and is therefore used through all of~\cref{sec:impl}.
 
 To visualize this property,~\cref{fig:basics:LCSSA} depicts its effect.
@@ -99,7 +99,7 @@ Since 1996 Karlsruhe Institute of Technology (KIT) actively develops~\libFIRM.
 A graph in \libFIRM~contains information about basics blocks, the control-flow, memory and, data dependencies.
 Basics blocks in \libFIRM~contain further nodes that are responsible for the control-flow of the program.
 These are pointed to by (other) basic blocks that are the target of these control-flow operations.
-The resulting control-flow edges are represented by a red edge in visualizations of \libFIRM~graphs.
+The resulting control-flow edges are represented by red edges in visualizations of \libFIRM~graphs.
 Any node operating on memory also connects to the previous node operating on memory, so that the node uses the prior state of memory and then provides a new state with its changes.
 Memory is, like control flow, connected by edges, which are rather than being colored red, are colored blue in graphical representations.
 Lastly, \libFIRM~has data dependency edges between nodes, which represent dependencies needed for calculations.
@@ -110,7 +110,7 @@ Thus one can quickly determine, whether a loop is an innermost loop~\libFIRM~\ci
 Further,~\libFIRM~also allows for finding the basics block that is the header of a loop, given that it has a header~\cite{aebi18bachelorarbeit}.
 
 In~\cref{fig:basics:firm} portrays an example firm graph of the program initially shown in~\cref{fig:basics:SSA-phi}.
-It is especially to be noted that the graph is in SSA form, since it contains the $\phi$-node and has both memory, data and, control-flow edges.
+It is especially to be noted that the graph is in SSA form, since it contains a $\Phi$-node and has both memory, data and, control-flow edges.
 \input{fig/max.tex}
 
 % Unroll loops
@@ -127,7 +127,7 @@ A negative side effect of loop unrolling is that the binary size increases and t
 \libFIRM~supports a restricted form of loop unrolling for loops that have static bounds and increments~\cite{aebi18bachelorarbeit}.
 This optimization requires the intermediary representation to be in LCSSA form, which means the~\libFIRM~intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
 The benefits of this optimization were very slim, likely since the requirements for a loop to be unrollable are very strict.
-With these restrictions in place, only approximately half of the innermost loops can be unrolled\footnote{Measured in spec2006}.
+With these restrictions in place, only approximately 5\% of the innermost loops can be unrolled\footnote{Measured in spec2006}.
 
 
 \input{fig/loop-unrolling.tex}
@@ -141,7 +141,7 @@ Mathematically this means the construct executes the loop body $\floor{\frac{N}{
 This property holds as mod has the following property $x \mod y = x - \floor{\frac{x}{y}} * y$ and if we substitute $M$ for $x$ and $f$ for $y$ and rearrange for M, we get the aforementioned form.
 
 \Cref{fig:basics:duff} shows an example of unrolling a loop with a non-divisible bound using a factor of eight\footnote{The original Duff's device used special C syntax to entangle the switch statement and loop~\cite{duff_1983}}.
-Duff's device copied the loop body eight times and to ensure that the number of executions is correct, the first time around the code jumps to the corresponding instruction, depending on the need for fixup code.
+Duff's device copies the loop body eight times and to ensure that the number of executions is correct, the first time around the code jumps to the corresponding instruction, depending on the need for fixup code.
 
 Many compilers, such as GCC~\cite{gcc}, use Duff's device for unrolling loops and improving performance while keeping code size relatively small.
 

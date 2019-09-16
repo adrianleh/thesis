@@ -23,8 +23,8 @@
     Loop unrolling is the process of duplicating a loop's body multiple times to reduce the number of conditional jumps.
     While we can easily unroll loops with constant bounds, unrolling loops with non-constant bounds proves to be a different challenge.
 
-    Since one does not know the number of times a loop body unrolling with a static factor will not suffice.
-    That said, we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop while running as often as possible, always run less than or equal times to the original loop.
+    Since one does not know the number of times a loop body is executed unrolling with a static factor will not suffice.
+    That said, we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop while running as often as possible, but run less than or equal times to the original loop.
     To compensate for the hence resulting discrepancy, we create so-called fixup code, which is responsible for running the remaining iterations.
 
     When experimentally evaluating the approach, even though we doubled the amount of unrollable loops to now unroll more than 10\% of all loops,  we cannot note any speed-up outside of the margin of error.
