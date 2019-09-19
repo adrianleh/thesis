@@ -41,7 +41,8 @@ Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show t
 While for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to profit from unrolling with maximum sizes 32 and 64, by being close to 4.5\% faster.
 Though on account of the ratios of all the other benchmarks only diverting by three percent or less from the reference runtimes, unrolling does not seem to have a significant effect on performance.
 
-Further, we can expect a small percentage of systemic errors in our measurements due to system process scheduling and similar factors.Even though the standard deviations, owning they are usually very small, due to the highly controlled test environment, do not entirely account for these percentage deltas, they are small, yet measurable.
+Further, we can expect a small percentage of systemic errors in our measurements due to system process scheduling and similar factors.
+Even though the standard deviations, owning they are usually very small, due to the highly controlled test environment, do not entirely account for these percentage deltas, they are small, yet measurable.
 As the averages of benchmark runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$ we can consider them to be within the margin of error.
 
 \subsection{Loop fixup}\label{sec:eval:perf:loop}
