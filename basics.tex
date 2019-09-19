@@ -39,13 +39,15 @@ Formally this can be expressed as:
 
 $$L~\text{is a loop} \Longleftrightarrow L \neq \emptyset \wedge \forall n_1, n_2 \in L:~\exists Path(n_1, n_2)$$
 
+Henceforth let $L$ be a loop.
+
 If a loop is completely contained inside another loop, it is said to be nested.
 
 $$\tilde{L}~\text{is nested in}~L \Longleftrightarrow \forall n \in \tilde{L}: n \in L$$
 
 If a loop has no nested loops inside of it, we will henceforth call it the \textit{innermost} loop.
 
-$$L~\text{is innermost loop} \Longleftrightarrow L~\text{is a loop}~\wedge \nexists L' \subsetneq L: L'~\text{is a loop}$$
+$$L~\text{is innermost loop} \Longleftrightarrow \nexists L' \subsetneq L: L'~\text{is a loop}$$
 
 Loops can furthermore have a header, which is the sole entry point into a loop~\cite{aebi18bachelorarbeit} and defined as follows:
 
@@ -122,7 +124,7 @@ Loop unrolling is a compiler optimization that attempts to duplicate the loop bo
 It is to be noted that the loop condition has to be checked less often, on account of each loop iteration being four times as long as in the original program.
 
 Further, it could also be used to vectorize the code, eliminate repeating conditions, and for many other following optimizations~\cite{fog_2018}.
-A negative side effect of loop unrolling is that the binary size increases and that there could be more pressure on the code cache and registers, meaning more spilled values, when executing the application~\cite{Sarkar2001}.
+A negative side effect of loop unrolling is that the binary size increases and that there could be more pressure on the code cache and registers, causing more spilled values~\cite{Sarkar2001}.
 
 \libFIRM~supports a restricted form of loop unrolling for loops that have static bounds and increments~\cite{helmer10studienarbeit}.
 This optimization was recently improved, but now requires the intermediary representation to be in LCSSA form, which means the~\libFIRM~intermediary representation has to be converted into LCSSA form prior to the optimization running\cite{aebi18bachelorarbeit}.
@@ -139,16 +141,18 @@ With these restrictions in place, only approximately 5\% of the innermost loops 
 A common problem with the loop unrolling shown in~\cref{fig:basics:old-loop-unrolling} is that it requires the number of iterations to be constant and divisible by the unroll factor.
 A way to tackle this issue is to use a construct known as Duff's device: It preemptively unrolls a loop with a given factor and uses~\textit{fixup} code to ensure that the remaining iterations are completed~\cite{duff_1983}.
 Mathematically this means the construct executes the loop body $\floor{\frac{M}{f}} \cdot f + M \mod F = M$ times, where $M$ is the number of total times the loop body would be executed without the transformation and where $f$ is the unroll factor.
-This property holds as mod has the following property:
-$$x \mod y = x - \floor{\frac{x}{y}} * y$$
-If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for M, we get the aforementioned form.
+This is due to the fact that mod is defined as:
+$$x \mod{} y = x - \floor{\frac{x}{y}} * y$$
+If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get the aforementioned form.
 
 \Cref{fig:basics:duff} shows an example of unrolling a loop with a non-divisible bound using a factor of eight\footnote{The original Duff's device used special C syntax to entangle the switch statement and loop~\cite{duff_1983}}.
 Duff's device copies the loop body eight times and to ensure that the number of executions is correct, the first time around the code jumps to the corresponding instruction, depending on the need for fixup code.
 
 Many compilers, such as GCC~\cite{gcc}, use Duff's device for unrolling loops and improving performance while keeping code size relatively small.
 
-\include{fig/loop-unrolling-duff}
+\input{fig/loop-unrolling-duff}
+
+\newpage
 
 \section{Overflow detection}\label{sec:basics:overflow}
 

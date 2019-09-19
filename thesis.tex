@@ -5,7 +5,7 @@
 
 % binding correction (BCOR) von 1cm für Leimbindung
 \KOMAoptions{BCOR=1cm}
-\KOMAoptions{draft=yes}
+%\KOMAoptions{draft=yes}
 
 \usepackage[utf8]{inputenc} % encoding of sources
 \usepackage[T1]{fontenc}
@@ -15,6 +15,7 @@
 \usepackage{mathtools}
 \usepackage{indentfirst}
 \setlength{\parindent}{5ex}
+\captionsetup[subfigure]{justification=justified,singlelinecheck=false}
 
 \title{Schleifenausrollen mit nicht konstanten Grenzen in FIRM}
 \author{Adrian~E.~Lehmann}
@@ -25,7 +26,9 @@
 \abgabedatum{\today{\year=2019 \month=0 \day=0}}
 
 \newcommand{\libFIRM}{lib\textsc{Firm}}
-
+\newcommand{\subfigfill}{
+   
+}
 \input{style/mathmacros.tex}
 \newtheorem{lem}{Lemma}
 

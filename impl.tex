@@ -73,7 +73,8 @@ We chose this design, for the reason that statically unrolling without any furth
 To get started with unrolling loops that have unknown bounds, we unroll them by a given factor without considering whether the transformation is semantically invariant.
 Semantic equivalence, which is broken due to the failure to consider how the factor relates to the original amount of iterations, will be restored in \cref{sec:impl:fixup}.
 
-Since~\libFIRM~already provides an unrolling mechanism for unrolling a loop with a given factor~\cite{aebi18bachelorarbeit}, this mechanism will be used to unroll the loop by a factor $f$.\footnote{N.B.: All following operations preserve the LCSSA property of the code.}
+\libFIRM~already provides an unrolling mechanism for unrolling a loop with a given factor $f$~\cite{aebi18bachelorarbeit}.\footnote{N.B.: All following operations preserve the LCSSA property of the code.}
+In order to avoid code duplication, we will use be utilizing this solution.
 
 Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before}~and~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \cref{fig:impl:unroll:unroll-factor-2-after} we duplicate the loop header, and that hence the number of conditional jumps did not decrease through the loop unroll.
@@ -91,6 +92,8 @@ We apply the same transformations to the descendants of the block itself.
 
 \input{fig/plain-unrolling.tex}
 
+\newpage
+
 \section{Fixup strategies}\label{sec:impl:fixup}
 
 In \cref{sec:impl:unroll} we discussed the unrolling process.
@@ -101,7 +104,7 @@ Therefore, we will create fixup code, as discussed in this section.
 \Cref{sec:impl:fixup:duff} uses a generalized version of Duff's device to create the required fixup code, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop will be used.
 After that, in \cref{sec:eval}, we evaluate, which approach yields faster binary run-times.
 
-To see the reason why and to understand what is required of fixup code, we formally lay out conditions that need to be met in the following equations~((\ref{eqn:impl:fixup:duff:conserve-semantics-identity}) through~(\ref{eqn:impl:fixup:duff:fixup-i-mult})).
+To see the reason why and to understand what is required of fixup code, we formally lay out conditions that need to be met in the equations~(\ref{eqn:impl:fixup:duff:conserve-semantics-identity}) through~(\ref{eqn:impl:fixup:duff:fixup-i-mult}).
 
 Let $M \in \mathbb{N}_0$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times the unrolled body will run in the unrolled loop, or the fixup code respectively, after the transformation.
 Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
@@ -284,6 +287,8 @@ Otherwise, it will route the control flow to the header and let the loop progres
 
 \input{fig/alg-preheader-check.tex}
 
+\newpage
+
 \subsection{Generalized Duff's device}\label{sec:impl:fixup:duff}
 
 \Cref{sec:basics:duffs} describes the original version of Duff's device.
@@ -317,13 +322,13 @@ An example of the result for creating fixup code for a loop and for $f = 2$, as 
 Further, \cref{fig:impl:fixup:duff:fixup-firm-comp} shows the completed unroll process with the added generalized Duff's device, given $f = 2$.
 Once this process is completed~\cref{fig:impl:fixup:duff:general-loop} shows the resulting structure in pseudo-code notation.
 
-\input{fig/firm-duff-fixup-compl-duff.tex}
-
-\input{fig/firm-duff-fixup.tex}
+\input{fig/general-loop-duff.tex}
 
 \input{fig/alg-create-fixup-duff.tex}
 
-\input{fig/general-loop-duff.tex}
+\input{fig/firm-duff-fixup-compl-duff.tex}
+
+\input{fig/firm-duff-fixup.tex}
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
@@ -362,6 +367,8 @@ Once this is completed, we can unroll the original loop.
 
 
 \input{fig/alg-create-fixup-loop.tex}
+
+\newpage
 
 \section{Selecting an unroll-factor}\label{sec:impl:sel-factor}
 

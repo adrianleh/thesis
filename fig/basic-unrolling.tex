@@ -1,4 +1,4 @@
-\begin{figure}[t]
+\begin{figure}
     \begin{subfigure}[b]{0.5\textwidth}
         \begin{algorithmic}
             \State $i \gets 0$
@@ -7,6 +7,7 @@
             \State $i \gets i + 1$
             \EndWhile
         \end{algorithmic}
+        \subfigfill
         \caption{Loop with constant bounds}
         \label{fig:intro:unroll-simple-before}
     \end{subfigure}
@@ -18,6 +19,7 @@
             \State \Call{Print}{$3$}
             \State \Call{Print}{$4$}
         \end{algorithmic}
+        \subfigfill
         \caption{Loop with constant bounds unrolled}
         \label{fig:intro:unroll-simple-after}
     \end{subfigure}

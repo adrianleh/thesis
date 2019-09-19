@@ -33,9 +33,9 @@ These reference results can be seen in \cref{fig:eval:perf:ref}.
 
 \input{fig/bench-result-ref.tex}
 
-\subsection{Duff's device fixup}\label{sec:eval:perf:duff}
+\newpage
 
-\input{fig/bench-result-duff.tex}
+\subsection{Duff's device fixup}\label{sec:eval:perf:duff}
 
 Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the obtained results.
 While for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to profit from unrolling with maximum sizes 32 and 64, by being close to 4.5\% faster.
@@ -47,8 +47,10 @@ As the averages of benchmark runtimes are, independent of the maximum loop size,
 
 \subsection{Loop fixup}\label{sec:eval:perf:loop}
 
-\input{fig/bench-result-loop.tex}
-
 Figures~\ref{fig:eval:perf:loop:32} through~\ref{fig:eval:perf:loop:1024} show the results obtained for the unrolling run with the loop fixup code.
 As was the case in~\cref{sec:eval:perf:duff}, there does not seem to be any noticeable performance gain or loss in any benchmark, except for \texttt{h264ref}, which again sped up through unrolling by upto 5\%.
 The other benchmark were, compared to the reference, within the interval $\lbrack 99\%, 103\% \rbrack$.
+
+\input{fig/bench-result-duff.tex}
+
+\input{fig/bench-result-loop.tex}
