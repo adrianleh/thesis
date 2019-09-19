@@ -21,15 +21,15 @@
 `               \Switch{$N \mod 4$}
                     \Case{$0$}
                         \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$ \Comment{Fallthrough}
+                        \State $i \gets i + 1$ \Comment{Fall-through}
                     \EndCase
                     \Case{$3$}
                         \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$ \Comment{Fallthrough}
+                        \State $i \gets i + 1$ \Comment{Fall-through}
                     \EndCase
                     \Case{$2$}
                         \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$ \Comment{Fallthrough}
+                        \State $i \gets i + 1$ \Comment{Fall-through}
                     \EndCase
                     \Case{$1$}
                         \State \Call{Print}{$i$}
@@ -48,6 +48,6 @@
         \end{algorithmic}
         \caption{A function with the loop unrolled using Duff's device}
     \end{subfigure}
-    \caption{A simple loop unrolled using duff's device}
+    \caption{A simple loop unrolled using Duff's device}
     \label{fig:basics:duff}
 \end{figure}

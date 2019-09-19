@@ -12,11 +12,11 @@
         \Switch{$N - i + (c \mp 1)$}
             \Case{$c \cdot f \upto c \cdot (f + 1)$} \Comment flip bounds for $c < 0$
                 \State \Call{DoSomething}{}
-                \State $i \gets i + c$
+                \State $i \gets i + c$ \Comment{Fall-through}
             \EndCase
             \Case{$c \cdot (f - 1) \upto c \cdot f$}
                 \State \Call{DoSomething}{}
-                \State $i \gets i + c$
+                \State $i \gets i + c$ \Comment{Fall-through}
             \EndCase
             \State
             \ldots

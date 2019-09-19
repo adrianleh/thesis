@@ -7,10 +7,10 @@
         Das Schleifenausrollen ist der Prozess, bei dem der Körper einer Schleife mehrfach dupliziert wird, um die Anzahl der bedingten Sprünge zu reduzieren.
         Während Schleifen mit konstanten Grenzen leicht ausgerollt werden können, erweist sich das Ausrollen von Schleifen mit nicht konstanten Grenzen als eine Herausforderung.
 
-        Da man nicht wei\ss{}, wie oft ein Schleifenkörper augeführt wird, reicht es nicht aus diese mit einem statischen Faktor auszurollen.
-        Allerdings ist es möglich spekulativ eine Schleife um einen bestimmten Faktor ausrollen.
+        In diesem Fall ist es jedoch möglich spekulativ eine Schleife um einen bestimmten Faktor ausrollen.
         Es muss jedoch sichergestellt werden, dass die ausgerollte Schleife, zwar so oft wie möglich ausgeführt wird, jedoch immer weniger oder gleich oft wie die ursprüngliche Schleife läuft.
         Um die daraus resultierende Diskrepanz zu kompensieren, wird sogenannter Fixup-Code erstellt, welcher für die Ausführung der restlichen Iterationen verantwortlich ist.
+        Hierfür werden zwei Strategien angewandt: Zum einen wird die orginale Schleife dupliziert oder zum anderen wird eine erweiterte Form von Duff's Device verwendet.
 
         Bei der abschlie\ss{}enden experimentellen Bewertung des Ansatzes wird deutlich, dass das Schleifenausrollen ohne weitere Optimierung nicht sinnvoll ist, da sich keine Beschleunigung au\ss{}erhalb der Messtoleranz feststellen lässt.
     \end{otherlanguage}
@@ -23,9 +23,9 @@
     Loop unrolling is the process of duplicating a loop's body multiple times to reduce the number of conditional jumps.
     While we can easily unroll loops with constant bounds, unrolling loops with non-constant bounds proves to be a different challenge.
 
-    Since one does not know the number of times a loop body is executed unrolling with a static factor will not suffice.
-    That said, we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop while running as often as possible, but run less than or equal times to the original loop.
+    In this case we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop while running as often as possible, but run less than or equal times to the original loop.
     To compensate for the hence resulting discrepancy, we create so-called fixup code, which is responsible for running the remaining iterations.
+    We chose two different strategies for creating the aforementioned fixup code: One where we duplicate the original loop and another where we utilize a generalized form of Duff's device.
 
     When experimentally evaluating the approach, even though we doubled the amount of unrollable loops to now unroll more than 10\% of all loops,  we cannot note any speed-up outside of the margin of error.
     The results hence indicate that loop unrolling does not seem to have a (significant) benefit without further optimization.
