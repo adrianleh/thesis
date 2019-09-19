@@ -5,14 +5,14 @@
     \vfill
     \begin{otherlanguage}{ngerman}
         Das Schleifenausrollen ist der Prozess, bei dem der Körper einer Schleife mehrfach dupliziert wird, um die Anzahl der bedingten Sprünge zu reduzieren.
-        Während Schleifen mit konstanten Grenzen leicht ausgerollt werden können, erweist sich das Ausrollen von Schleifen mit nicht konstanten Grenzen als eine Herausforderung.
+        Während die Schleifen mit konstanten Grenzen leicht ausrollbar ist, erweist sich das Ausrollen von Schleifen mit nicht konstanten Grenzen als eine Herausforderung.
 
-        In diesem Fall ist es jedoch möglich spekulativ eine Schleife um einen bestimmten Faktor ausrollen.
-        Es muss jedoch sichergestellt werden, dass die ausgerollte Schleife, zwar so oft wie möglich ausgeführt wird, jedoch immer weniger oder gleich oft wie die ursprüngliche Schleife läuft.
-        Um die daraus resultierende Diskrepanz zu kompensieren, wird sogenannter Fixup-Code erstellt, welcher für die Ausführung der restlichen Iterationen verantwortlich ist.
-        Hierfür werden zwei Strategien angewandt: Zum einen wird die orginale Schleife dupliziert oder zum anderen wird eine erweiterte Form von Duff's Device verwendet.
+        In diesem Fall ist es möglich spekulativ eine Schleife um einen bestimmten Faktor ausrollen, sofern sichergestellt wird, dass die ausgerollte Schleife so oft wie möglich ausgeführt wird, aber nicht öfter als die ursprüngliche Schleife.
+        Um die daraus resultierende Diskrepanz auszugleichen, wird sogennanter Fixup Code erstellt, der für die Ausführung der restlichen Iterationen verantwortlich ist.
+        Um den oben genannten Fixup Code zu erstellen werden zwei Ansätze verfolgt: Zum einen kann die Originalschleife dupliziert werden und zum anderen, in der eine generalisierte Form von Duff's Device verwendet wird.
 
-        Bei der abschlie\ss{}enden experimentellen Bewertung des Ansatzes wird deutlich, dass das Schleifenausrollen ohne weitere Optimierung nicht sinnvoll ist, da sich keine Beschleunigung au\ss{}erhalb der Messtoleranz feststellen lässt.
+        Bei der experimentellen Bewertung des Ansatzes, obwohl die Anzahl der ausrollbaren Schleifen verdoppelt wurde (auf 10\% aller Schleifen), können wir keine Beschleunigung au\ss{}erhalb des Messfehlers feststellen.
+        Die Ergebnisse deuten darauf hin, dass das Schleifenausrollen ohne weitere Optimierung keinen (signifikanten) Nutzen zu haben scheint.
     \end{otherlanguage}
     \vfill
 
