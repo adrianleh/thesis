@@ -41,8 +41,6 @@ Seeing this data, we would suspect \texttt{bzip2}, \texttt{mcf} and to a lesser 
 
 \input{fig/bench-result-ref.tex}
 
-\newpage
-
 \subsection{Duff's device fixup}\label{sec:eval:perf:duff}
 
 Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the obtained results.
@@ -50,8 +48,8 @@ While for most benchmarks the results hover around the 100\% mark, with no signi
 Though on account of the ratios of all the other benchmarks only diverting by three percent or less from the reference runtimes, unrolling does not seem to have a significant effect on performance.
 
 Further, we can expect a small percentage of systemic errors in our measurements due to system process scheduling and similar factors.
-Even though the standard deviations, owning they are usually very small, due to the highly controlled test environment, do not entirely account for these percentage deltas, they are small, yet measurable.
-As the averages of benchmark runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$ we can consider them to be within the margin of error.
+Even though the standard deviations, owning they are very small, due to the highly controlled test environment, do not entirely account for the percentage deltas, which are small, yet measurable.
+As the averages of runtimes are, independent of the maximum loop size, within $\lbrack 99\%, 101\% \rbrack$ we can consider them to be within the margin of error.
 
 \subsection{Loop fixup}\label{sec:eval:perf:loop}
 
@@ -59,7 +57,6 @@ Figures~\ref{fig:eval:perf:loop:32} through~\ref{fig:eval:perf:loop:1024} show t
 As was the case in~\cref{sec:eval:perf:duff}, there does not seem to be any noticeable performance gain or loss in any benchmark, except for \texttt{h264ref}, which again sped up through unrolling by upto 5\%.
 The other benchmark were, compared to the reference, within the interval $\lbrack 99\%, 103\% \rbrack$.
 It further becomes evident that there is no correlation between unrollability and performance gain, since, while \texttt{h264ref} has one of the highest unrollabilities, \texttt{bzip2} and \texttt{mcf} have higher unrollabilities, yet see no improvement.
-
 
 \input{fig/bench-result-duff.tex}
 
