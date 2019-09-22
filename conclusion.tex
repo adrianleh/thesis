@@ -5,19 +5,20 @@ Unfortunately the evidence is tainted by the fact that we still only unroll appr
 Even though through the added loop optimization, more loops were able to be unrolled, the increase in unrollability only led to about one in ten loops being unrolled, which certainly is a contributing factor to the underwhelming improvements.
 Probably some restrictions, such as disallowing \texttt{break}-like structures, are too limited and could be dealt with through further development.
 Other restrictions, such as the conservative alias, or call manipulation, checks for the bound are unavoidable if the semantics are to be kept and forthright inherent to the task at hand.
-Inconsiderate of these reasons, the eminent challenge seems to be the lack of performance gain through unrolling loops.
+Inconsiderate of these reasons, even the benchmarks with high unrollability of their loops, did not seem to benefit (with \texttt{h264ref} being an exception).
+Thus, the eminent challenge seems to be the lack of performance gain through unrolling loops.
 Further, it can be concluded that the choice of the fixup code strategy seems to have a negligible impact on performance.
-Due to the very low standard deviations across all benchmarks, this work also leads to a firm belief the obtained results are trustable and hence provide a solid foundation for empirical conclusions, like the ones drawn above.
+Due to the very low standard deviations across all benchmarks, the results also lead to a firm belief the obtained results are trustable and hence provide a solid foundation for empirical conclusions.
 
 Loop unrolling alone, seems to not (significantly) improves execution times without other optimizations improving the unrolled code.
 Therefore, it would be a natural starting point to use the unrolled loops and optimize their content further.
-Through the implicitly added semantics as for having a specific modulus, respective to $f$, for each unrolled block, an optimization could be created that takes advantage of this and could simplify mathematical operations.
-Before this potential is used, it would be a more lucrative endeavor, to stick to less fancy optimizations that can take advantage of the unrolled loop structures, such as automatically parallelizing non-conflicting operations.
+An optimization could be created that takes advantage of the implicitly added semantics as for having a specific modulus, respective to $f$, for each unrolled block.
+Before this potential is used, it likely would be a more lucrative endeavor, to stick to less fancy optimizations that can take advantage of the unrolled loop structures, such as automatically parallelizing non-conflicting operations.
 
 Another factor that might have influenced the results was the method used to determine the unroll-factor.
 In the future it could be evaluated, whether the performance would improve through a more sophisticated unroll-factor selection, with a multi-parameter cost function.
 
 Once these changes are in-place loop unrolling in~\libFIRM{} should be reevaluated, to be able to fully evaluate its feasibility.
 
-The efforts of increasing unrollable loops seem to currently exceed the benefits.
+Currently, the efforts of increasing unrollable loops seem to currently exceed the benefits.
 Though, for if the desire for more unroallability, should pick up again, it would seem a good point, to look at other loop structures, such as loops with breaks, or a non-counting loop, unlike the ones examined in this thesis.
