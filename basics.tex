@@ -127,9 +127,12 @@ Further, it could also be used to vectorize the code, eliminate repeating condit
 A negative side effect of loop unrolling is that the binary size increases and that there could be more pressure on the code cache and registers, causing more spilled values~\cite{Sarkar2001}.
 
 \libFIRM{} supports a restricted form of loop unrolling for loops that have static bounds and increments~\cite{helmer10studienarbeit}.
-This optimization was recently improved, but now requires the intermediary representation to be in LCSSA form, which means the~\libFIRM{} intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
-While it supports unrolling of many forms of loops, it currently still only unrolls loops with static bounds, since it otherwise works by duplicating the entire loop, including the header, multiple times and therefore does not decrease the amount of conditional jumps.
-The benefits of this optimization were very slim, likely since the requirements for a loop to be unrollable are very strict.
+This optimization was recently improved, but now requires the intermediary representation to be in LCSSA form, which means \libFIRM{}'s intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
+Though this optimization had no preconditions and merely duplicated the loop in the hope a later optimization would remove the duplicated headers, so that it resembles an unrolled loop of our definition, in which only the body (and not the header) is duplicated.
+In this form the amount of conditional jumps does not decrease in most cases, since the later optimization removing headers would not trigger.
+Hence, the application of this method showed no improvements, which caused preconditions for the later removal to be added~\cite{libfirm-unroll-static}.
+Currently, it only unrolls loops, like our loop, only with static bounds and for which a constant bit analysis can remove excess headers.
+The benefits of the now changed optimization were also very slim, likely since the requirements for a loop to now be unrollable are very strict.
 With these restrictions in place, only approximately 5\% of the innermost loops can be unrolled\footnote{Measured in \texttt{spec2006}}.
 
 
@@ -142,7 +145,7 @@ A common problem with the loop unrolling shown in~\cref{fig:basics:old-loop-unro
 A way to tackle this issue is to use a construct known as Duff's device: It preemptively unrolls a loop with a given factor and uses~\textit{fixup} code to ensure that the remaining iterations are completed~\cite{duff_1983}.
 Mathematically this means the construct executes the loop body $\floor{\frac{M}{f}} \cdot f + M \mod F = M$ times, where $M$ is the number of total times the loop body would be executed without the transformation and where $f$ is the unroll factor.
 This is due to the fact that mod is defined as:
-$$x \mod{} y = x - \floor{\frac{x}{y}} * y$$
+$$x \mod{} y = x - \floor{\frac{x}{y}} \cdot y$$
 If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get the aforementioned form.
 
 \Cref{fig:basics:duff} shows an example of unrolling a loop with a non-divisible bound using a factor of eight\footnote{The original Duff's device used special C syntax to entangle the switch statement and loop~\cite{duff_1983}}.
@@ -151,8 +154,6 @@ Duff's device copies the loop body eight times and to ensure that the number of 
 Many compilers, such as GCC~\cite{gcc}, use Duff's device for unrolling loops and improving performance while keeping code size relatively small.
 
 \input{fig/loop-unrolling-duff}
-
-\newpage
 
 \section{Overflow detection}\label{sec:basics:overflow}
 

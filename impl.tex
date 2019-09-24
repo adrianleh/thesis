@@ -185,10 +185,10 @@ The following lemma describes how this can be accomplished.
         &\overset{\star}{=} \ceil{\frac{X}{Y}}
     \end{align*}
     Now consider $X \mod Y \neq 0$.
-    In this case $\exists n \in \mathbb{N}: n \cdot Y < X < (n + 1) \cdot Y~(\star)$ and $\ceil{\frac{X}{Y}} \overset{\text{integer division}}{=} n + 1$.
+    In this case $\exists n \in \mathbb{N}: n \cdot Y < X < (n + 1) \cdot Y$ and $\ceil{\frac{X}{Y}} \overset{\text{integer division}}{=} n + 1$.
     \begin{alignat*}{2}
         \Rightarrow n \cdot Y + (Y - 1) &< X + (Y - 1) &&< (n + 1) \cdot Y + (Y - 1)\\
-        \Rightarrow (n + 1) \cdot Y - 1&\overset{\star}{<} X + (Y - 1) &&< (n + 2) \cdot Y\\
+        \Rightarrow (n + 1) \cdot Y - 1&< X + (Y - 1) &&< (n + 2) \cdot Y - 1\\
         \overset{\text{integers}}{\Rightarrow}  (n + 1) \cdot Y &\leq X + (Y - 1) &&< (n + 2) \cdot Y\\
         \overset{Y > 0}{\Rightarrow} \frac{(n + 1) \cdot Y}{Y} &\leq \frac{X + (Y - 1)}{Y} &&< \frac{(n + 2) \cdot Y}{Y}\\
         &\Rightarrow \frac{X + (Y - 1)}{Y} &&\overset{\text{integer divison}}= n + 1\\
