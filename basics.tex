@@ -37,13 +37,13 @@ It is important to note that a block always dominates itself.
 We define a loop to be a set of nodes that are all in a cyclical control-flow structure.
 Formally this can be expressed as:
 
-$$L~\text{is a loop} \Longleftrightarrow L \neq \emptyset \wedge \forall n_1, n_2 \in L:~\exists Path(n_1, n_2)$$
+$$L~\text{is a loop} \Longleftrightarrow L \neq \emptyset \wedge \forall n_1, n_2 \in L:~\exists Path(n_1, n_2) \subseteq L$$
 
 Henceforth let $L$ be a loop.
 
 If a loop is completely contained inside another loop, it is said to be nested.
 
-$$\tilde{L}~\text{is nested in}~L \Longleftrightarrow L' \subsetneq L \wedge L'~\text{is a loop}$$
+$$L'~\text{is nested in}~L \Longleftrightarrow L' \subsetneq L \wedge L'~\text{is a loop}$$
 
 If a loop has no nested loops inside of it, we will henceforth call it the \textit{innermost} loop.
 
@@ -127,7 +127,7 @@ Further, it could also be used to vectorize the code, eliminate repeating condit
 A negative side effect of loop unrolling is that the binary size increases and that there could be more pressure on the code cache and registers, causing more spilled values~\cite{Sarkar2001}.
 
 \libFIRM{} supports a restricted form of loop unrolling for loops that have static bounds and increments~\cite{helmer10studienarbeit}.
-This optimization was recently improved, but now requires the intermediary representation to be in LCSSA form, which means the~\libFIRM{} intermediary representation has to be converted into LCSSA form prior to the optimization running\cite{aebi18bachelorarbeit}.
+This optimization was recently improved, but now requires the intermediary representation to be in LCSSA form, which means the~\libFIRM{} intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
 While it supports unrolling of many forms of loops, it currently still only unrolls loops with static bounds, since it otherwise works by duplicating the entire loop, including the header, multiple times and therefore does not decrease the amount of conditional jumps.
 The benefits of this optimization were very slim, likely since the requirements for a loop to be unrollable are very strict.
 With these restrictions in place, only approximately 5\% of the innermost loops can be unrolled\footnote{Measured in \texttt{spec2006}}.

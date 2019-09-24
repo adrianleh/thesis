@@ -100,16 +100,16 @@ In \cref{sec:impl:unroll} we discussed the unrolling process.
 There, we did not consider the fixup code needed, but instead plainly focused on unrolling the loop.
 Firstly, we will now focus on making the loop run less than or equal times compared to the original loop in section~\cref{sec:impl:fixup:header-cond}.
 Less-than or equal is not good enough though, we want our transformed loop to run exactly as often as the original loop.
-Therefore, we will create fixup code, as discussed in this section.
+Therefore, we will create fixup code, as discussed in this section and its subsections.
 \Cref{sec:impl:fixup:duff} uses a generalized version of Duff's device to create the required fixup code, whereas in \cref{sec:impl:fixup:loop} a copy of the original loop will be used.
-After that, in \cref{sec:eval}, we evaluate, which approach yields faster binary run-times.
+After that, in \cref{sec:eval}, we evaluate which approach yields faster binary run-times.
 
-To see the reason why and to understand what is required of fixup code, we formally lay out conditions that need to be met in the equations~(\ref{eqn:impl:fixup:duff:conserve-semantics-identity}) through~(\ref{eqn:impl:fixup:duff:fixup-i-mult}).
+To see the reason why we need fixup code and to understand what is required of it, we formally lay out conditions that need to be met in the equations~(\ref{eqn:impl:fixup:duff:conserve-semantics-identity}) through~(\ref{eqn:impl:fixup:duff:fixup-i-mult}).
 
 Let $M \in \mathbb{N}_0$ be the number of times a loop runs before the transformation; $\Mloop \in \mathbb{N}_0$, $\Mfixup \in \mathbb{N}_0$ the number of times the unrolled body will run in the unrolled loop, or the fixup code respectively, after the transformation.
 Further, the unroll-factor will be again denoted by $f \in \mathbb{N}, f > 1$.
 Henceforth, we will assume all arithmetic operations to be integer operations for integers in the interval $\lbrack t_{min}, t_{max} \rbrack$.
-Please note that integer division will be assumed to round towards zero: For example $\frac{5}{3} \overset{\text{integer divison}}{=} 1$.
+Please note that unmarked integer division will be assumed to round towards zero: For example $\frac{5}{3} \overset{\text{integer divison}}{=} 1$.
 Another convention we will introduce is that any interval will be integral, meaning it will only contain integers.
 Additionally $x \mp y$ is henceforth defined as
 $\begin{cases}
@@ -128,7 +128,7 @@ Since we know our original loop ran $M$ times, we know that our transformed loop
 \end{equation}
 
 In order to use Duff's device, we need to restrict the amount of times the fixup code needs to run.
-With the kept semantics in mind, we will maximize $\Mloop$ and minimize $\Mfixup$.
+With the requirements to preserve the semantics in mind, we will maximize $\Mloop$ and minimize $\Mfixup$.
 
 \begin{equation}\label{eqn:impl:fixup:duff:loop-iterations}
 \begin{aligned}
@@ -138,7 +138,7 @@ With the kept semantics in mind, we will maximize $\Mloop$ and minimize $\Mfixup
 \end{equation}
 By construction of the unrolled loop, \cref{eqn:impl:fixup:duff:loop-iterations} is always true, as the unrolled loop tries to run as often as possible, while running less than or equal times to the original loop.
 \begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
-To prove the conjecture of \cref{eqn:impl:fixup:duff:loop-iterations}, consider the assumption
+To prove the conjecture of \cref{eqn:impl:fixup:duff:loop-iterations}, assume for contradiction
 \[\Mloop = M - f - b,  b \in \left \lbrack 0, f \right\lbrack \]
 and hence
 \[\Mloop \leq M - f \Rightarrow \Mloop \notin \medspace \rbrack M-f,f \rbrack,\]
@@ -158,7 +158,7 @@ As the loop runs as often as possible, the fixup code will always run less times
 \begin{proof}\label{proof:impl:fixup:duff:fixup-interval}
 Conjecture: $\Mfixup \in \lbrack0, f\lbrack$.\\
 
-Assume $\Mfixup = f' > (f - 1)$
+Assume for contradiction $\Mfixup = f' > (f - 1)$
 \begin{align*}
     \Mloop + \Mfixup &\overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{\geq} M - (f - 1) + f' \\
     &> M - (f - 1) + (f - 1) \\
@@ -186,15 +186,14 @@ The following lemma describes how this can be accomplished.
     \end{align*}
     Now consider $X \mod Y \neq 0$.
     In this case $\exists n \in \mathbb{N}: n \cdot Y < X < (n + 1) \cdot Y~(\star)$ and $\ceil{\frac{X}{Y}} \overset{\text{integer division}}{=} n + 1$.
-    \begin{align*}
-        \Rightarrow n \cdot Y + (Y - 1) < X + (Y - 1) < (n + 1) \cdot Y + (Y - 1)\\
-        \Rightarrow (n + 1) \cdot Y \overset{\star}{\leq} X + (Y - 1) < (n + 2) \cdot Y\\
-        \overset{Y > 0}{\Rightarrow} \frac{(n + 1) \cdot Y}{Y} \leq \frac{X + (Y - 1)}{Y} < \frac{(n + 2) \cdot Y}{Y}
-    \end{align*}
-    \begin{align*}
-        \Rightarrow \frac{X + (Y - 1)}{Y} &\overset{\text{integer divison}}= n + 1\\
-        &= \ceil{\frac{X}{Y}}
-    \end{align*}
+    \begin{alignat*}{2}
+        \Rightarrow n \cdot Y + (Y - 1) &< X + (Y - 1) &&< (n + 1) \cdot Y + (Y - 1)\\
+        \Rightarrow (n + 1) \cdot Y - 1&\overset{\star}{<} X + (Y - 1) &&< (n + 2) \cdot Y\\
+        \overset{\text{integers}}{\Rightarrow}  (n + 1) \cdot Y &\leq X + (Y - 1) &&< (n + 2) \cdot Y\\
+        \overset{Y > 0}{\Rightarrow} \frac{(n + 1) \cdot Y}{Y} &\leq \frac{X + (Y - 1)}{Y} &&< \frac{(n + 2) \cdot Y}{Y}\\
+        &\Rightarrow \frac{X + (Y - 1)}{Y} &&\overset{\text{integer divison}}= n + 1\\
+        & &&= \ceil{\frac{X}{Y}}
+    \end{alignat*}
 \end{proof}
 
 Using our now derived lemma, we use the loop parameters $I$, $N$ and $c$ to calculate the total number of loop iterations.
@@ -206,7 +205,7 @@ Using our now derived lemma, we use the loop parameters $I$, $N$ and $c$ to calc
 \end{aligned}
 \end{equation}
 
-With this result we can then in the actual product calculate $M$ accurately, since it is generally unknown.
+With this result we can then calculate $M$ accurately from the structure of the loop, since $M$ is not directly known.
 Since $I$ is not the initial value for the fixup's counter, we will need to calculate it based on known parameters.
 
 \begin{equation}\label{eqn:impl:fixup:duff:i-after-loop}

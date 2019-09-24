@@ -6,7 +6,7 @@ One of the primary goals of this thesis was to increase the number of loops that
 To evaluate to what extent this goal was achieved\footnote{N.B.: The test was conducted with a max loop size of $\infty$}, we ran the benchmark suite \texttt{spec2006}, and logged how many loops we encountered, how many of them were innermost loops, how many could be unrolled using the old method, and how many that were previously not unrollable can now be unrolled.
 Considering it is expected for many loops to have non-constant bounds, such as the length of a container data-structure (e.g., a list or an unbounded array), we predicted to cause a significant increase in unrollable loops.
 \Cref{fig:eval:unrollability:cmp-unrollability} shows a table with the results.
-We can see as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 4.17\% of the innermost loops could be unrolled.
+We can see as mentioned in \cref{sec:basics:unrolling}, that prior to the new optimization, 5.87\% of the innermost loops could be unrolled.
 Now we can unroll an additional 7.37\% of loops.
 Contrasted to the baseline of the constant bound unrolled loops this is a 125.65\% increase.
 This means we more than doubled the number of unrollable loops using our approach.
@@ -35,7 +35,7 @@ These reference results can be seen in \cref{fig:eval:perf:ref}.
 In order to evaluate our findings in terms of performance, we should compare them to unrollability broken down by benchmark.
 \Cref{fig:eval:unrollability:cmp-unrollability-bench} shows the number of unrollable loops\footnote{Both constant and non-constant bound unrollable loops are considered together} compared to the total number of loops.
 Like in \cref{fig:eval:unrollability:cmp-unrollability}, we assume a maximum size of infinity to collect this data.
-Seeing this data, we would suspect \texttt{bzip2}, \texttt{mcf} and to a lesser extent \texttt{h264ref} to have the most considerable speedup.
+Seeing this data, we would suspect \texttt{bzip2}, \texttt{mcf} and to a lesser extent (even though it has the most unrollable loops in absolute terms) \texttt{h264ref} to have the most considerable speedup.
 
 \input{fig/result-unrollability-bench.tex}
 
@@ -43,7 +43,7 @@ Seeing this data, we would suspect \texttt{bzip2}, \texttt{mcf} and to a lesser 
 
 \subsection{Duff's device fixup}\label{sec:eval:perf:duff}
 
-Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the obtained results.
+Figures~\ref{fig:eval:perf:duff:32} through~\ref{fig:eval:perf:duff:1024} show the results we obtained.
 While for most benchmarks the results hover around the 100\% mark, with no significant benefit or drawback, \texttt{h264ref} seems to profit from unrolling with maximum sizes 32 and 64, by being close to 4.5\% faster.
 Though on account of the ratios of all the other benchmarks only diverting by three percent or less from the reference runtimes, unrolling does not seem to have a significant effect on performance.
 
