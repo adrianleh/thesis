@@ -10,7 +10,7 @@ After that, we will create the \textit{fixup code}\footnote{The term \textit{fix
 , as described in \cref{sec:impl:fixup}.
 
 It is to be noted that in terms of actually implementing this procedure, we will create the fixup code \textit{before} unrolling the loop.
-While this order seems counter-intuitive, we chose it in order to simplify loop duplication, as described in~\cref{sec:impl:fixup:loop}.
+While this order seems counter-intuitive, we chose it in order to simplify the implementation of loop duplication, as described in~\cref{sec:impl:fixup:loop}.
 
 
 Henceforth, we assume loops to be in the form of the loop shown in~\cref{fig:impl:general-loop}.
@@ -39,7 +39,7 @@ Nested loops inherently cause larger code sizes and hardly saves jumps, since mo
 Therefore, the restriction will in practice most likely not harm performance.
 \Cref{sec:impl:sel-factor} describes the mechanics for determining if and how a given loop should be unrolled based on size.
 
-Moreover, in order for loops to be in the form described in \cref{sec:impl}, loops have to have a header, which itself controls the control flow by comparing a counter to a bound, using any of the four allowed comparison types.
+Moreover, in order for loops to be in the form described in \cref{fig:impl:general-loop}, loops have to have a header, which itself controls the control flow by comparing a counter to a bound, using any of the four allowed comparison types.
 The header is the only point in the loop from which the loop can exit; meaning there are no conditionals in the body that allow the control flow to leave the loop.
 This primarily requires there not to be any \texttt{break}-like structures.
 
@@ -268,17 +268,17 @@ Note that even though, we are calculating the rounding to a multiple of $f$ with
 \Cref{fig:impl:fixup:header-cond:firm} shows the comparison of the original condition to the changed header condition, for the loop shown in \cref{fig:impl:fixup:fixup-firm-loop}.
 It is to be noted that the graph in graph with bound $\hat{N}$ can be constant folded to the same size, as the original header.
 
-\input{fig/firm-duff-fixup-loop.tex}
-
 \input{fig/changed-loop-condition.tex}
+
+\input{fig/firm-duff-fixup-loop.tex}
 
 We know that $c \cdot (f + 1)$ cannot over- or underflow, as per the preconditions laid out in \cref{sec:impl:unrollability}.
 Since $f > 0$, $c \cdot (f - 1)$ will therefore also not overflow.
 Though, $N - c \cdot (f - 1)$ can still over- or underflow, due to the subtraction of $c \cdot (f - 1)$ from $N$, and hence there is nevertheless a possibility to construct an example where this change does not conserve semantics.
 
-Suppose the datatype of a loop with parameters $N = 2, I = 0, c = 1, cmp = <$ is an unsigned integer (with more than two bits), and we unroll this loop by a factor of four.
+Suppose the datatype of a loop with parameters $N = 2, I = 0, c = 1, cmp = <$ is a 32-bit unsigned integer, and we unroll this loop by a factor of four.
 In this case $\hat{N} = 2 - 1 \cdot (4 - 1) = -1 \overset{\text{unsigned integer}}{=} t_{max}$.
-With this bound the loop would run $t_{max} > 2$ times.
+Thus, the loop would run $t_{max} > 2$ times.
 
 To circumvent this problem, we use \cref{alg:basics:overflow:detect} from \cref{sec:basics:overflow} as a check for over- or underflows of the operation.
 We implement this check by placing a block between the header and its predecessors.
@@ -333,7 +333,7 @@ Once this process is completed~\cref{fig:impl:fixup:duff:general-loop} shows the
 
 \subsection{Loop duplication}\label{sec:impl:fixup:loop}
 
-Another, perhaps simpler, way of creating fixup code is, to duplicate the original loop, such that it will run $\Mloop$ times after the unrolled loop.
+Another, perhaps simpler, way of creating fixup code is to duplicate the original loop, such that it will run $\Mloop$ times after the unrolled loop.
 Just like when using the generalized form of Duff's device, we unroll the loop using the existing mechanics by a factor of $f$.
 Therefore, equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:i-after-loop} still hold true.
 

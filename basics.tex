@@ -47,7 +47,7 @@ $$L'~\text{is nested in}~L \Longleftrightarrow L' \subsetneq L \wedge L'~\text{i
 
 If a loop has no nested loops inside of it, we will henceforth call it the \textit{innermost} loop.
 
-$$L~\text{is innermost loop} \Longleftrightarrow \nexists L': L'~\text{is a loop nested loop in}~L$$
+$$L~\text{is innermost loop} \Longleftrightarrow \nexists L': L'~\text{is a nested loop in}~L$$
 
 Loops can furthermore have a header, which is the sole entry point into a loop~\cite{aebi18bachelorarbeit} and defined as follows:
 
@@ -77,14 +77,14 @@ In a loop or a conditional statement, a scenario might arise where a given value
 In cases like these we can use a \textit{$\Phi$-function}.
 A $\Phi$-function is a theoretical construct that returns the correct value depending on the control-flow predecessor.
 
-\Cref{fig:basics:SSA-simple} shows an example of the use of a $\Phi$-function, where depending on the control-flow, either $m_1$ or $m_2$  are selected.
+\Cref{fig:basics:SSA-phi} shows an example of the use of a $\Phi$-function, where depending on the control-flow, either $m_1$ or $m_2$  are selected.
 \input{fig/max-ssa.tex}
 
 % LCSAA
 
 \section{Loop-Closed-Single-Static-Assignment (LCSSA)}\label{sec:basics:LCSSA}
 
-An extension to the SSA form is the \textit{loop-closed-single-static-assignment} (\textit{LCSSA}) form.
+An extension to the aforementioned SSA form is the \textit{loop-closed-single-static-assignment} (\textit{LCSSA}) form.
 A CFG in LCSSA form has all properties that a CFG in SSA form has, and additionally the property that each value assigned in a given loop and used outside of this loop has to be used by a $\Phi$-node in the first block after the loop.
 This form is used to reduce special casing when transforming loops~\cite{aebi18bachelorarbeit}, and is therefore used through all of~\cref{sec:impl}.
 
@@ -152,6 +152,7 @@ If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get the a
 Duff's device copies the loop body eight times and to ensure that the number of executions is correct, the first time around the code jumps to the corresponding instruction, depending on the need for fixup code.
 
 Many compilers, such as GCC~\cite{gcc}, use Duff's device for unrolling loops and improving performance while keeping code size relatively small.
+Further \libFIRM{} previously utilized Duff's device for unrolling loops with static bounds, but for which no unroll factor could be determined~\cite{helmer10studienarbeit}.
 
 \input{fig/loop-unrolling-duff}
 
@@ -160,6 +161,6 @@ Many compilers, such as GCC~\cite{gcc}, use Duff's device for unrolling loops an
 When subtracting (or adding) two numbers that are in some form of integer-like representation the operation might over- or underflow, because the integer representation is a fixed bit two's complement representation.
 Due to the therefore inherent limitation to the range of possible values, this problem is unavoidable, yet detectable.
 
-\Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, where x, a \in \NInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.
+\Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, \text{ where } x, a \in \NInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.
 \input{fig/alg-detect-overflow.tex}
 

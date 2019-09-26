@@ -10,17 +10,17 @@
             \EndWhile
         \EndIf
         \Switch{$N - i + (c \mp 1)$}
-            \Case{$c \cdot f \upto c \cdot (f + 1)$} \Comment flip bounds for $c < 0$
+            \Case{$\lbrack c \cdot f, c \cdot (f + 1)\lbrack$} \Comment flip bounds for $c < 0$
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$ \Comment{Fall-through}
             \EndCase
-            \Case{$c \cdot (f - 1) \upto c \cdot f$}
+            \Case{$\lbrack c \cdot (f - 1), c \cdot f \lbrack$}
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$ \Comment{Fall-through}
             \EndCase
             \State
             \ldots
-            \Case{$c \cdot 1 \upto c \cdot 2$}
+            \Case{$\lbrack c \cdot 1, c \cdot 2\lbrack$}
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$
             \EndCase

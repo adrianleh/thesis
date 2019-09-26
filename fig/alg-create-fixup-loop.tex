@@ -1,7 +1,7 @@
 \begin{algorithm}[H]
     \begin{algorithmic}
         \Function{CreateFixupLoop}{$loop: \text{Loop}$}
-            \State $loop' \gets $ \Call{ExactCopy}{$loop$}
+            \State $loop' \gets\text{ }$ \Call{ExactCopy}{$loop$}
             \For{$succ \in loop.header.successors$}
                 \If{$succ.loop \notin loop$}
                     \State $succ.predecessors \gets succ.predecessors \backslash \{loop.header\} \cup \{loop'.header\}$

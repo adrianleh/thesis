@@ -24,9 +24,9 @@
     While we can easily unroll loops with constant bounds, unrolling loops with non-constant bounds proves to be a different challenge.
 
     In this case we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop runs as often as possible, but less than or equal times to the original loop.
-    To compensate for the resulting discrepancy, we create so-called fixup code, which is responsible for running the remaining iterations.
+    To compensate for the discrepancy, we create so-called fixup code, which is responsible for running the remaining iterations.
     We choose two different strategies for creating the aforementioned fixup code: One where we duplicate the original loop and another where we utilize a generalized form of Duff's device.
 
     When experimentally evaluating the approach, even though we double the amount of unrollable loops to now unroll more than 10\% of all loops,  we cannot note any speed-up outside of the margin of error.
-    The results hence indicate that loop unrolling does not seem to have a (significant) benefit without further optimization.
+    The results indicate that loop unrolling does not seem to have a (significant) benefit without further optimization.
 \end{abstract}

@@ -12,7 +12,7 @@
                 \EndIf
             \EndFor
             \State $relation \gets header.cmp.relation$
-            \State $inverseRelation \gets $ \Call{GetInverseRelation}{$relation$}
+            \State $inverseRelation \gets\text{ }$ \Call{GetInverseRelation}{$relation$}
             \State $duffHeader \gets NewEmptyBlock$
             \State $duffHeader.predecessors \gets \{loop.header\}$
             \State $val \gets duffHeader.addNode(N - i + (c
@@ -25,13 +25,13 @@
             \State $prevLast: \text{Block}$
             \State $prevCond: \text{Block}$
             \For{$body \in duplicatedLoopBodies$}
-                \State $firstBlock \gets$ \Call{GetFirstBlockInBody}{$body$}
-                \State $condBlock \gets$ \Call{NewEmptyBlock}{}
+                \State $firstBlock \gets\text{ }$ \Call{GetFirstBlockInBody}{$body$}
+                \State $condBlock \gets\text{ }$ \Call{NewEmptyBlock}{}
                 \State $cond \gets val \medspace `relation` \medspace (factor - i) \medspace \wedge \medspace val \medspace `inverseRelation` \medspace (factor - i - 1)$
                 \State $condBlock.addNode(cond)$
                 \State $condBlock.predecessors \gets \begin{cases}\{duffHeader\} &, \medspace i = 0\\ \{prevCond.falseExit, \medspace prevLast\} &, \medspace i \neq 0\end{cases}$
                 \State $firstBlock.predecessors \gets cond.trueExit$
-                \State $prevLast \gets$ \Call{GetLastBlockInBody}{$body$}
+                \State $prevLast \gets\text{ }$ \Call{GetLastBlockInBody}{$body$}
                 \State $prevCond \gets cond$
                 \For{$phi \in body.phis$}
                     \State $phi.predecessors \gets \begin{cases}\{phi.link.predecessors\} &, \medspace i = 0\\ \{phi.link.predecessors, \medspace prevLast.exitFor(phi)\} &, \medspace i \neq 0\end{cases}$
