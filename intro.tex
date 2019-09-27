@@ -13,8 +13,8 @@ While converting the program into machine code the compiler optimizes the code.
 This is only beneficial to the developer, as it ensures that his/her application, in the end, runs faster and/or requires fewer system resources.
 A simple example of an optimziation is constant folding, where the compiler analyzes code and precalculates all constant values, instead of letting the operations on them waste valuable runtime to calculate each time the application runs.
 An example can be seen below:
-Humans immediately see that in~\cref{fig:intro:cf1} $b$ is always equal to $9$ and using constant folding the compiler will be able to also perform this precomputation.
-The result of this can be seen in~\cref{fig:intro:cf2}.
+Humans immediately see that in~\Cref{fig:intro:cf1} $b$ is always equal to $9$ and using constant folding the compiler will be able to also perform this precomputation.
+The result of this can be seen in~\Cref{fig:intro:cf2}.
 Therefore, the optimization reduces the runtime of the (admittedly small) program, by virtue of there being one less calculation required.
 Simplifying just one expression seems (and for a matter of fact is) quite useless, but in real-world code, an optimization like this can be applied on numerous similar expressions and hence noticeably improves the final product.
 
@@ -22,13 +22,13 @@ Simplifying just one expression seems (and for a matter of fact is) quite useles
 
 Of course there is a plethora of possibilities to optimize code.
 Considering that loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2006): 8.6\% of FIRM nodes are in loops}, they are a natural point to focus optimization efforts upon.
-Loops can be unrolled fairly straight forward if you know how often they are iterated, as is discussed in~\cref{sec:basics}.
+Loops can be unrolled fairly straight forward if you know how often they are iterated, as is discussed in~\Cref{sec:basics}.
 
-For example,~\cref{fig:intro:unroll-simple-before} can be easily converted to~\cref{fig:intro:unroll-simple-after}, while keeping all semantics intact.
-In~\cref{fig:intro:unroll-nostatic-bound} things get trickier, since the (exact) value of $N$ is unknown, simply unrolling a loop by copying its body a fixed number of times does not preserve the original semantics.
+For example,~\Cref{fig:intro:unroll-simple-before} can be easily converted to~\Cref{fig:intro:unroll-simple-after}, while keeping all semantics intact.
+In~\Cref{fig:intro:unroll-nostatic-bound} things get trickier, since the (exact) value of $N$ is unknown, simply unrolling a loop by copying its body a fixed number of times does not preserve the original semantics.
 
-In~\cref{sec:basics} fundamentals for working with these loops are discussed, which are enhanced, juxtaposed and integrated in~\cref{sec:impl}.
-Finally, in~\cref{sec:eval} we evaluate the approach experimentally to see whether it yields a tangible benefit.
+In~\Cref{sec:basics} fundamentals for working with these loops are discussed, which are enhanced, juxtaposed and integrated in~\Cref{sec:impl}.
+Finally, in~\Cref{sec:eval} we evaluate the approach experimentally to see whether it yields a tangible benefit.
 
 \input{fig/basic-unrolling.tex}
 

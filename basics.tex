@@ -86,9 +86,9 @@ A $\Phi$-function is a theoretical construct that returns the correct value depe
 
 An extension to the aforementioned SSA form is the \textit{loop-closed-single-static-assignment} (\textit{LCSSA}) form.
 A CFG in LCSSA form has all properties that a CFG in SSA form has, and additionally the property that each value assigned in a given loop and used outside of this loop has to be used by a $\Phi$-node in the first block after the loop.
-This form is used to reduce special casing when transforming loops~\cite{aebi18bachelorarbeit}, and is therefore used through all of~\cref{sec:impl}.
+This form is used to reduce special casing when transforming loops~\cite{aebi18bachelorarbeit}, and is therefore used through all of~\Cref{sec:impl}.
 
-To visualize this property,~\cref{fig:basics:LCSSA} depicts its effect.
+To visualize this property,~\Cref{fig:basics:LCSSA} depicts its effect.
 
 \input{fig/lcssa-example.tex}
 
@@ -111,7 +111,7 @@ Another set of functionality that~\libFIRM{}  provides is loop information.
 Thus one can quickly determine, whether a loop is an innermost loop~\cite{libfirm}.
 Further,~\libFIRM{} also allows for finding the basics block that is the header of a loop, given that it has a header~\cite{aebi18bachelorarbeit}.
 
-\Cref{fig:basics:firm} portrays an example firm graph of the program initially shown in~\cref{fig:basics:SSA-phi}.
+\Cref{fig:basics:firm} portrays an example firm graph of the program initially shown in~\Cref{fig:basics:SSA-phi}.
 It is especially to be noted that the graph is in SSA form, since it contains a $\Phi$-node, and has both memory, data and control-flow edges.
 \input{fig/max.tex}
 
@@ -141,7 +141,7 @@ With these restrictions in place, only approximately 5\% of the innermost loops 
 % Duff's Device
 \section{Duff's device}\label{sec:basics:duffs}
 
-A common problem with the loop unrolling shown in~\cref{fig:basics:old-loop-unrolling} is that it requires the number of iterations to be constant and divisible by the unroll factor.
+A common problem with the loop unrolling shown in~\Cref{fig:basics:old-loop-unrolling} is that it requires the number of iterations to be constant and divisible by the unroll factor.
 A way to tackle this issue is to use a construct known as Duff's device: It preemptively unrolls a loop with a given factor and uses~\textit{fixup} code to ensure that the remaining iterations are completed~\cite{duff_1983}.
 Mathematically this means the construct executes the loop body $\floor{\frac{M}{f}} \cdot f + M \mod F = M$ times, where $M$ is the number of total times the loop body would be executed without the transformation and where $f$ is the unroll factor.
 This is due to the fact that mod is defined as:
