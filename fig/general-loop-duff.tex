@@ -3,7 +3,7 @@
     \begin{algorithmic}
         \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >, \leq, \geq\}$}
         \State $i \gets I$
-        \If{$N > c \cdot (f - 1)$}
+        \If{$\neg$\Call{SubtractionWillLeaveBounds}{$N - c \cdot (f - 1)$}}
             \While{$i~`cmp`~ (N - c \cdot (f - 1))$}
                 \State \Call{DoSomething}{} \Comment{$f$ times}
                 \State $i \gets i + c$ \Comment{$f$ times}

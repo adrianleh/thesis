@@ -1,7 +1,7 @@
 \begin{figure}[H]
 	\begin{algorithmic}
 		\State $i \gets 0$
-		\While{i < 21}
+		\While{i < 21} \Comment{Overflow check omitted, as it would be constant folded}
 			\State \Call{Print}{$\text{HelloWorld}$}
 			\State $i \gets i + 3$
 			\State \Call{Print}{$\text{HelloWorld}$}
