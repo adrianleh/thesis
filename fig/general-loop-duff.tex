@@ -14,9 +14,13 @@
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$ \Comment{Fall-through}
             \EndCase
+            \Case{$\left \lbrack c \cdot (f - 2), c \cdot (f - 1) \right \lbrack$} \Comment flip bounds for $c < 0$
+                \State \Call{DoSomething}{}
+                \State $i \gets i + c$ \Comment{Fall-through}
+            \EndCase
             \State
             \ldots
-            \Case{$\lbrack c \cdot 1, c \cdot 2\lbrack$}
+            \Case{$\lbrack c \cdot 1, c \cdot 2\lbrack$} \Comment flip bounds for $c < 0$
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$
             \EndCase

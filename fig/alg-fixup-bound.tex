@@ -4,8 +4,11 @@
             \Case{$\left \lbrack c \cdot (f - 1), c \cdot f \right \lbrack$} \Comment flip bounds for $c < 0$
                 \State \Call{Body}{}
             \EndCase
+            \Case{$\left \lbrack c \cdot (f - 2), c \cdot (f - 1) \right \lbrack$} \Comment flip bounds for $c < 0$
+                \State \Call{Body}{}
+            \EndCase
             \State \ldots
-            \Case{$\left \lbrack c \cdot 1, c \cdot 2 \right \lbrack$}
+            \Case{$\left \lbrack c \cdot 1, c \cdot 2 \right \lbrack$} \Comment flip bounds for $c < 0$
                 \State \Call{Body}{}
             \EndCase
         \EndSwitch

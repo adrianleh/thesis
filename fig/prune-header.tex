@@ -9,9 +9,9 @@
             \EndFor
         \EndFunction
         \State{}
-        \Function{PrunePhi}{$phi: \text{Phi-Node}, copiedHeader: \text{Block}$}
+        \Function{PrunePhi}{$phi: \Phi \text{-node}, copiedHeader: \text{Block}$}
             \ForAll{$out \in phi.descendants$}
-                \State \Comment $out$ is ensured to be $\Phi$ node by the LCSSA construction algorithm~\cite{aebi18bachelorarbeit}
+                \State \Comment $out$ is ensured to be $\Phi$-node by the LCSSA construction algorithm~\cite{aebi18bachelorarbeit}
                 \If{$out.block \neq copiedHeader$}
                     \State $out.predecessors \gets (out.predecessors \backslash \{phi\}) \cup \newline \{n \vert  n \in phi.predecessors, n.loop = out.loop\}$
                 \EndIf

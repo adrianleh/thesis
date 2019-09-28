@@ -1,30 +1,29 @@
 \begin{algorithm}[H]
     \begin{algorithmic}
         \Function{CreateFixupLoop}{$loop: \text{Loop}$}
-            \State $loop' \gets\text{ }$ \Call{ExactCopy}{$loop$}
+            \State $loop' \gets$ \Call{ExactCopy}{$loop$} \Comment{$loop$ is not unrolled yet}
             \State $header \gets loop.header$
             \State $header' \gets loop'.header$
-            \For{$succ \in header.successors$}
+            \ForAll{$succ \in header.successors$}
                 \If{$succ.loop \notin loop$}
                     \State $succ.predecessors \gets succ.predecessors \backslash \{header\} \cup \{header'\}$
                 \EndIf
             \EndFor
-            \For{$node \in header$}
-                \For{$succ \in header.successors$}
+            \ForAll{$node \in header$}
+                \ForAll{$succ \in header.successors$}
                     \If{$succ.loop \notin loop$}
                         \State $succ.predecessors \gets succ.predecessors \backslash \{node\} \cup \{node.link\}$
                     \EndIf
                 \EndFor
             \EndFor
-            \For{$phi \in header.phis$}
-                \For{$pred \in phi.predecessors$}
+            \ForAll{$phi \in header.phis$}
+                \ForAll{$pred \in phi.predecessors$}
                     \If{$pred \notin loop$}
                         \State $phi.link.predecessors \gets phi.link.predecessors \backslash \{pred\} \cup \{phi\}$
                     \EndIf
                 \EndFor
             \EndFor
             \State $header'.predecessors \gets \{header.falseExit\}$
-            \Comment{Now unroll $loop$}
         \EndFunction
     \end{algorithmic}
     \caption{The algorithm to create a fixup loop in~\libFIRM}

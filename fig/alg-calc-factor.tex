@@ -1,9 +1,9 @@
 \begin{algorithm}[H]
     \begin{algorithmic}
-        \Function{CalculateFactor}{$loop: \text{loop}, maxSize: \mathbb{N}_{>0}$}
-            \State $loopSize \gets\text{ }$ \Call{CountNodes}{$loop$}
+        \Function{CalculateFactor}{$loop: \text{Loop}, maxSize: \mathbb{N}_{>0}$}
+            \State $loopSize \gets$ \Call{CountNodes}{$loop$}
             \State $factorPlain \gets maxSize \div loopSize$
-            \State $factor_h \gets\text{ }$ \Call{RoundToNextHigherPowerOfTwo}{$factorPlain$}
+            \State $factor_h \gets$ \Call{RoundToNextHigherPowerOfTwo}{$factorPlain$}
             \State $factor_l \gets factor_h \div 2$
             \State $size_{h,l} \gets loopSize \cdot factor_{h,l}$
             \If{$\norm{size_h - maxsize} < \norm{size_l - maxsize}$}

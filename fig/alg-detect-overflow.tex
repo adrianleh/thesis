@@ -1,7 +1,7 @@
 \begin{algorithm}[H]
     \begin{algorithmic}
         \Function{SubtractionWillLeaveBounds}{$x, a: \NInt$}
-            \State $overflow \gets\text{ }$\Call{HightestBitSet}{$x$}$ \wedge (a > t_{max} + x)$
+            \State $overflow \gets$\Call{HightestBitSet}{$x$}$ \wedge (a > t_{max} + x)$
             \State $underflow \gets (x > 0) \wedge (a < t_{min} + x)$
             \State \Return $overflow \vee underflow$
         \EndFunction
