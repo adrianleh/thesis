@@ -267,7 +267,7 @@ Therefore we change the header condition of the unrolled loop to $i~`cmp`~\hat{N
 Note that even though, we are calculating the rounding to a multiple of $f$ without the need for a slow division operation.
 
 \Cref{fig:impl:fixup:header-cond:firm} shows the comparison of the original condition to the changed header condition, for the loop shown in \Cref{fig:impl:fixup:fixup-firm-loop}.
-It is to be noted that the graph in graph with bound $\hat{N}$ can be constant folded to the same size, as the original header.
+It is to be noted that the graph with bound $\hat{N}$ can be constant folded to the same size, as the original header.
 
 \input{fig/changed-loop-condition.tex}
 
