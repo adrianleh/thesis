@@ -1,10 +1,7 @@
 \begin{figure}[H]
     \begin{algorithmic}
         \Switch{$N - \ipl + (c \mp 1)$}
-            \Case{$\left \lbrack c \cdot f, c \cdot (f + 1) \right \lbrack$} \Comment flip bounds for $c < 0$
-                \State \Call{Body}{}
-            \EndCase
-            \Case{$\left \lbrack c \cdot (f - 1), c \cdot f \right \lbrack$}
+            \Case{$\left \lbrack c \cdot (f - 1), c \cdot f \right \lbrack$} \Comment flip bounds for $c < 0$
                 \State \Call{Body}{}
             \EndCase
             \State \ldots

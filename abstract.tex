@@ -7,12 +7,12 @@
         Das Schleifenausrollen ist der Prozess, bei dem der Körper einer Schleife mehrfach dupliziert wird, um die Anzahl der bedingten Sprünge zu reduzieren.
         Während Schleifen mit konstanten Grenzen leicht ausrollbar sind, erweist sich das Ausrollen von Schleifen mit nicht konstanten Grenzen als eine Herausforderung.
 
-        In diesem Fall ist es möglich, spekulativ eine Schleife um einen bestimmten Faktor auszurollen, sofern sichergestellt wird, dass die ausgerollte Schleife so oft wie möglich ausgeführt wird, aber nicht öfter als die ursprüngliche Schleife.
-        Um die daraus resultierende Diskrepanz auszugleichen, wird sogennanter Fixup Code erstellt, der für die Ausführung der restlichen Iterationen verantwortlich ist.
-        Um den oben genannten Fixup Code zu erstellen werden zwei Ansätze verfolgt: Zum einen kann die Originalschleife dupliziert werden und zum anderen, eine generalisierte Form von Duff's Device verwendet wird.
+        In diesem Fall ist es möglich, spekulativ eine Schleife um einen bestimmten Faktor auszurollen, sofern sichergestellt wird, dass die ausgerollte Schleife so oft wie möglich, aber nicht öfter als die ursprüngliche Schleife ausgeführt wird.
+        Um die daraus resultierende Diskrepanz auszugleichen, wird sogenannter Fixup Code erstellt, der für die Ausführung der restlichen Iterationen verantwortlich ist.
+        Um den oben genannten Fixup Code zu erstellen, werden zwei Ansätze verfolgt: Zum einen kann die Originalschleife dupliziert werden und zum anderen, eine generalisierte Form von Duff's Device verwendet wird.
 
         Bei der experimentellen Bewertung des Ansatzes können wir keine Beschleunigung au\ss{}erhalb des Messfehlers feststellen, obwohl die Anzahl der ausrollbaren Schleifen verdoppelt wurde (auf 10\% aller Schleifen).
-        Die Ergebnisse deuten darauf hin, dass das Schleifenausrollen ohne weitere Optimierung keinen (signifikanten) Nutzen zu haben scheint.
+        Die Ergebnisse deuten darauf hin, dass das Schleifenausrollen, ohne weitere Optimierung, keinen (signifikanten) Nutzen zu haben scheint.
     \end{otherlanguage}
     \vfill
 
@@ -23,7 +23,7 @@
     Loop unrolling is the process of duplicating a loop's body multiple times to reduce the number of conditional jumps.
     While we can easily unroll loops with constant bounds, unrolling loops with non-constant bounds proves to be a different challenge.
 
-    In this case we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop runs as often as possible, but less than or equal times to the original loop.
+    In this case, we can speculatively unroll a loop by a given factor, while making sure that the unrolled loop runs as often as possible, but less than or equal times to the original loop.
     To compensate for the discrepancy, we create so-called fixup code, which is responsible for running the remaining iterations.
     We choose two different strategies for creating the aforementioned fixup code: One where we duplicate the original loop and another where we utilize a generalized form of Duff's device.
 

@@ -1,12 +1,14 @@
 \begin{figure}[H]
 	\begin{algorithmic}
 		\State $i \gets 0$
-		\While{i < 21} \Comment{Overflow check omitted, as it would be constant folded}
-			\State \Call{Print}{$\text{HelloWorld}$}
-			\State $i \gets i + 3$
-			\State \Call{Print}{$\text{HelloWorld}$}
-			\State $i \gets i + 3$
-		\EndWhile
+		\If{$\neg$\Call{SubtractionWillLeaveBounds}{$29 - 6$}}
+			\While{i < 23} \Comment{Overflow check omitted, as it would be constant folded}
+				\State \Call{Print}{$\text{HelloWorld}$}
+				\State $i \gets i + 3$
+				\State \Call{Print}{$\text{HelloWorld}$}
+				\State $i \gets i + 3$
+			\EndWhile
+		\EndIf
 		\While{i < 29}
 			\State \Call{Print}{$\text{HelloWorld}$}
 			\State $i \gets i + 3$

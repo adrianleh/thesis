@@ -86,7 +86,7 @@ A $\Phi$-function is a theoretical construct that returns the correct value depe
 
 An extension to the aforementioned SSA form is the \textit{loop-closed-single-static-assignment} (\textit{LCSSA}) form.
 A CFG in LCSSA form has all properties that a CFG in SSA form has, and additionally the property that each value assigned in a given loop and used outside of this loop has to be used by a $\Phi$-node in the first block after the loop.
-This form is used to reduce special casing when transforming loops~\cite{aebi18bachelorarbeit}, and is therefore used through all of~\Cref{sec:impl}.
+This form is used to reduce special casing when transforming loops~\cite{aebi18bachelorarbeit} and is therefore utilized through all of~\Cref{sec:impl}.
 
 To visualize this property,~\Cref{fig:basics:LCSSA} depicts its effect.
 
@@ -118,7 +118,7 @@ Further,~\libFIRM{} also allows for finding the basics block that is the header 
 % Unroll loops
 \section{Loop unrolling}\label{sec:basics:unrolling}
 
-Loop unrolling is a compiler optimization that attempts to duplicate the loop body, and to reduce the controlling instructions, such as the loop condition or repetitive arithmetic~\cite{aho_ullman_1979}.
+Loop unrolling is a compiler optimization that attempts to duplicate the loop body and to reduce the controlling instructions, such as the loop condition or repetitive arithmetic~\cite{aho_ullman_1979}.
 
 \Cref{fig:basics:old-loop-unrolling} shows a pseudo-code example of unrolling a simple loop with a factor (the number of times the body is copied) of four.
 It is to be noted that the loop condition has to be checked less often, on account of each loop iteration being four times as long as in the original program.
@@ -127,11 +127,11 @@ Further, it could also be used to vectorize the code, eliminate repeating condit
 A negative side effect of loop unrolling is that the binary size increases and that there could be more pressure on the code cache and registers, causing more spilled values~\cite{Sarkar2001}.
 
 \libFIRM{} supports a restricted form of loop unrolling for loops that have static bounds and increments~\cite{helmer10studienarbeit}.
-This optimization was recently improved, but now requires the intermediary representation to be in LCSSA form, which means \libFIRM{}'s intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
+This optimization was recently improved but now requires the intermediary representation to be in LCSSA form, which means \libFIRM{}'s intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
 Though this optimization had no preconditions and merely duplicated the loop in the hope a later optimization would remove the duplicated headers, so that it resembles an unrolled loop of our definition, in which only the body (and not the header) is duplicated.
 In this form the amount of conditional jumps does not decrease in most cases, since the later optimization removing headers would not trigger.
 Hence, the application of this method showed no improvements, which caused preconditions for the later removal to be added~\cite{libfirm-unroll-static}.
-Currently, it only unrolls loops, like our loop, only with static bounds and for which a constant bit analysis can remove excess headers.
+Currently, it only unrolls loops, similar to the loop in~\Cref{fig:basics:old-loop-unrolling}, with static bounds and for which a constant bit analysis can remove excess headers.
 The benefits of the now changed optimization were also very slim, likely since the requirements for a loop to now be unrollable are very strict.
 With these restrictions in place, only approximately 5\% of the innermost loops can be unrolled\footnote{Measured in \texttt{spec2006}}.
 
@@ -158,7 +158,7 @@ Further \libFIRM{} previously utilized Duff's device for unrolling loops with st
 
 \section{Overflow detection}\label{sec:basics:overflow}
 
-When subtracting (or adding) two numbers that are in some form of integer-like representation the operation might over- or underflow, because the integer representation is a fixed bit two's complement representation.
+When subtracting (or adding) two numbers that are in some form of integer-like representation the operation might cause an over- or underflow, because the integer representation is a fixed bit two's complement representation.
 Due to the therefore inherent limitation to the range of possible values, this problem is unavoidable, yet detectable.
 
 \Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, \text{ where } x, a \in \NInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.

@@ -17,12 +17,7 @@
         \begin{algorithmic}
             \Function{FooDuffed}{$N: \mathbb{N}$}
                 \State $i \gets 0$
-                \State $N' \gets (N + (4 - 1)) / 4$
-`               \Switch{$N \text{ mod } 4$}
-                    \Case{$0$}
-                        \State \Call{Print}{$i$}
-                        \State $i \gets i + 1$ \Comment{Fall-through}
-                    \EndCase
+                \Switch{$N \text{ mod } 4$}
                     \Case{$3$}
                         \State \Call{Print}{$i$}
                         \State $i \gets i + 1$ \Comment{Fall-through}
@@ -36,13 +31,12 @@
                         \State $i \gets i + 1$
                     \EndCase
                 \EndSwitch
-                \While{$(N' - 1) > 0$}
+                \While{$i < N$}
                     \State \Call{Print}{$i$}
                     \State \Call{Print}{$i + 1$}
                     \State \Call{Print}{$i + 2$}
                     \State \Call{Print}{$i + 3$}
                     \State $i \gets i + 4$
-                    \State $N' \gets N' - 1$
                 \EndWhile
             \EndFunction
         \end{algorithmic}

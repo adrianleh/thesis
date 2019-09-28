@@ -15,9 +15,9 @@ An optimization could be created that takes advantage of the implicitly added se
 Before this potential is used, it likely would be a more lucrative endeavor, to stick to less fancy optimizations that can take advantage of the unrolled loop structures, such as automatically parallelizing non-conflicting operations.
 
 Another factor that might have influenced the results was the method used to determine the unroll-factor.
-In the future it could be evaluated, whether the performance would improve through a more sophisticated unroll-factor selection, with a multi-parameter cost function.
+In the future, it could be evaluated, whether the performance would improve through a more sophisticated unroll-factor selection, with a multi-parameter cost function.
 
-Once these changes are in-place loop unrolling in~\libFIRM{} should be reevaluated, to be able to fully evaluate its feasibility.
+Once these changes are in-place, the feasibility loop unrolling in~\libFIRM{} should be reevaluated.
 
 Currently, the efforts of increasing unrollable loops seem to exceed the benefits.
 Though, if the desire for more unroallability should pick up again, it would seem a good point to look at other loop structures, such as loops with breaks, or a non-counting loop, unlike the ones examined in this thesis.

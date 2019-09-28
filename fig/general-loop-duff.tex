@@ -10,11 +10,7 @@
             \EndWhile
         \EndIf
         \Switch{$N - i + (c \mp 1)$}
-            \Case{$\lbrack c \cdot f, c \cdot (f + 1)\lbrack$} \Comment flip bounds for $c < 0$
-                \State \Call{DoSomething}{}
-                \State $i \gets i + c$ \Comment{Fall-through}
-            \EndCase
-            \Case{$\lbrack c \cdot (f - 1), c \cdot f \lbrack$}
+            \Case{$\lbrack c \cdot (f - 1), c \cdot f \lbrack$} \Comment flip bounds for $c < 0$
                 \State \Call{DoSomething}{}
                 \State $i \gets i + c$ \Comment{Fall-through}
             \EndCase
@@ -27,6 +23,6 @@
         \EndSwitch
         \EndFunction
     \end{algorithmic}
-    \caption{The general form of loop starting at $I$ and counting in increments of $c$ up to $N$ transformed by the created loop unrolling with generalized Duff's device fixup}
+    \caption{The general form of a loop starting at $I$ and counting in increments of $c$ up to $N$ transformed by the created loop unrolling with generalized Duff's device fixup}
     \label{fig:impl:fixup:duff:general-loop}
 \end{figure}

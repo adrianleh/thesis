@@ -2,26 +2,28 @@
     \begin{algorithmic}
         \Function{CreateFixupLoop}{$loop: \text{Loop}$}
             \State $loop' \gets\text{ }$ \Call{ExactCopy}{$loop$}
-            \For{$succ \in loop.header.successors$}
+            \State $header \gets loop.header$
+            \State $header' \gets loop'.header$
+            \For{$succ \in header.successors$}
                 \If{$succ.loop \notin loop$}
-                    \State $succ.predecessors \gets succ.predecessors \backslash \{loop.header\} \cup \{loop'.header\}$
+                    \State $succ.predecessors \gets succ.predecessors \backslash \{header\} \cup \{header'\}$
                 \EndIf
             \EndFor
-            \For{$node \in loop.header$}
-                \For{$succ \in loop.header.successors$}
+            \For{$node \in header$}
+                \For{$succ \in header.successors$}
                     \If{$succ.loop \notin loop$}
                         \State $succ.predecessors \gets succ.predecessors \backslash \{node\} \cup \{node.link\}$
                     \EndIf
                 \EndFor
             \EndFor
-            \For{$phi \in loop.header.phis$}
+            \For{$phi \in header.phis$}
                 \For{$pred \in phi.predecessors$}
                     \If{$pred \notin loop$}
                         \State $phi.link.predecessors \gets phi.link.predecessors \backslash \{pred\} \cup \{phi\}$
                     \EndIf
                 \EndFor
             \EndFor
-            \State $loop'.header.predecessors \gets \{loop.header.falseExit\}$
+            \State $loop'.header.predecessors \gets \{header.falseExit\}$
             \Comment{Now unroll $loop$}
         \EndFunction
     \end{algorithmic}

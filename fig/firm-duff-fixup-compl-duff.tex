@@ -1,17 +1,15 @@
 \begin{figure}[H]
 	\begin{algorithmic}
 		\State $i \gets 0$
-		\While{i < 21}
-			\State \Call{Print}{$\text{HelloWorld}$}
-			\State $i \gets i + 3$
-			\State \Call{Print}{$\text{HelloWorld}$}
-			\State $i \gets i + 3$
-		\EndWhile
-		\Switch{31 - i}
-			\Case{$\lbrack 6, 9 \lbrack$}
+		\If{$\neg$\Call{SubtractionWillLeaveBounds}{$29 - 6$}}
+			\While{i < 23}
 				\State \Call{Print}{$\text{HelloWorld}$}
 				\State $i \gets i + 3$
-			\EndCase
+				\State \Call{Print}{$\text{HelloWorld}$}
+				\State $i \gets i + 3$
+			\EndWhile
+		\EndIf
+		\Switch{31 - i}
 			\Case{$\lbrack 3, 6 \lbrack$}
 				\State \Call{Print}{$\text{HelloWorld}$}
 				\State $i \gets i + 3$
