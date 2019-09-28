@@ -27,7 +27,7 @@
             \ForAll{$body \in duplicatedLoopBodies$}
                 \State $firstBlock \gets$ \Call{GetFirstBlockInBody}{$body$}
                 \State $condBlock \gets$ \Call{NewEmptyBlock}{}
-                \State $cond \gets val \medspace `relation` \medspace (factor - i) \medspace \wedge \medspace val \medspace `inverseRelation` \medspace (factor - i - 1)$
+                \State $cond \gets val \medspace `relation` \medspace (factor - i) \medspace \wedge \medspace val \medspace `inverseRelation` \medspace (factor - 1 - i)$
                 \State $condBlock.addNode(cond)$
                 \State $condBlock.predecessors \gets \begin{cases}\{duffHeader\} &, \medspace i = 0\\ \{prevCond.falseExit, \medspace prevLast\} &, \medspace i \neq 0\end{cases}$
                 \State $firstBlock.predecessors \gets cond.trueExit$

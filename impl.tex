@@ -244,18 +244,19 @@ In the following Sections~\ref{sec:impl:fixup:duff}, and~\ref{sec:impl:fixup:loo
 Though, when unrolling (as described in~\Cref{sec:impl:unroll}), the original bound ($N$) is kept.
 Unfortunately, this does not guarantee $\Mloop$ to be correct, as made clear by an example where a loop with $I = 0, N = 3, c = 1, f = 2, cmp = <$ is unrolled.
 In this example, this would yield the following: $\Mloop = 4 > M = 3 \mLightning$, due to the fact that after the first iteration of the unrolled loop $i = 2 < 3 = N$.
-To combat this, we set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$.\footnote{N.B.: $c \cdot (f - 1)$ does not overflow, as per preconditions}
+To combat this, we set the bound of the unrolled loop to $\hat{N} = N - c \cdot (f - 1)$.
 Now we will prove the conjecture that using the bound $\hat{N}$, the unrolled loop runs $\Mloop$ times, given the operation to calculate $\hat{N}$ will not over- or underflow.
 \begin{proof}
     Let $\Mloop'$ be the number of times then unrolled loop with bound $\hat{N}$ runs.
     The proof is complete, iff $\Mloop' = \Mloop$.
+    Note that $c \cdot f$ cannot overflow, as per preconditions ($\star$).
     \begin{align*}
         \Mloop' &\overset{\text{loop construction}}{=} \ceil{\frac{\hat{N} - I}{c \cdot f}} \cdot f\\
         &\overset{\text{integer division}}{=} \frac{\hat{N} - I + (c \cdot f \mp 1)}{c \cdot f} \cdot f\\
         &= \frac{N - c \cdot (f - 1) - I + (c \cdot f \mp 1)}{c \cdot f} \cdot f\\
         &= \frac{N - c \cdot f + c - I + c \cdot f \mp 1}{c \cdot f} \cdot f\\
         &= \frac{N - I + c \mp 1}{c \cdot f} \cdot f\\
-        &= \frac{\frac{N - I + c \mp 1}{c}}{f} \cdot f\\
+        &\overset{\star}{=} \frac{\frac{N - I + c \mp 1}{c}}{f} \cdot f\\
         &\overset{\text{integer division}}{=} \frac{\ceil{\frac{N - I}{c}}}{f} \cdot f\\
         &\overset{\ref{eqn:impl:fixup:duff:total-iteration-based-on-bounds}}{=} \frac{M}{f} \cdot f\\
         &\overset{\ref{eqn:impl:fixup:duff:loop-iterations}}{=} \Mloop
