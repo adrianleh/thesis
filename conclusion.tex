@@ -11,7 +11,7 @@ Due to the very low standard deviations across all benchmarks, the results also 
 
 Thus, the eminent challenge seems to be the lack of performance gain through unrolling loops.
 Therefore, it would be a natural starting point to use the unrolled loops and optimize their bodies further.
-An optimization could be created that takes advantage of the implicitly added semantics as for having a specific modulus, respective to $f$, for each unrolled block.
+An optimization could be created that takes advantage of the implicitly added semantics as for having a specific modulus, respective to $f$, for each copied body's blocks.
 Before this potential is used, it likely would be a more lucrative endeavor, to stick to less fancy optimizations that can take advantage of the unrolled loop structures, such as automatically parallelizing non-conflicting operations.
 
 Another factor that might have influenced the results was the method used to determine the unroll-factor.

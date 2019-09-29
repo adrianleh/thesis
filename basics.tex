@@ -106,14 +106,16 @@ Any node operating on memory also connects to the previous node operating on mem
 Memory is, like control flow, connected by edges, which are colored blue in graphical representations.
 Lastly, \libFIRM{} has data dependency edges between nodes, which represent dependencies needed for calculations.
 
-\Cref{fig:basics:firm} portrays an example firm graph of the program initially shown in~\Cref{fig:basics:SSA-phi}.
+\Cref{fig:basics:firm} portrays an example \libFIRM{} graph of the program initially shown in~\Cref{fig:basics:SSA-phi}.
 It is especially to be noted that the graph has both memory, data and control-flow edges, and is in SSA form, since it contains a $\Phi$-node.
 \input{fig/max.tex}
 
-Another set of functionality that~\libFIRM{}  provides is loop information.
+Another set of functionality that~\libFIRM{} provides is loop information.
 \libFIRM{} will not only (if applicable) be able to map blocks to their respective loops and vice-versa, but also has information on loop nesting structure.
 Thus, one can quickly determine, whether a loop is an innermost loop~\cite{libfirm}.
 Further,~\libFIRM{} also allows for finding the basics block that is the header of a loop, given that it has a header~\cite{aebi18bachelorarbeit}.
+Since loops involve node duplication, it is worth mentioning, that upon duplication a node will have a field called \texttt{link} set to reference the copied node and vice-versa.
+This allows for easy access of the duplicated and original nodes in later algorithms.
 
 % Unroll loops
 \section{Loop unrolling}\label{sec:basics:unrolling}
@@ -130,8 +132,8 @@ A negative side effect of loop unrolling is that the binary size increases and t
 This optimization was recently improved but now requires the intermediary representation to be in LCSSA form, which means \libFIRM{}'s intermediary representation has to be converted into LCSSA form prior to the optimization running~\cite{aebi18bachelorarbeit}.
 Though this optimization had no preconditions and merely duplicated the loop in the hope a later optimization would remove the duplicated headers, so that it resembles an unrolled loop of our definition, in which only the body (and not the header) is duplicated.
 In this form the amount of conditional jumps does not decrease in most cases, since the later optimization removing headers would not trigger.
-Hence, the application of this method showed no improvements, which caused preconditions for the later removal to be added~\cite{libfirm-unroll-static}.
-Currently, it only unrolls loops, similar to the loop in~\Cref{fig:basics:old-loop-unrolling}, with static bounds and for which a constant bit analysis can remove excess headers.
+Hence, the application of this method showed no improvements, which caused preconditions for the later removal of excess headers to be added~\cite{libfirm-unroll-static}.
+\libFIRM{} now only unrolls loops, similar to the loop in~\Cref{fig:basics:old-loop-unrolling}, with static bounds and for which a constant bit analysis can remove excess headers.
 The benefits of the now changed optimization were also very slim, likely since the requirements for a loop to now be unrollable are very strict.
 With these restrictions in place, only approximately 5\% of the innermost loops can be unrolled\footnote{Measured in \texttt{spec2006}}.
 
@@ -158,7 +160,7 @@ Further \libFIRM{} previously utilized Duff's device for unrolling loops with st
 
 \section{Overflow detection}\label{sec:basics:overflow}
 
-When subtracting (or adding) two numbers that are in some form of integer-like representation the operation might cause an over- or underflow, because the integer representation is a fixed bit two's complement representation.
+When subtracting (or adding) two numbers that are integer-like the operation might cause an over- or underflow, because the integer is of a fixed bit two's complement representation.
 Due to the therefore inherent limitation to the range of possible values, this problem is unavoidable, yet detectable.
 
 \Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, \text{ where } x, a \in \NInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.

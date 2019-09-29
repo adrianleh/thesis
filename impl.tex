@@ -33,7 +33,7 @@ This section formalizes the resluting requirements and extends them, such that t
 
 Firstly, in view of the fact that we use the existing loop unrolling functionality as a sub-step (see~\Cref{sec:impl:unroll}), it needs to be ensured that the respective~\libFIRM-graph is in LCSSA form.
 We accomplish this by using the existing mechanics~\cite{aebi18bachelorarbeit}.
-While it is a preliminary step, assuring LCSSA form can never be a hindrance to unrolling, since it is possible to convert any given graph into LCSSA form.
+While it is a preliminary step, assuring LCSSA form can never be a hindrance to unrolling, since it is possible to convert any given \libFIRM{} graph into LCSSA form.
 Due to the restrictions of the existing loop unrolling mechanism, a loop must also be the innermost loop, meaning it does not have any nested loops inside of it.
 Nested loops inherently cause larger code sizes and hardly saves jumps, since most jumps will occur in the inner loops.
 Therefore, the restriction will in practice most likely not harm performance.
@@ -52,7 +52,7 @@ Now given that when unrolling the condition is removed for the entering the seco
 Concluding, only if $N$ is loop-invariant, the bound checks can be performed less often, while keeping the original semantics intact.
 
 If $N$ is constant it is obviously loop-invariant, but what if it is the result of a function call or of a load from memory?
-For the case that $N$ is function call, this function call must be pure (i.e., not have any side-effects), and only have loop-invariant arguments, seeing that the call is then by definition loop-invariant itself.
+For the case that $N$ is function call, the called function must be pure (i.e., not have any side-effects), and only have loop-invariant arguments, seeing that the call is then by definition loop-invariant itself.
 
 In case that $N$ is being loaded from memory, stricter conditions have to be met.
 All stores within the loop must be sure not to alias the memory location of $N$.
@@ -74,16 +74,16 @@ To get started with unrolling loops that have unknown bounds, we unroll them by 
 Semantic equivalence, which is broken due to the failure to consider how the factor relates to the original amount of iterations, will be restored in \Cref{sec:impl:fixup}.
 
 \libFIRM{} already provides an unrolling mechanism for unrolling a loop with a given factor $f$~\cite{aebi18bachelorarbeit}.\footnote{N.B.: All following operations preserve the LCSSA property of the code.}
-In order to avoid code duplication, we will use be utilizing this solution.
+To avoid code duplication, we will use be utilizing this solution.
 
-Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before}~and~\ref{fig:impl:unroll:unroll-factor-2-after} show a firm graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
+Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before}~and~\ref{fig:impl:unroll:unroll-factor-2-after} show a \libFIRM{} graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \Cref{fig:impl:unroll:unroll-factor-2-after} we duplicate the loop header, and that hence the number of conditional jumps did not decrease through the loop unroll.
 With the previous usage, this was not an issue, because~\libFIRM{} would automatically remove these excess headers~\cite{aebi18bachelorarbeit} using its constant bit analysis.
 Unfortunately though in the use cases of an unknown bound, the constant bit analysis does not suffice.
 This is due to the fact that the additional semantics, meaning that we are sure not to have to exit the unrolled loop from its body at any time, that are implicitly affixed to the transformed loop, cannot be recognized by~\libFIRM.
 Therefore, the need to manually prune the graph to remove the excess headers arises.
 We accomplish this by using \Cref{alg:impl:unroll:prune-headers}.
-First, we rewire all $\Phi$-nodes in the excess header, such that all in-loop nodes depending on any given $\Phi$-node each get the in-loop predecessors of the $\Phi$-node as predecessors themselves, while the $\Phi$-node falls into desuetude.
+First, we rewire all $\Phi$-nodes in the excess header, such that all in-loop nodes depending on any given $\Phi$-node each get the in-loop predecessors of the $\Phi$-node as predecessors themselves, while the $\Phi$-node falls into desuetude and will therefore be automatically removed by a later optimization.
 We apply the same transformations to the descendants of the block itself.
 
 \input{fig/prune-header.tex}
@@ -166,8 +166,8 @@ Assume for contradiction $\Mfixup = f' > (f - 1)$
 \end{align*}
 \end{proof}
 
-For the following mathematical considerations, we need to round up in integer division.
-The following lemma describes how this can be accomplished.
+For the following mathematical considerations, we need to round away from zero in integer division.
+\Cref{lem:impl:fixup:duff:ceil-mp} describes how this can be accomplished.
 \begin{lem}\label{lem:impl:fixup:duff:ceil-mp}
     Given $Y \neq 0: \medspace \ceil{\frac{X}{Y}} = \frac{X + (Y \mp 1)}{Y}$
 \end{lem}
@@ -299,17 +299,19 @@ Therefore, a need for generalization arises.
 
 Using equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:fixup-i-mult} and the general idea of Duff's device (see \Cref{sec:basics:duffs}), we will create fixup code in form of a generalized Duff's device.
 The structure of this fixup code can be seen in \Cref{fig:impl:fixup:duff:fixup-M_fixup}, which we then practically implement, using \Cref{eqn:impl:fixup:duff:fixup-i-mult}, as shown in \Cref{fig:impl:fixup:duff:fixup-bound}.
+Please note that in the remainder of this section, we assume $cmp \in \{<, >\}$.
+If $cmp \in \{ \leq, \geq \}$, all interval inclusivenesses need to be flipped, but the methodology will not change.
 
 \input{fig/alg-fixup-M_fixup.tex}
 
 \input{fig/alg-fixup-bound.tex}
 
-For the fixup code to work correctly, it is to be ensured that $f \cdot c$ does not overflow, as otherwise, the interval \cinterval could potentially be invalid, iff an integer over- or underflow occurs, meaning $
+For the fixup code to work correctly, it is to be ensured that $c \cdot f$ does not overflow, as otherwise, the interval \cinterval could potentially be invalid, iff an integer over- or underflow occurs, meaning $
 \begin{cases}
     c \cdot f < 0 &, \medspace c > 0\\
     c \cdot f > 0 &, \medspace c < 0
 \end{cases}$.
-To avoid these problems altogether, c is restricted to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f}, \frac{t_{max}}{f} \rbrack$.
+To avoid these problems altogether, we restricted $c$ to being a compile-time constant, such that for integers defined from $t_{min}$ to $t_{max}$, $c \in \lbrack \frac{t_{min}}{f}, \frac{t_{max}}{f} \rbrack$.
 Using this restriction, it can be asserted that $c \cdot f \in \lbrack t_{min}, t_{max} \rbrack$ and therefore does not overflow.
 \Cref{alg:impl:fixup:duff:create-fixup} details how the mechanics described above are translated into \libFIRM.
 At first, we duplicate the loop body $f - 1$ times and add keepalive edges to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
@@ -360,7 +362,7 @@ The approach now taken is to copy the original loop, change its initial value to
 Firstly, we copy the loop, after which we rewire it, such that the fixup loop points to it, and its old successors point to the fixup loop.
 Once this is completed, we can unroll the original loop.
 \Cref{fig:impl:fixup:loop:general-loop} shows the resulting structure of the entire process in pseudo-code.
-Note that, as mentioned in \cref{sec:impl}, this process occurs before we unroll the original loop.
+Note that, as mentioned in \Cref{sec:impl}, this process occurs before we unroll the original loop.
 \Cref{fig:impl:fixup:loop:fixup-firm-comp} shows the result for unrolling the loop from \Cref{fig:impl:fixup:fixup-firm-loop} using loop duplication fixup code and a factor of two.
 
 \input{fig/firm-duff-fixup-compl-loop.tex}

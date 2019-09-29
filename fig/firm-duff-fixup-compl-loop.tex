@@ -2,7 +2,7 @@
 	\begin{algorithmic}
 		\State $i \gets 0$
 		\If{$\neg$\Call{SubtractionWillLeaveBounds}{$29 - 6$}}
-			\While{i < 23} \Comment{Overflow check omitted, as it would be constant folded}
+			\While{i < 23}
 				\State \Call{Print}{$\text{HelloWorld}$}
 				\State $i \gets i + 3$
 				\State \Call{Print}{$\text{HelloWorld}$}
