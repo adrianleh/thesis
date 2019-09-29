@@ -113,8 +113,8 @@ It is especially to be noted that the graph has both memory, data and control-fl
 Another set of functionality that~\libFIRM{} provides is loop information.
 \libFIRM{} will not only (if applicable) be able to map blocks to their respective loops and vice-versa, but also has information on loop nesting structure.
 Thus, one can quickly determine, whether a loop is an innermost loop~\cite{libfirm}.
-Further,~\libFIRM{} also allows for finding the basics block that is the header of a loop, given that it has a header~\cite{aebi18bachelorarbeit}.
-Since loops involve node duplication, it is worth mentioning, that upon duplication a node will have a field called \texttt{link} set to reference the copied node and vice-versa.
+Further,~\libFIRM{} also allows for finding the header of a loop, given that it has a header~\cite{aebi18bachelorarbeit}.
+Since loop unrolling involves node duplication in the implementation that we will use~\cite{aebi18bachelorarbeit}, it is worth mentioning, that upon a node will has a field called \texttt{link} that will be set to reference the copied node and vice-versa.
 This allows for easy access of the duplicated and original nodes in later algorithms.
 
 % Unroll loops
@@ -148,7 +148,7 @@ A way to tackle this issue is to use a construct known as Duff's device: It pree
 Mathematically this means the construct executes the loop body $\floor{\frac{M}{f}} \cdot f + M \text{ mod } F = M$ times, where $M$ is the number of total times the loop body would be executed without the transformation and where $f$ is the unroll factor.
 This is due to the fact that mod is defined as:
 $$x \text{ mod }{} y = x - \floor{\frac{x}{y}} \cdot y$$
-If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get the aforementioned form.
+If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get said form.
 
 \Cref{fig:basics:duff} shows an example of unrolling a loop with a non-divisible bound using a factor of eight\footnote{The original Duff's device used special C syntax to entangle the switch statement and loop~\cite{duff_1983}}.
 Duff's device copies the loop body eight times and to ensure that the number of executions is correct, the first time around the code jumps to the corresponding instruction, depending on the need for fixup code.
@@ -163,6 +163,7 @@ Further \libFIRM{} previously utilized Duff's device for unrolling loops with st
 When subtracting (or adding) two numbers that are integer-like the operation might cause an over- or underflow, because the integer is of a fixed bit two's complement representation.
 Due to the therefore inherent limitation to the range of possible values, this problem is unavoidable, yet detectable.
 
+In the following, we will take $t_{min}$ and $t_{max}$ to be the lower and upper bound of an integer representation.
 \Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, \text{ where } x, a \in \NInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.
 \input{fig/alg-detect-overflow.tex}
 

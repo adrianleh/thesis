@@ -1,7 +1,8 @@
 \begin{figure}[H]
     \centering
     \begin{algorithmic}
-        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >, \leq, \geq\}$}
+        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >\}$}
+        \State \Comment{Flip interval inclusivenesses for $cmp \in \{\leq, \geq\}$}
         \State $i \gets I$
         \If{$\neg$\Call{SubtractionWillLeaveBounds}{$N - c \cdot (f - 1)$}}
             \While{$i~`cmp`~ (N - c \cdot (f - 1))$}
@@ -27,6 +28,6 @@
         \EndSwitch
         \EndFunction
     \end{algorithmic}
-    \caption{The general form of a loop starting at $I$ and counting in increments of $c$ up to $N$ transformed by the created loop unrolling with generalized Duff's device fixup}
+    \caption{The general form of a loop starting at $I$ counting in increments of $c$ up to $N$ transformed by loop unrolling with generalized Duff's device fixup}
     \label{fig:impl:fixup:duff:general-loop}
 \end{figure}

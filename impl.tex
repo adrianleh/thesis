@@ -61,7 +61,7 @@ Otherwise, the loop cannot be unrolled with a loaded bound, due to these called 
 
 Lastly, the unroll-factor -- meaning how often the loop body is copied inside the unrolled loop -- $f$ is selected (see \Cref{sec:impl:sel-factor}) and hence known at compile time.
 We can therefore restrict the increment $c$, such that $t_{min} \leq c \cdot f \leq t_{max}$, where $t_{min}$ is the minimum value of the integer type of $c$ and $t_{max}$ the respective maximum.
-Hence, we prevent $c \cdot f$ from overflowing, which will turn out to be important in \Cref{sec:impl:fixup:header-cond} and \Cref{sec:impl:fixup:duff}, and further discussed there.
+Hence, we prevent $c \cdot f$ from overflowing, which will turn out to be important in Sections \ref{sec:impl:fixup:header-cond} and \ref{sec:impl:fixup:duff}, and further discussed there.
 In order to assure this property, we have to force $c$ to be a compile-time constant (which inherently is loop invariant).
 Even though the restrictions on $c$ seem comparatively tight, in real-world code (gcc, \texttt{spec2006}) only approximately $1.2\%$ of loops that meet the previous conditions are not unrollable because of the restriction that  $t_{min} \leq c \cdot f \leq t_{max}$.
 
@@ -78,7 +78,7 @@ To avoid code duplication, we will use be utilizing this solution.
 
 Further, figures~\ref{fig:impl:unroll:unroll-factor-2-before}~and~\ref{fig:impl:unroll:unroll-factor-2-after} show a \libFIRM{} graph of a loop that is to be unrolled or is unrolled using a factor of two, respectively.
 Especially to be noted is that in \Cref{fig:impl:unroll:unroll-factor-2-after} we duplicate the loop header, and that hence the number of conditional jumps did not decrease through the loop unroll.
-With the previous usage, this was not an issue, because~\libFIRM{} would automatically remove these excess headers~\cite{aebi18bachelorarbeit} using its constant bit analysis.
+With the previous usage, this was not an issue, because~\libFIRM{} would automatically remove these excess headers using its constant bit analysis.
 Unfortunately though in the use cases of an unknown bound, the constant bit analysis does not suffice.
 This is due to the fact that the additional semantics, meaning that we are sure not to have to exit the unrolled loop from its body at any time, that are implicitly affixed to the transformed loop, cannot be recognized by~\libFIRM.
 Therefore, the need to manually prune the graph to remove the excess headers arises.
@@ -317,14 +317,14 @@ Using this restriction, it can be asserted that $c \cdot f \in \lbrack t_{min}, 
 At first, we duplicate the loop body $f - 1$ times and add keepalive edges to all duplicated nodes, to make sure they do not disappear through implicit premature optimizations.
 Then we will create the \textit{fixup header}, meaning a block, with the calculation of $n \coloneqq N - i + (c \mp 1)$.
 $f - 1$ newly created condition blocks will then use the calculated value by the header.
-In the $i^{\text{th}}$ (counting starts at 0) condition block, it will be checked whether $n$ is in the interval spanned by $c \cdot (f - 1 - i)$ and  $c \cdot (f - i)$.\footnote{Please note: $c$ being positive or not determines, which limit is the upper and which is the lower bound.}
+In the $i^{\text{th}}$ (counting starts at 0) condition block, it will be checked whether $n$ is in the interval spanned by $c \cdot (f - 1 - i)$ and  $c \cdot (f - i)$.\footnote{N.B.: $c$ being positive or not determines, which limit is the upper and which is the lower bound.}
 After this, we will wire all duplicated blocks such that they are reachable by the conditions.
 Further, upon false evaluation of a condition, the following condition is evaluated, except if it is the last condition, in which case the false target is the post loop block.
 Additionally, except in the case of the first duplicated header, they are attached to the previous blocks as fallthrough.
 Lastly, the last block of the fixup code now precedes the post loop block, and the false exit fo the last condition.
 An example of the result for creating fixup code for a loop and for $f = 2$, as seen in \Cref{fig:impl:fixup:fixup-firm-loop}, can be seen in \Cref{fig:impl:fixup:duff:fixup-firm}.
 Further, \Cref{fig:impl:fixup:duff:fixup-firm-comp} shows the completed unroll process with the added generalized Duff's device, given $f = 2$.
-Once this process is completed~\Cref{fig:impl:fixup:duff:general-loop} shows the resulting structure in pseudo-code.
+\Cref{fig:impl:fixup:duff:general-loop} shows the resulting general structure in pseudo-code.
 
 \input{fig/general-loop-duff.tex}
 

@@ -9,7 +9,7 @@
 
         In diesem Fall ist es möglich, spekulativ eine Schleife um einen bestimmten Faktor auszurollen, sofern sichergestellt wird, dass die ausgerollte Schleife so oft wie möglich, aber nicht öfter als die ursprüngliche Schleife ausgeführt wird.
         Um die daraus resultierende Diskrepanz auszugleichen, wird sogenannter Fixup Code erstellt, der für die Ausführung der restlichen Iterationen verantwortlich ist.
-        Um den oben genannten Fixup Code zu erstellen, werden zwei Ansätze verfolgt: Zum einen kann die Originalschleife dupliziert werden und zum anderen, eine generalisierte Form von Duff's Device verwendet wird.
+        Um den oben genannten Fixup Code zu erstellen, werden zwei Ansätze verfolgt: Zum einen kann die Originalschleife dupliziert werden und zum anderen, eine generalisierte Form von Duff's Device verwendet werden.
 
         Bei der experimentellen Bewertung des Ansatzes können wir keine Beschleunigung au\ss{}erhalb des Messfehlers feststellen, obwohl die Anzahl der ausrollbaren Schleifen verdoppelt wurde (auf 10\% aller Schleifen).
         Die Ergebnisse deuten darauf hin, dass das Schleifenausrollen, ohne weitere Optimierung, keinen (signifikanten) Nutzen zu haben scheint.
