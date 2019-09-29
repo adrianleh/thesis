@@ -22,7 +22,7 @@ Simplifying just one expression seems (and for a matter of fact is) quite useles
 
 Of course there is a plethora of possibilities to optimize code.
 Considering that loops make up approximately 10\% of code of many real-world applications\footnote{Measured using gcc (spec2006): 8.6\% of FIRM nodes are in loops}, they are a natural point to focus optimization efforts upon.
-Loops can be unrolled fairly straight forward if you know how often they are iterated, as is discussed in~\Cref{sec:basics}.
+Loops can be unrolled fairly straightforward, if you know how often they are iterated, as is discussed in~\Cref{sec:basics}.
 
 For example,~\Cref{fig:intro:unroll-simple-before} can be easily converted to~\Cref{fig:intro:unroll-simple-after}, while keeping all semantics intact.
 In~\Cref{fig:intro:unroll-nostatic-bound} things get trickier, since the (exact) value of $N$ is unknown, simply unrolling a loop by copying its body a fixed number of times does not preserve the original semantics.

@@ -125,7 +125,7 @@ Loop unrolling is a compiler optimization that attempts to duplicate the loop bo
 \Cref{fig:basics:old-loop-unrolling} shows a pseudo-code example of unrolling a simple loop with a factor (the number of times the body is copied) of four.
 It is to be noted that the loop condition has to be checked less often, on account of each loop iteration being four times as long as in the original program.
 
-Further, it could also be used to vectorize the code, eliminate repeating conditions, and for many other following optimizations~\cite{fog_2018}.
+Furthermore, it could also be used to vectorize the code, eliminate repeating conditions, and for many other following optimizations~\cite{fog_2018}.
 A negative side effect of loop unrolling is that the binary size increases and that there could be more pressure on the code cache and registers, causing more spilled values~\cite{Sarkar2001}.
 
 \libFIRM{} supports a restricted form of loop unrolling for loops that have static bounds and increments~\cite{helmer10studienarbeit}.
@@ -143,9 +143,9 @@ With these restrictions in place, only approximately 5\% of the innermost loops 
 % Duff's Device
 \section{Duff's device}\label{sec:basics:duffs}
 
-A common problem with the loop unrolling shown in~\Cref{fig:basics:old-loop-unrolling} is that it requires the number of iterations to be constant and divisible by the unroll factor.
+A common problem with the loop unrolling shown in~\Cref{fig:basics:old-loop-unrolling} is that it requires the number of iterations to be constant and divisible by the unroll-factor.
 A way to tackle this issue is to use a construct known as Duff's device: It preemptively unrolls a loop with a given factor and uses~\textit{fixup} code to ensure that the remaining iterations are completed~\cite{duff_1983}.
-Mathematically this means the construct executes the loop body $\floor{\frac{M}{f}} \cdot f + M \text{ mod } F = M$ times, where $M$ is the number of total times the loop body would be executed without the transformation and where $f$ is the unroll factor.
+Mathematically this means the construct executes the loop body $\floor{\frac{M}{f}} \cdot f + M \text{ mod } F = M$ times, where $M$ is the number of total times the loop body would be executed without the transformation and where $f$ is the unroll-factor.
 This is due to the fact that mod is defined as:
 $$x \text{ mod }{} y = x - \floor{\frac{x}{y}} \cdot y$$
 If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get said form.
@@ -154,7 +154,7 @@ If we substitute $M$ for $x$ and $f$ for $y$ and rearrange for $M$, we get said 
 Duff's device copies the loop body eight times and to ensure that the number of executions is correct, the first time around the code jumps to the corresponding instruction, depending on the need for fixup code.
 
 Many compilers, such as GCC~\cite{gcc}, use Duff's device for unrolling loops and improving performance while keeping code size relatively small.
-Further \libFIRM{} previously utilized Duff's device for unrolling loops with static bounds, but for which no unroll factor could be determined~\cite{helmer10studienarbeit}.
+Further \libFIRM{} previously utilized Duff's device for unrolling loops with static bounds, but for which no unroll-factor could be determined~\cite{helmer10studienarbeit}.
 
 \input{fig/loop-unrolling-duff}
 
@@ -164,6 +164,6 @@ When subtracting (or adding) two numbers that are integer-like the operation mig
 Due to the therefore inherent limitation to the range of possible values, this problem is unavoidable, yet detectable.
 
 In the following, we will take $t_{min}$ and $t_{max}$ to be the lower and upper bound of an integer representation.
-\Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, \text{ where } x, a \in \NInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.
+\Cref{alg:basics:overflow:detect}~\cite{pmg_2009} shows a way to detect whether an overflow or underflow occurs for an operation $x - a, \text{ where } x, a \in \ZInt$, by checking whether the result increased or decreased relative to the bounds and comparing it to the expectation.
 \input{fig/alg-detect-overflow.tex}
 

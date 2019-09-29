@@ -1,7 +1,7 @@
 \chapter{Conclusion}\label{sec:conclusion}
 
 The results, discussed in \Cref{sec:eval:perf}, fall in line with the results from the ones for static bound unrolling~\cite{aebi18bachelorarbeit}.
-They, therefore, suggest, that there is now empirical evidence that independent of the unrolling method, and the factor chosen, loop unrolling does not yield a significant performance benefit in the current state of~\libFIRM.
+They, therefore, suggest that there is now empirical evidence that independent of the unrolling method, and the factor chosen, loop unrolling does not yield a significant performance benefit in the current state of~\libFIRM.
 Even though more loops were able to be unrolled through the added loop optimization, the increase in unrollability only led to about one in ten loops being unrolled, which certainly is a contributing factor to the underwhelming improvements.
 Probably some restrictions, such as disallowing \texttt{break}-like structures, are too limited and could be dealt with through further development.
 Other restrictions, such as the conservative alias or call manipulation checks for the bound are unavoidable if the semantics are to be kept and forthright inherent to the task at hand.
@@ -17,7 +17,7 @@ Before this potential is used, it likely would be a more lucrative endeavor, to 
 Another factor that might have influenced the results was the method used to determine the unroll-factor.
 In the future, it could be evaluated, whether the performance would improve through a more sophisticated unroll-factor selection, with a multi-parameter cost function.
 
-Once these changes are in-place, the feasibility loop unrolling in~\libFIRM{} should be reevaluated.
+Once these changes are in-place, the feasibility of loop unrolling in~\libFIRM{} should be reevaluated.
 
 Currently, the efforts of increasing unrollable loops seem to exceed the benefits.
 Though, if the desire for more unroallability should pick up again, it would seem a good point to look at other loop structures, such as loops with breaks, or a non-counting loop, unlike the ones examined in this thesis.

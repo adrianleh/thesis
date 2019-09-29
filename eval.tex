@@ -25,10 +25,10 @@ We use the same setup as used in the referenced work~\cite{aebi18bachelorarbeit}
 
 To evaluate the performance gain, we run the new optimization in conjunction with the old unrolling (see \Cref{sec:impl:unrollability}), given that it is intended as an extension.
 As a result of there being two approaches for the fixup, as seen in \Cref{sec:impl:fixup}, we will try both of these, to see if one or the other yields better binary runtimes.
-Further, as described in~\Cref{sec:impl:sel-factor}, the maximum unrolled size determines  the scope of the optimization.
+Furthermore, as described in~\Cref{sec:impl:sel-factor}, the maximum unrolled size determines  the scope of the optimization.
 Therefore, all sizes~$l \in \{2^n, n \in \lbrack 5, 10 \rbrack \}$~are each tried for both the fixup code strategies.
 The reason that we chose 32 as a lower bound, is that very small loops are already more than eight nodes in size and hence wouldn't be unrolled with a maximum size that is a smaller power of two.
-In order to compensate for measurement uncertainties, all benchmarks run ten times, and the average ($\mu$), as well as the standard deviation ($\sigma$) will be recorded and discussed.
+In order to compensate for measurement uncertainties, all benchmarks run ten times, and the average ($\mu$), as well as the standard deviation ($\sigma$), will be recorded and discussed.
 We will compare all results to the reference benchmark run, which itself is a run of \texttt{spec2006} without any loop unrolling turned on.
 These reference results can be seen in \Cref{fig:eval:perf:ref}.
 

@@ -14,7 +14,7 @@ While this order seems counter-intuitive, we chose it in order to simplify the i
 
 
 Henceforth, we assume loops to be in the form of the loop shown in~\Cref{fig:impl:general-loop}.
-In the reference loop \textit{cmp} refers to a comparison that can be one of the following: $<, >, \geq, \leq$.
+In the reference loop \textit{cmp} refers to a comparison that can be one of the following: $<, >, \leq, \geq$.
 Further, $I \in \mathbb{Z}$ refers to the starting value, $N \in \mathbb{Z}$ to the bound, and $c \in \mathbb{Z} \backslash \zeroset$ \label{sec:impl::def-c} to the increment\footnote{N.B.: $c$ may be negative and could hence also be a decrement} of such a loop.
 We select this form in view of the fact that most loops follow the form of using a counter or iterating over a given container, which condenses down to this form.
 Furthermore, this form allows for many arithmetic properties to be used, as seen in~\Cref{sec:impl:fixup}.
@@ -60,7 +60,7 @@ Further, any calls must either invoke functions known at compile time and none o
 Otherwise, the loop cannot be unrolled with a loaded bound, due to these called functions potentially modifying $N$.
 
 Lastly, the unroll-factor -- meaning how often the loop body is copied inside the unrolled loop -- $f$ is selected (see \Cref{sec:impl:sel-factor}) and hence known at compile time.
-We can therefore restrict the increment $c$, such that $t_{min} \leq c \cdot f \leq t_{max}$, where $t_{min}$ is the minimum value of the integer type of $c$ and $t_{max}$ the respective maximum.
+We can therefore further restrict the increment $c$, such that $t_{min} \leq c \cdot f \leq t_{max}$, where $t_{min}$ is the minimum value of the integer type of $c$ and $t_{max}$ the respective maximum.
 Hence, we prevent $c \cdot f$ from overflowing, which will turn out to be important in Sections \ref{sec:impl:fixup:header-cond} and \ref{sec:impl:fixup:duff}, and further discussed there.
 In order to assure this property, we have to force $c$ to be a compile-time constant (which inherently is loop invariant).
 Even though the restrictions on $c$ seem comparatively tight, in real-world code (gcc, \texttt{spec2006}) only approximately $1.2\%$ of loops that meet the previous conditions are not unrollable because of the restriction that  $t_{min} \leq c \cdot f \leq t_{max}$.
@@ -102,7 +102,7 @@ Firstly, we will now focus on making the loop run less than or equal times compa
 Less-than or equal is not good enough though, we want our transformed loop to run exactly as often as the original loop.
 Therefore, we will create fixup code, as discussed in this section and its subsections.
 \Cref{sec:impl:fixup:duff} uses a generalized version of Duff's device to create the required fixup code, whereas in \Cref{sec:impl:fixup:loop} a copy of the original loop will be used.
-After that, in \Cref{sec:eval}, we evaluate which approach yields faster binary run-times.
+After that, in \Cref{sec:eval:perf}, we evaluate which approach yields faster binary run-times.
 
 To see the reason why we need fixup code and to understand what is required of it, we formally lay out conditions that need to be met in Equations~(\ref{eqn:impl:fixup:duff:conserve-semantics-identity}) through~(\ref{eqn:impl:fixup:duff:fixup-i-mult}).
 
@@ -136,7 +136,7 @@ With the requirements to preserve the semantics in mind, we will maximize $\Mloo
     &\overset{\text{integer division}}{\in} \medspace \rbrack M-f,M \rbrack
 \end{aligned}
 \end{equation}
-By construction of the unrolled loop, \Cref{eqn:impl:fixup:duff:loop-iterations} is always true, as the unrolled loop tries to run as often as possible, while running less than or equal times to the original loop.
+By construction of the unrolled loop, \Cref{eqn:impl:fixup:duff:loop-iterations} is always true, as the unrolled loop tries to run as often as possible, while running less than or equal times compared to the original loop.
 \begin{proof}\label{proof:impl:fixup:duff:loop-iterations}
 To prove the conjecture of \Cref{eqn:impl:fixup:duff:loop-iterations}, assume for contradiction
 \[\Mloop = M - f - b,  b \in \left \lbrack 0, f \right\lbrack \]
@@ -147,7 +147,7 @@ We then induct this pattern for $\Mloop = M - nf - b, n \in \mathbb{N}_{+}, b \i
 In these cases, the loop must merely be iterated multiple times.
 \end{proof}
 
-As the loop runs as often as possible, the fixup code will always run less times than the unroll factor.
+As the loop runs as often as possible, the fixup code will always run less than $f$ times.
 
 \begin{equation}\label{eqn:impl:fixup:duff:fixup-interval}
 \begin{aligned}
@@ -196,7 +196,7 @@ For the following mathematical considerations, we need to round away from zero i
     \end{alignat*}
 \end{proof}
 
-Using our now derived lemma, we use the loop parameters $I$, $N$ and $c$ to calculate the total number of loop iterations.
+Using \Cref{lem:impl:fixup:duff:ceil-mp}, we use the loop parameters $I$, $N$ and $c$ to calculate the total number of loop iterations.
 
 \begin{equation}\label{eqn:impl:fixup:duff:total-iteration-based-on-bounds}
 \begin{aligned}
@@ -306,7 +306,7 @@ If $cmp \in \{ \leq, \geq \}$, all interval inclusivenesses need to be flipped, 
 
 \input{fig/alg-fixup-bound.tex}
 
-For the fixup code to work correctly, it is to be ensured that $c \cdot f$ does not overflow, as otherwise, the interval \cinterval could potentially be invalid, iff an integer over- or underflow occurs, meaning $
+For the fixup code to work correctly, it is to be ensured that $c \cdot f$ does not overflow, as otherwise, the interval we switch over, i.e., \cinterval, could potentially be invalid, iff an integer over- or underflow occurs, meaning $
 \begin{cases}
     c \cdot f < 0 &, \medspace c > 0\\
     c \cdot f > 0 &, \medspace c < 0
@@ -376,12 +376,12 @@ Note that, as mentioned in \Cref{sec:impl}, this process occurs before we unroll
 
 \section{Selecting an unroll-factor}\label{sec:impl:sel-factor}
 
-Previously the factor $f$ seemed like it was chosen somewhat arbitrarily.
+Previously the unroll-factor $f$ seemed like it was chosen somewhat arbitrarily.
 Further, \Cref{sec:basics:unrolling} describes that there are multiple factors influencing the performance of unrolled loops.
 Therefore, we devise a selection process.
 
 As a convention, we will henceforth let size be the number of~\libFIRM-nodes in a given loop.
-The -- admittedly straightforward -- algorithm tries to find a factor $f = 2^n, n \in \mathbb{N}_{>0}$, that minimizes the absolute difference between the unrolled size ($= f \cdot \text{original size}$), and a pre-determined maximum size.
+The -- admittedly straightforward -- algorithm tries to find an unroll-factor $f = 2^n, n \in \mathbb{N}_{>0}$, that minimizes the absolute difference between the unrolled size ($= f \cdot \text{original size}$), and a pre-determined maximum size.
 \Cref{alg:impl:sel-factor:sel-factor} shows the procedure used to find these values.
 It is to be noted that the algorithm can also return $0$ and $1$, which does not fit the definition of the $f$ described.
 In the case that the algorithm returns one of these two values, we will interpret it as ``do not unroll''.
