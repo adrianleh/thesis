@@ -1,8 +1,7 @@
 \begin{figure}[H]
     \centering
     \begin{algorithmic}
-        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >\}$}
-        \State \Comment{Flip interval inclusivenesses for $cmp \in \{\leq, \geq\}$}
+        \Function{Foo}{$I \in \mathbb{Z}, N \in \mathbb{Z}, c \in \mathbb{Z} \backslash \zeroset, cmp \in \{<, >, \leq, \geq\}$}
         \State $i \gets I$
         \If{$\neg$\Call{SubtractionWillLeaveBounds}{$N - c \cdot (f - 1)$}}
             \While{$i~`cmp`~ (N - c \cdot (f - 1))$}

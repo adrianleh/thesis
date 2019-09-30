@@ -299,8 +299,6 @@ Therefore, a need for generalization arises.
 
 Using equations~\ref{eqn:impl:fixup:duff:conserve-semantics-identity} through~\ref{eqn:impl:fixup:duff:fixup-i-mult} and the general idea of Duff's device (see \Cref{sec:basics:duffs}), we will create fixup code in form of a generalized Duff's device.
 The structure of this fixup code can be seen in \Cref{fig:impl:fixup:duff:fixup-M_fixup}, which we then practically implement, using \Cref{eqn:impl:fixup:duff:fixup-i-mult}, as shown in \Cref{fig:impl:fixup:duff:fixup-bound}.
-Please note that in the remainder of this section, we assume $cmp \in \{<, >\}$.
-If $cmp \in \{ \leq, \geq \}$, all interval inclusivenesses need to be flipped, but the methodology will not change.
 
 \input{fig/alg-fixup-M_fixup.tex}
 
